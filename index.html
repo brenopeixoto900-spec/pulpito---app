@@ -3,51 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Púlpito App</title>
+<title>Púlpito App - Modelo Oração e Missão</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#facc15">
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lora:wght@400;700&family=Poppins:wght@400;700&family=Montserrat:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body{font-family:Inter,sans-serif; transition: background 0.3s, color 0.3s;}
-.biblia{font-family:Merriweather,serif}
+body{font-family:Inter,sans-serif; transition:all 0.3s}
+[contenteditable]{outline:none; word-break:break-word; overflow-wrap:anywhere; white-space:pre-wrap; line-height:1.7}
 .tab-active{color:#facc15 !important; border-top:2px solid #facc15}
-.versiculo-destaque{background:#facc15;color:#000;padding:2px 6px;border-radius:6px;font-weight:900}
-[contenteditable]{outline:none; word-break:break-word; overflow-wrap:anywhere; white-space:pre-wrap; line-height:1.6;}
-body.light{background:#f5f5f7 !important; color:#111 !important;}
-body.light header{background:rgba(255,255,255,0.95) !important; border-color:#e5e5e5 !important;}
-body.light .bg-zinc-900{background:#ffffff !important; border-color:#e5e5e5 !important; color:#111 !important;}
-body.light .bg-black{background:#f0f0f0 !important; border-color:#ddd !important; color:#111 !important;}
-body.light .bg-[#0a0a0a]{background:#f5f5f7 !important;}
-body.light nav{background:#fff !important; border-color:#e5e5e5 !important;}
-body.light [contenteditable]{background:#fff !important; color:#111 !important; border-color:#ddd !important;}
-@keyframes pisca {0%,100%{opacity:1}50%{opacity:0.5}}
+.modo-papel{background:#fcfaf7; color:#1a1a1a;}
+body.white-mode{background:#ffffff !important; color:#111 !important;}
+body.white-mode header, body.white-mode nav{background:#ffffff !important; border-color:#e5e5e5 !important;}
+body.white-mode .card-escuro{background:#ffffff !important; border-color:#e5e5e5 !important; color:#111 !important;}
+body.white-mode .bg-black{background:#f2f2f2 !important; color:#111 !important; border-color:#ddd !important;}
+body.white-mode .text-zinc-400, body.white-mode .text-zinc-500{color:#555 !important;}
+@keyframes pisca{0%,100%{opacity:1}50%{opacity:0.4}}
 .alerta-vermelho{animation:pisca 0.8s infinite; background:#dc2626 !important; color:white !important;}
-.carrossel{display:flex; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; gap:16px;}
-.carrossel::-webkit-scrollbar{display:none;}
-.carrossel .card{flex:0 0 90%; scroll-snap-align:center;}
 </style>
 </head>
 <body class="bg-[#0a0a0a] text-white min-h-screen pb-24">
 
+<!-- LOGIN -->
 <div id="telaLogin" class="fixed inset-0 z-[100] bg-[#0a0a0a] flex items-center justify-center p-6">
 <div class="w-full max-w-sm">
-<div class="bg-zinc-900 rounded-[24px] p-6 border border-zinc-800">
+<div class="bg-zinc-900 rounded-[24px] p-6 border border-zinc-800 card-escuro">
 <h1 class="font-black text-yellow-400 text-2xl tracking-widest text-center">PÚLPITO</h1>
-<p class="text-center text-xs text-zinc-500 mt-1 font-bold">Cadastro para salvar suas pregações</p>
-<div id="formCadastro">
-<div class="space-y-3 mt-6">
-<input id="nomeUser" type="text" placeholder="Seu nome" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
-<input id="emailUser" type="email" placeholder="Seu e-mail" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
+<p class="text-center text-xs text-zinc-500 mt-1 font-bold">Crie seu cadastro pra salvar</p>
+<div id="formCadastro" class="space-y-3 mt-6">
+<input id="nomeUser" placeholder="Seu nome" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
+<input id="emailUser" placeholder="Seu e-mail" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
 <input id="senhaUser" type="password" placeholder="Crie uma senha" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
 <button onclick="fazerCadastro()" class="w-full bg-yellow-400 text-black font-black py-3 rounded-xl">CADASTRAR E ENTRAR</button>
 <p class="text-center text-xs text-zinc-500">Já tem? <button onclick="mostrarLogin()" class="text-yellow-400 font-bold">Fazer login</button></p>
 </div>
-</div>
-<div id="formLogin" class="hidden">
-<div class="space-y-3 mt-6">
-<input id="emailLogin" type="email" placeholder="Seu e-mail" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
+<div id="formLogin" class="hidden space-y-3 mt-6">
+<input id="emailLogin" placeholder="Seu e-mail" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
 <input id="senhaLogin" type="password" placeholder="Sua senha" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
 <button onclick="fazerLogin()" class="w-full bg-yellow-400 text-black font-black py-3 rounded-xl">ENTRAR</button>
 <p class="text-center text-xs text-zinc-500">Não tem? <button onclick="mostrarCadastro()" class="text-yellow-400 font-bold">Criar conta</button></p>
@@ -55,275 +46,60 @@ body.light [contenteditable]{background:#fff !important; color:#111 !important; 
 </div>
 </div>
 </div>
+
+<!-- MODO TELA BRANCA IGUAL FOTO -->
+<div id="modoPapel" class="hidden fixed inset-0 z-[80] modo-papel overflow-auto">
+<div class="sticky top-0 bg-[#fcfaf7] border-b border-zinc-200 p-3 flex justify-between items-center">
+<div class="flex gap-3 text-[11px] font-bold"><span id="horaPapel">16 05</span><span id="timerPapel">01:19</span><span class="text-zinc-400" id="nomePapel"></span></div>
+<div class="flex gap-2">
+<button onclick="ajustaPapel(-1)" class="w-8 h-8 bg-white border rounded-full text-xs">A-</button>
+<button onclick="ajustaPapel(1)" class="w-8 h-8 bg-white border rounded-full text-xs">A+</button>
+<button onclick="fecharPapel()" class="w-8 h-8 bg-black text-white rounded-full">✕</button>
+</div>
+</div>
+<div class="max-w-3xl mx-auto p-6 md:p-10" id="conteudoPapel" style="font-size:16px">
+<h1 id="papelTitulo" class="text-[32px] font-black tracking-wide text-[#1a1a1a] leading-tight uppercase">ORAÇÃO E MISSÃO</h1>
+<div id="papelCorpo" class="mt-8 space-y-8"></div>
+</div>
 </div>
 
-<!-- MODAL DO CRONÔMETRO COM TEMPO -->
+<!-- MODAL TIMER -->
 <div id="modalTimer" class="hidden fixed inset-0 z-[90] bg-black/80 flex items-center justify-center p-6">
-<div class="bg-zinc-900 rounded-[24px] p-6 border border-zinc-800 w-full max-w-sm">
-<h3 class="font-black text-yellow-400 text-lg">⏱️ DEFINIR TEMPO DE PREGAÇÃO</h3>
-<p class="text-xs text-zinc-500 mt-2">Quanto tempo você vai pregar? Vamos alertar em vermelho quando estiver acabando.</p>
-<div class="flex gap-2 mt-4">
-<input id="inputMinutos" type="number" value="60" min="5" max="180" class="flex-1 bg-black border border-zinc-700 rounded-xl p-3 text-sm font-bold">
-<span class="py-3 text-sm font-bold">minutos</span>
-</div>
-<div class="grid grid-cols-3 gap-2 mt-3">
-<button onclick="setTempo(30)" class="bg-black border border-zinc-700 py-2 rounded-xl text-xs">30 min</button>
-<button onclick="setTempo(60)" class="bg-yellow-400 text-black font-bold py-2 rounded-xl text-xs">60 min</button>
-<button onclick="setTempo(90)" class="bg-black border border-zinc-700 py-2 rounded-xl text-xs">90 min</button>
-</div>
-<div class="flex gap-2 mt-5">
-<button onclick="iniciarTimer()" class="flex-1 bg-yellow-400 text-black font-black py-3 rounded-xl">INICIAR</button>
-<button onclick="fecharModalTimer()" class="flex-1 bg-zinc-800 py-3 rounded-xl text-sm">CANCELAR</button>
-</div>
+<div class="bg-zinc-900 rounded-[24px] p-6 border border-zinc-800 w-full max-w-sm card-escuro">
+<h3 class="font-black text-yellow-400">⏱️ TEMPO DE PREGAÇÃO</h3>
+<div class="flex gap-2 mt-4"><input id="inputMinutos" type="number" value="60" class="flex-1 bg-black border border-zinc-700 rounded-xl p-3 font-bold"><span class="py-3 font-bold">min</span></div>
+<div class="grid grid-cols-3 gap-2 mt-3"><button onclick="setTempo(30)" class="bg-black border border-zinc-700 py-2 rounded-xl text-xs">30 min</button><button onclick="setTempo(60)" class="bg-yellow-400 text-black font-bold py-2 rounded-xl text-xs">60 min</button><button onclick="setTempo(90)" class="bg-black border border-zinc-700 py-2 rounded-xl text-xs">90 min</button></div>
+<div class="flex gap-2 mt-5"><button onclick="iniciarTimer()" class="flex-1 bg-yellow-400 text-black font-black py-3 rounded-xl">INICIAR</button><button onclick="fecharModalTimer()" class="flex-1 bg-zinc-800 py-3 rounded-xl">CANCELAR</button></div>
 </div>
 </div>
 
 <header class="sticky top-0 z-50 bg-black/95 backdrop-blur border-b border-zinc-800 p-3 flex justify-between items-center">
 <div class="flex items-center gap-2">
 <h1 class="font-black text-yellow-400 text-lg tracking-widest">PÚLPITO</h1>
-<div id="relogio" class="bg-zinc-900 border border-zinc-800 px-2 py-1 rounded-full text-[11px] font-bold">--:--</div>
-<button onclick="toggleTema()" id="btnTema" class="bg-zinc-900 border border-zinc-800 w-8 h-8 rounded-full text-sm">🌙</button>
+<div id="relogio" class="bg-zinc-900 border border-zinc-800 px-2 py-1 rounded-full text-[11px] font-bold card-escuro">--:-- BRT</div>
+<button onclick="toggleWhite()" id="btnWhite" class="bg-zinc-900 border border-zinc-800 w-8 h-8 rounded-full text-sm card-escuro">☀️</button>
 </div>
 <div class="flex items-center gap-2">
 <span id="nomeLogado" class="text-[10px] text-zinc-400 max-w-[60px] truncate"></span>
-<button id="btnTimer" class="bg-zinc-900 border border-zinc-700 px-3 py-1.5 rounded-full text-xs font-bold">⏱️ 00:00</button>
-<button onclick="sair()" class="bg-zinc-900 border border-zinc-800 w-8 h-8 rounded-full text-xs">↪️</button>
+<button id="btnTimer" class="bg-zinc-900 border border-zinc-700 px-3 py-1.5 rounded-full text-xs font-bold card-escuro">⏱️ 00:00</button>
+<button onclick="sair()" class="bg-zinc-900 border border-zinc-800 w-8 h-8 rounded-full text-xs card-escuro">↪️</button>
 </div>
 </header>
-<div id="timerBar" class="hidden text-center py-3 font-black text-lg">00:00 - PREGANDO</div>
+<div id="timerBar" class="hidden text-center py-3 font-black">00:00</div>
 
 <main class="max-w-4xl mx-auto">
+<!-- INICIO - BLOQUINHOS -->
 <div id="abaIniciar" class="p-4 space-y-4">
 <div class="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-[24px] p-6 text-black">
-<h2 id="boasVindas" class="font-black text-2xl">Bem-vindo!</h2>
-<p class="text-sm mt-1 font-bold opacity-80">Deslize pro lado para ver suas pregações</p>
+<h2 id="boasVindas" class="font-black text-2xl">Púlpito</h2>
+<p class="text-sm mt-1 font-bold opacity-80">Modelo igual da foto - tudo salvo junto</p>
 <div class="flex gap-2 mt-4">
 <button onclick="mostrarAba('biblia')" class="bg-black text-yellow-400 font-black px-5 py-3 rounded-full text-sm">📖 BÍBLIA</button>
-<button onclick="mostrarAba('notas')" class="bg-white text-black font-black px-5 py-3 rounded-full text-sm">📝 NOVA</button>
+<button onclick="mostrarAba('notas')" class="bg-white text-black font-black px-5 py-3 rounded-full text-sm">📝 NOVA PREGAÇÃO</button>
 </div>
 </div>
-<div>
-<div class="flex justify-between items-center mb-3">
-<h3 class="font-black text-yellow-400 text-sm">📚 MINHAS PREGAÇÕES - ARRASTE PRO LADO</h3>
-<div class="flex gap-2"><button onclick="scrollCarrossel('inicio',-1)" class="bg-zinc-900 border border-zinc-800 w-8 h-8 rounded-full">←</button><button onclick="scrollCarrossel('inicio',1)" class="bg-zinc-900 border border-zinc-800 w-8 h-8 rounded-full">→</button></div>
-</div>
-<div id="listaInicio" class="carrossel pb-2"></div>
-<p class="text-[11px] text-zinc-600 text-center mt-2">👆 Deslize com o dedo ou use as setinhas ← →</p>
-</div>
+<h3 class="font-black text-yellow-400 text-sm">📚 MEUS BLOQUINHOS - CLIQUE PARA VER IGUAL A FOTO</h3>
+<div id="listaInicio" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
 </div>
 
-<div id="abaBiblia" class="hidden p-4">
-<div class="bg-zinc-900 rounded-2xl p-4 border border-zinc-800">
-<p class="text-[11px] font-bold text-yellow-400 mb-2">BÍBLIA ACF - LIVRO / CAPÍTULO / VERSÍCULO</p>
-<div class="flex gap-2">
-<select id="livro" class="flex-1 bg-black border border-zinc-700 rounded-xl p-3 text-sm font-bold"></select>
-<select id="capitulo" class="w-20 bg-black border border-zinc-700 rounded-xl p-3 text-sm font-bold"></select>
-<select id="versiculo" class="w-20 bg-black border border-zinc-700 rounded-xl p-3 text-sm font-bold"><option>Ver</option></select>
-</div>
-<div class="flex gap-2 mt-3">
-<button id="ler" class="flex-1 bg-yellow-400 text-black font-black py-3 rounded-xl">LER CAPÍTULO</button>
-<button id="irVersiculo" class="w-24 bg-zinc-800 border border-zinc-700 py-3 rounded-xl text-xs font-bold">IR VER.</button>
-</div>
-</div>
-<div id="versiculos" class="mt-4 bg-zinc-900 rounded-2xl p-5 border border-zinc-800 min-h-[300px]"><p class="text-zinc-500 text-sm text-center mt-10">Selecione e clique em LER.</p></div>
-<div class="grid grid-cols-2 gap-3 mt-4">
-<button id="btnQr" class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl text-center"><p>📺</p><p class="text-xs font-bold mt-1">QR PROJEÇÃO</p></button>
-<button id="btnHoly" class="bg-zinc-900 border border-zinc-800 p-4 rounded-2xl text-center"><p>🔗</p><p class="text-xs font-bold mt-1">HOLYRICS</p></button>
-</div>
-<div id="qrcode" class="hidden mt-4 bg-white p-4 rounded-2xl flex justify-center"></div>
-</div>
-
-<div id="abaNotas" class="hidden p-4 space-y-4">
-<h2 class="font-black text-yellow-400">NOVO SERMÃO</h2>
-<div id="camposPregacao" class="space-y-4"></div>
-<button onclick="salvarSermao()" class="w-full bg-yellow-400 text-black font-black py-4 rounded-xl">💾 SALVAR NO MEU E-MAIL</button>
-</div>
-
-<div id="abaMinhas" class="hidden p-4 space-y-3">
-<div class="flex justify-between items-center">
-<h2 class="font-black text-yellow-400">MINHAS PREGAÇÕES</h2>
-<div class="flex gap-2"><button onclick="scrollCarrossel('minhas',-1)" class="bg-zinc-900 border border-zinc-800 w-8 h-8 rounded-full">←</button><button onclick="scrollCarrossel('minhas',1)" class="bg-zinc-900 border border-zinc-800 w-8 h-8 rounded-full">→</button></div>
-</div>
-<p class="text-xs text-zinc-500">Arraste pro lado com o dedo, igual Instagram. Edição direta em cada uma.</p>
-<p id="emailMostra" class="text-xs text-zinc-500"></p>
-<div id="listaSermoes" class="carrossel pb-2 mt-3"></div>
-<p class="text-[11px] text-zinc-600 text-center">👆 Deslize com o dedo para ver todas</p>
-</div>
-</main>
-
-<nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-zinc-800 flex justify-around py-2 z-50">
-<button onclick="mostrarAba('iniciar')" id="tabIniciar" class="tab-active flex flex-col items-center px-4 py-1"><span class="text-xl">🏠</span><span class="text-[10px] font-bold">INÍCIO</span></button>
-<button onclick="mostrarAba('biblia')" id="tabBiblia" class="flex flex-col items-center px-4 py-1 text-zinc-500"><span class="text-xl">📖</span><span class="text-[10px] font-bold">BÍBLIA</span></button>
-<button onclick="mostrarAba('notas')" id="tabNotas" class="flex flex-col items-center px-4 py-1 text-zinc-500"><span class="text-xl">📝</span><span class="text-[10px] font-bold">BLOCO</span></button>
-<button onclick="mostrarAba('minhas')" id="tabMinhas" class="flex flex-col items-center px-4 py-1 text-zinc-500"><span class="text-xl">📚</span><span class="text-[10px] font-bold">MINHAS</span></button>
-</nav>
-
-<script>
-function toggleTema(){let b=document.body;b.classList.toggle('light');let isLight=b.classList.contains('light');localStorage.setItem('tema_pulpito',isLight?'light':'dark');document.getElementById('btnTema').textContent=isLight?'☀️':'🌙';}
-function mostrarLogin(){document.getElementById('formCadastro').classList.add('hidden');document.getElementById('formLogin').classList.remove('hidden');}
-function mostrarCadastro(){document.getElementById('formLogin').classList.add('hidden');document.getElementById('formCadastro').classList.remove('hidden');}
-function fazerCadastro(){let nome=document.getElementById('nomeUser').value.trim();let email=document.getElementById('emailUser').value.trim().toLowerCase();let senha=document.getElementById('senhaUser').value.trim();if(!nome||!email||!senha){alert('Preencha nome, e-mail e senha');return;}let usuarios=JSON.parse(localStorage.getItem('usuarios_pulpito')||'{}');if(usuarios[email]){alert('Já tem cadastro, faça login');mostrarLogin();return;}usuarios[email]={nome,email,senha};localStorage.setItem('usuarios_pulpito',JSON.stringify(usuarios));localStorage.setItem('usuario_logado',email);entrarNoApp();}
-function fazerLogin(){let email=document.getElementById('emailLogin').value.trim().toLowerCase();let senha=document.getElementById('senhaLogin').value.trim();let usuarios=JSON.parse(localStorage.getItem('usuarios_pulpito')||'{}');if(!usuarios[email]||usuarios[email].senha!==senha){alert('E-mail ou senha errados');return;}localStorage.setItem('usuario_logado',email);entrarNoApp();}
-function entrarNoApp(){let email=localStorage.getItem('usuario_logado');let usuarios=JSON.parse(localStorage.getItem('usuarios_pulpito')||'{}');let user=usuarios[email];document.getElementById('telaLogin').classList.add('hidden');document.getElementById('boasVindas').textContent='Olá, '+(user.nome.split(' ')[0])+'!';document.getElementById('nomeLogado').textContent=user.nome.split(' ')[0];document.getElementById('emailMostra').textContent='Logado: '+email;carregarInicio();mostrarAba('iniciar');if(localStorage.getItem('tema_pulpito')==='light'){document.body.classList.add('light');document.getElementById('btnTema').textContent='☀️';}}
-function sair(){if(confirm('Sair? Suas pregações ficam salvas no e-mail')){localStorage.removeItem('usuario_logado');location.reload();}}
-(function(){let logado=localStorage.getItem('usuario_logado');if(logado){entrarNoApp();}})();
-function getPrefixo(){let email=localStorage.getItem('usuario_logado')||'anonimo';return 'sermao_'+email+'_';}
-function atualizarRelogio(){const d=new Date();let el=document.getElementById('relogio');if(el) el.textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
-setInterval(atualizarRelogio,1000);atualizarRelogio();
-
-// CRONOMETRO COM TEMPO DEFINIDO
-let tempoTotalMinutos=60, segundos=0, interval=null, rodando=false;
-function setTempo(m){document.getElementById('inputMinutos').value=m;}
-function abrirModalTimer(){document.getElementById('modalTimer').classList.remove('hidden');}
-function fecharModalTimer(){document.getElementById('modalTimer').classList.add('hidden');}
-function iniciarTimer(){
- tempoTotalMinutos=parseInt(document.getElementById('inputMinutos').value)||60;
- segundos=0; rodando=true;
- fecharModalTimer();
- let bar=document.getElementById('timerBar');
- bar.classList.remove('hidden');
- bar.classList.remove('alerta-vermelho');
- bar.className='bg-yellow-400 text-black text-center py-3 font-black text-lg';
- if(interval) clearInterval(interval);
- interval=setInterval(()=>{
-  segundos++;
-  let totalSegundos=tempoTotalMinutos*60;
-  let restante=totalSegundos - segundos;
-  let m=String(Math.floor(segundos/60)).padStart(2,'0');
-  let s=String(segundos%60).padStart(2,'0');
-  let mRest=Math.floor(restante/60);
-  document.getElementById('btnTimer').textContent='⏱️ '+m+':'+s+' / '+tempoTotalMinutos+'min';
-  bar.textContent=m+':'+s+' / '+tempoTotalMinutos+'min - PREGANDO (Faltam '+mRest+'min)';
-  // QUANDO FALTAR 5 MINUTOS OU MENOS, FICA VERMELHO PISCANDO
-  if(restante <= 300 && restante > 0){ // 5 minutos = 300 seg
-   bar.className='alerta-vermelho text-center py-3 font-black text-lg';
-   bar.textContent='⚠️ FALTAM '+mRest+' MINUTOS! - '+m+':'+s;
-   if(restante%2===0) navigator.vibrate && navigator.vibrate(200);
-  }
-  if(restante <= 0){
-   bar.className='alerta-vermelho text-center py-3 font-black text-xl';
-   bar.textContent='⏰ TEMPO ESGOTADO! - '+m+':'+s;
-   navigator.vibrate && navigator.vibrate([500,200,500]);
-  }
- },1000);
-}
-document.getElementById('btnTimer').onclick=()=>{
- if(!rodando){abrirModalTimer();}
- else{
-  clearInterval(interval);rodando=false;segundos=0;
-  document.getElementById('btnTimer').textContent='⏱️ 00:00';
-  let bar=document.getElementById('timerBar');bar.classList.add('hidden');bar.classList.remove('alerta-vermelho');
- }
-};
-
-// SCROLL CARROSSEL
-function scrollCarrossel(tipo, dir){
- let id=tipo==='inicio'?'listaInicio':'listaSermoes';
- let el=document.getElementById(id);
- el.scrollBy({left: dir*320, behavior:'smooth'});
-}
-
-// BIBLIA
-const livros=[["Gênesis",50],["Êxodo",40],["Levítico",27],["Números",36],["Deuteronômio",34],["Josué",24],["Juízes",21],["Rute",4],["1 Samuel",31],["2 Samuel",24],["1 Reis",22],["2 Reis",25],["1 Crônicas",29],["2 Crônicas",36],["Esdras",10],["Neemias",13],["Ester",10],["Jó",42],["Salmos",150],["Provérbios",31],["Eclesiastes",12],["Cânticos",8],["Isaías",66],["Jeremias",52],["Lamentações",5],["Ezequiel",48],["Daniel",12],["Oséias",14],["Joel",3],["Amós",9],["Obadias",1],["Jonas",4],["Miquéias",7],["Naum",3],["Habacuque",3],["Sofonias",3],["Ageu",2],["Zacarias",14],["Malaquias",4],["Mateus",28],["Marcos",16],["Lucas",24],["João",21],["Atos",28],["Romanos",16],["1 Coríntios",16],["2 Coríntios",13],["Gálatas",6],["Efésios",6],["Filipenses",4],["Colossenses",4],["1 Tessalonicenses",5],["2 Tessalonicenses",3],["1 Timóteo",6],["2 Timóteo",4],["Tito",3],["Filemom",1],["Hebreus",13],["Tiago",5],["1 Pedro",5],["2 Pedro",3],["1 João",5],["2 João",1],["3 João",1],["Judas",1],["Apocalipse",22]];
-const selLivro=document.getElementById('livro');const selCap=document.getElementById('capitulo');const selVer=document.getElementById('versiculo');
-livros.forEach(([nome])=>{let o=document.createElement('option');o.textContent=nome;o.value=nome;selLivro.appendChild(o);});
-function atualizarCaps(){selCap.innerHTML='';let livro=livros.find(l=>l[0]==selLivro.value);for(let i=1;i<=livro[1];i++){let o=document.createElement('option');o.textContent=i;o.value=i;selCap.appendChild(o);}}
-selLivro.addEventListener('change',atualizarCaps);atualizarCaps();
-let versiculosAtuais=[];
-document.getElementById('ler').onclick=async()=>{
- const livro=selLivro.value;const cap=selCap.value;
- const div=document.getElementById('versiculos');
- div.innerHTML='<p class="text-center text-yellow-400 animate-pulse">Carregando '+livro+' '+cap+' ACF...</p>';
- try{
-  let res=await fetch(`https://bible-api.com/${encodeURIComponent(livro)}+${cap}?translation=almeida`);
-  let data=await res.json();
-  versiculosAtuais=data.verses||[];
-  selVer.innerHTML='';
-  versiculosAtuais.forEach(v=>{let o=document.createElement('option');o.value=v.verse;o.textContent='v'+v.verse;selVer.appendChild(o);});
-  renderVersiculos();
- }catch(e){div.innerHTML='<p>Sem internet...</p>';}
-};
-function renderVersiculos(destaque=null){
- const div=document.getElementById('versiculos');
- let html=`<h3 class="font-black text-yellow-400 mb-3">${selLivro.value} ${selCap.value} - ACF</h3><div class="biblia space-y-2 text-[17px] leading-7">`;
- html+=versiculosAtuais.map(v=>{
-  let cls=v.verse==destaque?'versiculo-destaque':'';
-  return `<p id="v${v.verse}" class="${cls}"><span class="text-yellow-400 font-bold text-xs mr-2">${v.verse}</span>${v.text}</p>`;
- }).join('')+`</div>`;
- div.innerHTML=html;
- if(destaque){document.getElementById('v'+destaque)?.scrollIntoView({behavior:'smooth',block:'center'});}
-}
-document.getElementById('irVersiculo').onclick=()=>{let v=parseInt(selVer.value);if(v) renderVersiculos(v);};
-
-const campos=[
- {id:'titulo',label:'TÍTULO'},
- {id:'textoBase',label:'TEXTO BASE'},
- {id:'obs',label:'OBSERVAÇÃO'},
- {id:'aplic',label:'APLICAÇÃO'},
- {id:'ilust',label:'ILUSTRAÇÃO'},
- {id:'frase',label:'FRASE'}
-];
-const container=document.getElementById('camposPregacao');
-campos.forEach(c=>{
- container.innerHTML+=`<div class="bg-zinc-900 rounded-xl p-3 border border-zinc-800"><div class="flex justify-between items-center"><label class="text-[11px] font-bold text-yellow-400">${c.label}</label><div class="flex gap-1"><button onclick="ajusta('${c.id}',-1)" class="bg-black border border-zinc-700 w-7 h-7 rounded text-xs">A-</button><button onclick="ajusta('${c.id}',1)" class="bg-black border border-zinc-700 w-7 h-7 rounded text-xs">A+</button><input type="color" value="#ffffff" oninput="mudaCor('${c.id}',this.value)" class="w-7 h-7 rounded"></div></div><div id="${c.id}" contenteditable="true" class="w-full mt-2 bg-black border border-zinc-700 rounded-lg p-3 text-sm min-h-[60px]" style="font-size:16px;color:#fff"></div></div>`;
-});
-function ajusta(id,d){let el=document.getElementById(id);let s=parseInt(el.style.fontSize)||16;s=Math.min(32,Math.max(12,s+d*2));el.style.fontSize=s+'px';}
-function mudaCor(id,cor){document.getElementById(id).style.color=cor;}
-
-function mostrarAba(nome){
- document.getElementById('abaIniciar').classList.add('hidden');
- document.getElementById('abaBiblia').classList.add('hidden');
- document.getElementById('abaNotas').classList.add('hidden');
- document.getElementById('abaMinhas').classList.add('hidden');
- document.querySelectorAll('nav button').forEach(b=>b.classList.remove('tab-active'));
- if(nome==='iniciar'){document.getElementById('abaIniciar').classList.remove('hidden');document.getElementById('tabIniciar').classList.add('tab-active');carregarInicio();}
- if(nome==='biblia'){document.getElementById('abaBiblia').classList.remove('hidden');document.getElementById('tabBiblia').classList.add('tab-active');}
- if(nome==='notas'){document.getElementById('abaNotas').classList.remove('hidden');document.getElementById('tabNotas').classList.add('tab-active');}
- if(nome==='minhas'){document.getElementById('abaMinhas').classList.remove('hidden');document.getElementById('tabMinhas').classList.add('tab-active');carregarSermoes();}
-}
-let editandoId=null;
-function salvarSermao(){
- let dados={};campos.forEach(c=>{let el=document.getElementById(c.id);dados[c.id]={html:el.innerHTML,text:el.innerText,style:el.getAttribute('style')}});
- if(!dados.titulo.text.trim()){alert('Coloque um TÍTULO!');return;}
- let prefixo=getPrefixo();
- let id=editandoId||prefixo+Date.now();
- localStorage.setItem(id,JSON.stringify({id,...dados,data:new Date().toLocaleString()}));
- alert('✅ Salvo!');campos.forEach(c=>document.getElementById(c.id).innerHTML='');editandoId=null;mostrarAba('iniciar');
-}
-
-function renderCard(k, resumido){
- let s=JSON.parse(localStorage.getItem(k)); if(!s) return '';
- let html=`<div class="card bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shrink-0"><div class="flex justify-between items-center mb-2"><span class="text-[10px] bg-yellow-400 text-black font-bold px-2 py-1 rounded-full">${resumido?'INÍCIO':'MINHA'}</span><span class="text-[10px] text-zinc-500">${s.data}</span></div>`;
- campos.forEach(c=>{
-  if(resumido && c.id!=='titulo' && c.id!=='textoBase') return;
-  let conteudo=s[c.id]?.html||''; let estilo=s[c.id]?.style||'font-size:16px;color:#fff';
-  html+=`<div class="mb-3"><div class="flex justify-between"><p class="text-[10px] text-yellow-400 font-bold">${c.label}</p><div class="flex gap-1"><button onclick="ajustaCard('${k}','${c.id}',-1)" class="bg-black border border-zinc-700 w-6 h-6 rounded text-[10px]">A-</button><button onclick="ajustaCard('${k}','${c.id}',1)" class="bg-black border border-zinc-700 w-6 h-6 rounded text-[10px]">A+</button><input type="color" value="${getCor(estilo)}" oninput="mudaCorCard('${k}','${c.id}',this.value)" class="w-6 h-6 rounded"></div></div><div id="card_${k}_${c.id}" contenteditable="true" onblur="salvaCard('${k}','${c.id}')" style="${estilo}" class="mt-1 bg-black border border-zinc-700 rounded-lg p-3 text-sm min-h-[40px]">${conteudo}</div></div>`;
- });
- html+=`<div class="flex gap-2 mt-2"><button onclick="salvaCardTodos('${k}')" class="flex-1 bg-yellow-400 text-black font-bold py-2 rounded-xl text-xs">💾 SALVAR</button><button onclick="apagar('${k}')" class="bg-red-900/30 text-red-400 px-4 py-2 rounded-xl text-xs">🗑️</button></div></div>`;
- return html;
-}
-function getCor(style){let m=style.match(/color:\s*([^;]+)/);return m?m[1].trim():'#ffffff';}
-function ajustaCard(k,campo,d){let el=document.getElementById(`card_${k}_${campo}`);let s=parseInt(el.style.fontSize)||16;s=Math.min(32,Math.max(12,s+d*2));el.style.fontSize=s+'px';salvaCard(k,campo);}
-function mudaCorCard(k,campo,cor){let el=document.getElementById(`card_${k}_${campo}`);el.style.color=cor;salvaCard(k,campo);}
-function salvaCard(k,campo){let el=document.getElementById(`card_${k}_${campo}`);let s=JSON.parse(localStorage.getItem(k));s[campo]={html:el.innerHTML,text:el.innerText,style:el.getAttribute('style')};localStorage.setItem(k,JSON.stringify(s));}
-function salvaCardTodos(k){let s=JSON.parse(localStorage.getItem(k));campos.forEach(c=>{let el=document.getElementById(`card_${k}_${c.id}`);if(el){s[c.id]={html:el.innerHTML,text:el.innerText,style:el.getAttribute('style')};}});localStorage.setItem(k,JSON.stringify(s));alert('✅ Salvo!');}
-function apagar(k){if(confirm('Apagar?')){localStorage.removeItem(k);carregarInicio();carregarSermoes();}}
-
-function carregarInicio(){
- let lista=document.getElementById('listaInicio');let prefixo=getPrefixo();let chaves=Object.keys(localStorage).filter(k=>k.startsWith(prefixo));
- if(chaves.length===0){lista.innerHTML='<p class="text-zinc-500 text-center py-8 text-sm">Nenhuma pregação ainda.</p>';return;}
- lista.innerHTML='';chaves.reverse().forEach(k=>{lista.innerHTML+=renderCard(k,true);});
-}
-function carregarSermoes(){
- let lista=document.getElementById('listaSermoes');let prefixo=getPrefixo();let chaves=Object.keys(localStorage).filter(k=>k.startsWith(prefixo));
- if(chaves.length===0){lista.innerHTML='<p class="text-zinc-500 text-center py-8">Nenhuma pregação.</p>';return;}
- lista.innerHTML='';chaves.reverse().forEach(k=>{lista.innerHTML+=renderCard(k,false);});
-}
-
-function gerarQr(texto){let qrDiv=document.getElementById('qrcode');qrDiv.innerHTML='';new QRCode(qrDiv,{text:'https://pulpitoapp.vercel.app/?projecao='+encodeURIComponent(texto),width:160,height:160});}
-document.getElementById('btnQr').onclick=()=>{let qr=document.getElementById('qrcode');qr.classList.toggle('hidden');if(!qr.classList.contains('hidden')) gerarQr(selLivro.value+' '+selCap.value);};
-document.getElementById('btnHoly').onclick=()=>{let ip=prompt('IP do Holyrics:');if(ip) alert('Conectado '+ip);};
-</script>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js')}</script>
-</body>
-</html>
+<!-- BIB
