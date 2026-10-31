@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Púlpito App - Modelo Oração e Missão</title>
+<title>Púlpito App - Final com Login e Nuvem</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#facc15">
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lora:wght@400;700&family=Poppins:wght@400;700&family=Montserrat:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lora:wght@400;700&family=Poppins:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 <style>
 body{font-family:Inter,sans-serif; transition:all 0.3s}
 [contenteditable]{outline:none; word-break:break-word; overflow-wrap:anywhere; white-space:pre-wrap; line-height:1.7}
@@ -17,89 +17,5 @@ body.white-mode{background:#ffffff !important; color:#111 !important;}
 body.white-mode header, body.white-mode nav{background:#ffffff !important; border-color:#e5e5e5 !important;}
 body.white-mode .card-escuro{background:#ffffff !important; border-color:#e5e5e5 !important; color:#111 !important;}
 body.white-mode .bg-black{background:#f2f2f2 !important; color:#111 !important; border-color:#ddd !important;}
-body.white-mode .text-zinc-400, body.white-mode .text-zinc-500{color:#555 !important;}
 @keyframes pisca{0%,100%{opacity:1}50%{opacity:0.4}}
-.alerta-vermelho{animation:pisca 0.8s infinite; background:#dc2626 !important; color:white !important;}
-</style>
-</head>
-<body class="bg-[#0a0a0a] text-white min-h-screen pb-24">
-
-<!-- LOGIN -->
-<div id="telaLogin" class="fixed inset-0 z-[100] bg-[#0a0a0a] flex items-center justify-center p-6">
-<div class="w-full max-w-sm">
-<div class="bg-zinc-900 rounded-[24px] p-6 border border-zinc-800 card-escuro">
-<h1 class="font-black text-yellow-400 text-2xl tracking-widest text-center">PÚLPITO</h1>
-<p class="text-center text-xs text-zinc-500 mt-1 font-bold">Crie seu cadastro pra salvar</p>
-<div id="formCadastro" class="space-y-3 mt-6">
-<input id="nomeUser" placeholder="Seu nome" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
-<input id="emailUser" placeholder="Seu e-mail" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
-<input id="senhaUser" type="password" placeholder="Crie uma senha" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
-<button onclick="fazerCadastro()" class="w-full bg-yellow-400 text-black font-black py-3 rounded-xl">CADASTRAR E ENTRAR</button>
-<p class="text-center text-xs text-zinc-500">Já tem? <button onclick="mostrarLogin()" class="text-yellow-400 font-bold">Fazer login</button></p>
-</div>
-<div id="formLogin" class="hidden space-y-3 mt-6">
-<input id="emailLogin" placeholder="Seu e-mail" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
-<input id="senhaLogin" type="password" placeholder="Sua senha" class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-sm">
-<button onclick="fazerLogin()" class="w-full bg-yellow-400 text-black font-black py-3 rounded-xl">ENTRAR</button>
-<p class="text-center text-xs text-zinc-500">Não tem? <button onclick="mostrarCadastro()" class="text-yellow-400 font-bold">Criar conta</button></p>
-</div>
-</div>
-</div>
-</div>
-
-<!-- MODO TELA BRANCA IGUAL FOTO -->
-<div id="modoPapel" class="hidden fixed inset-0 z-[80] modo-papel overflow-auto">
-<div class="sticky top-0 bg-[#fcfaf7] border-b border-zinc-200 p-3 flex justify-between items-center">
-<div class="flex gap-3 text-[11px] font-bold"><span id="horaPapel">16 05</span><span id="timerPapel">01:19</span><span class="text-zinc-400" id="nomePapel"></span></div>
-<div class="flex gap-2">
-<button onclick="ajustaPapel(-1)" class="w-8 h-8 bg-white border rounded-full text-xs">A-</button>
-<button onclick="ajustaPapel(1)" class="w-8 h-8 bg-white border rounded-full text-xs">A+</button>
-<button onclick="fecharPapel()" class="w-8 h-8 bg-black text-white rounded-full">✕</button>
-</div>
-</div>
-<div class="max-w-3xl mx-auto p-6 md:p-10" id="conteudoPapel" style="font-size:16px">
-<h1 id="papelTitulo" class="text-[32px] font-black tracking-wide text-[#1a1a1a] leading-tight uppercase">ORAÇÃO E MISSÃO</h1>
-<div id="papelCorpo" class="mt-8 space-y-8"></div>
-</div>
-</div>
-
-<!-- MODAL TIMER -->
-<div id="modalTimer" class="hidden fixed inset-0 z-[90] bg-black/80 flex items-center justify-center p-6">
-<div class="bg-zinc-900 rounded-[24px] p-6 border border-zinc-800 w-full max-w-sm card-escuro">
-<h3 class="font-black text-yellow-400">⏱️ TEMPO DE PREGAÇÃO</h3>
-<div class="flex gap-2 mt-4"><input id="inputMinutos" type="number" value="60" class="flex-1 bg-black border border-zinc-700 rounded-xl p-3 font-bold"><span class="py-3 font-bold">min</span></div>
-<div class="grid grid-cols-3 gap-2 mt-3"><button onclick="setTempo(30)" class="bg-black border border-zinc-700 py-2 rounded-xl text-xs">30 min</button><button onclick="setTempo(60)" class="bg-yellow-400 text-black font-bold py-2 rounded-xl text-xs">60 min</button><button onclick="setTempo(90)" class="bg-black border border-zinc-700 py-2 rounded-xl text-xs">90 min</button></div>
-<div class="flex gap-2 mt-5"><button onclick="iniciarTimer()" class="flex-1 bg-yellow-400 text-black font-black py-3 rounded-xl">INICIAR</button><button onclick="fecharModalTimer()" class="flex-1 bg-zinc-800 py-3 rounded-xl">CANCELAR</button></div>
-</div>
-</div>
-
-<header class="sticky top-0 z-50 bg-black/95 backdrop-blur border-b border-zinc-800 p-3 flex justify-between items-center">
-<div class="flex items-center gap-2">
-<h1 class="font-black text-yellow-400 text-lg tracking-widest">PÚLPITO</h1>
-<div id="relogio" class="bg-zinc-900 border border-zinc-800 px-2 py-1 rounded-full text-[11px] font-bold card-escuro">--:-- BRT</div>
-<button onclick="toggleWhite()" id="btnWhite" class="bg-zinc-900 border border-zinc-800 w-8 h-8 rounded-full text-sm card-escuro">☀️</button>
-</div>
-<div class="flex items-center gap-2">
-<span id="nomeLogado" class="text-[10px] text-zinc-400 max-w-[60px] truncate"></span>
-<button id="btnTimer" class="bg-zinc-900 border border-zinc-700 px-3 py-1.5 rounded-full text-xs font-bold card-escuro">⏱️ 00:00</button>
-<button onclick="sair()" class="bg-zinc-900 border border-zinc-800 w-8 h-8 rounded-full text-xs card-escuro">↪️</button>
-</div>
-</header>
-<div id="timerBar" class="hidden text-center py-3 font-black">00:00</div>
-
-<main class="max-w-4xl mx-auto">
-<!-- INICIO - BLOQUINHOS -->
-<div id="abaIniciar" class="p-4 space-y-4">
-<div class="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-[24px] p-6 text-black">
-<h2 id="boasVindas" class="font-black text-2xl">Púlpito</h2>
-<p class="text-sm mt-1 font-bold opacity-80">Modelo igual da foto - tudo salvo junto</p>
-<div class="flex gap-2 mt-4">
-<button onclick="mostrarAba('biblia')" class="bg-black text-yellow-400 font-black px-5 py-3 rounded-full text-sm">📖 BÍBLIA</button>
-<button onclick="mostrarAba('notas')" class="bg-white text-black font-black px-5 py-3 rounded-full text-sm">📝 NOVA PREGAÇÃO</button>
-</div>
-</div>
-<h3 class="font-black text-yellow-400 text-sm">📚 MEUS BLOQUINHOS - CLIQUE PARA VER IGUAL A FOTO</h3>
-<div id="listaInicio" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-</div>
-
-<!-- BIB
+.alerta-vermelho{animation:pisca 0.8s infinite; background:#dc2626 !important; color
