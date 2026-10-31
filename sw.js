@@ -1,50 +1,33 @@
-const CACHE = "pulpito-shell-v2";
-
-const CORE = [
-  "./",
-  "./index.html",
-  "./manifest.json",
-  "./js/app.js",
-  "./js/config.js",
-  "./assets/icon.svg"
+const CACHE_NAME = 'pulpito-v4';
+const FILES = [
+  './',
+  './index.html',
+  './manifest.json'
 ];
 
-self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE)
-      .then(cache => cache.addAll(CORE))
-      .then(() => self.skipWaiting())
+self.addEventListener('install', e => {
+  self.skipWaiting();
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(c => c.addAll(FILES))
   );
 });
 
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(key => key !== CACHE)
-          .map(key => caches.delete(key))
-      )
-    ).then(() => self.clients.claim())
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys => 
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    )
   );
+  self.clients.claim();
 });
 
-self.addEventListener("fetch", event => {
-  const request = event.request;
-  const url = new URL(request.url);
-
-  if (request.method !== "GET" || url.origin !== location.origin) return;
-
-  event.respondWith(
-    caches.match(request).then(cached => {
-      if (cached) return cached;
-
-      return fetch(request).then(response => {
-        if (response.ok) {
-          const copy = response.clone();
-          caches.open(CACHE).then(cache => cache.put(request, copy));
-        }
-        return response;
-      }).catch(() => caches.match("./index.html"));
-    })
+self.addEventListener('fetch', e => {
+  if (e.request.url.includes('bible-api.com') || 
+      e.request.url.includes('firebase') ||
+      e.request.url.includes('firestore')) {
+    return;
+  }
+  e.respondWith(
+    fetch(e.request).catch(() => caches.match(e.request))
   );
 });
