@@ -1,18 +1,17 @@
 {
   "name": "APP do Púlpito",
   "short_name": "Púlpito",
-  "start_url": "./",
-  "scope": "./",
+  "description": "Organize, prepare e ministre suas pregações",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0b0b0c",
+  "background_color": "#090909",
   "theme_color": "#111111",
-  "description": "Organize, prepare e ministre suas mensagens.",
+  "scope": "./",
   "icons": [
     {
-      "src": "assets/icon.svg",
+      "src": "./assets/icon.svg",
       "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/svg+xml"
     }
   ]
 }
