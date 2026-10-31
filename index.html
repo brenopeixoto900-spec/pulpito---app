@@ -2,19 +2,22 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#111111">
 <meta name="description" content="APP do Púlpito - Organize, prepare e ministre.">
 <title>APP do Púlpito</title>
+
 <link rel="manifest" href="./manifest.json">
-<link rel="icon" href="./assets/icon.svg">
+<link rel="icon" type="image/png" href="./icon-512.png">
+<link rel="apple-touch-icon" href="./icon-512.png">
+
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700&family=Georgia&display=swap" rel="stylesheet">
+
 <style>
 *{box-sizing:border-box}
-body{background:#090909;color:white;font-family:Inter,Arial,sans-serif; -webkit-text-size-adjust:100%}
+body{background:#090909;color:white;font-family:Inter,Arial,sans-serif}
 .hidden{display:none!important}
 .panel{background:#181818;border:1px solid #333;border-radius:16px;padding:16px;margin-bottom:12px}
 .field{width:100%;background:#090909;border:1px solid #444;border-radius:10px;padding:13px;color:white;margin:5px 0}
@@ -26,15 +29,11 @@ body{background:#090909;color:white;font-family:Inter,Arial,sans-serif; -webkit-
 .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:#888;padding:8px;min-width:65px}
 main{padding-bottom:100px}
 #reader{position:fixed;inset:0;background:#fdfbf7;color:#111;z-index:100;overflow:auto}
-#readerContent{font-family:Georgia,serif;line-height:1.8;padding:25px;max-width:850px;margin:auto; word-break:break-word; overflow-wrap:anywhere; max-width:100%}
-#readerContent section{margin-top:25px; border-bottom:2px dashed #eabf45; padding-bottom:20px}
+#readerContent{font-family:Georgia,serif;line-height:1.8;padding:25px;max-width:850px;margin:auto}
 .topic{background:#202020;border:1px solid #444;border-radius:14px;padding:14px;margin:12px 0}
-.slide{background:#080808;color:white;border:1px solid #555;border-radius:12px;padding:25px;text-align:center;min-height:150px}
-.divisoria{border:none; border-top:2px dashed #eabf45; margin:18px 0; opacity:0.7}
-@keyframes pisca{0%,100%{opacity:1}50%{opacity:0.3}}
-.alerta-vermelho{animation:pisca 0.7s infinite; background:#dc2626 !important; color:white !important}
 </style>
 </head>
+
 <body class="min-h-screen">
 
 <!-- LOGIN E CADASTRO -->
@@ -42,6 +41,7 @@ main{padding-bottom:100px}
 <div class="panel w-full max-w-md p-6">
 <h1 class="text-center text-3xl font-black text-yellow-400">APP DO PÚLPITO</h1>
 <p class="text-center text-xs muted mt-2">ORGANIZE • PREPARE • MINISTRE</p>
+
 <div id="authSignup" class="mt-6 space-y-3">
 <input id="signupName" class="field" placeholder="Seu nome">
 <input id="signupEmail" type="email" class="field" placeholder="Seu e-mail">
@@ -49,6 +49,7 @@ main{padding-bottom:100px}
 <button id="signupBtn" class="btn-gold w-full">CRIAR CONTA</button>
 <p class="text-center text-sm muted">Já possui uma conta? <button id="showLogin" class="text-yellow-400 font-bold">Entrar</button></p>
 </div>
+
 <div id="authLogin" class="hidden mt-6 space-y-3">
 <input id="loginEmail" type="email" class="field" placeholder="Seu e-mail">
 <input id="loginPass" type="password" class="field" placeholder="Sua senha">
@@ -56,6 +57,7 @@ main{padding-bottom:100px}
 <button id="resetBtn" class="text-yellow-400 text-sm w-full">Esqueci minha senha</button>
 <p class="text-center text-sm muted">Não possui conta? <button id="showSignup" class="text-yellow-400 font-bold">Cadastrar</button></p>
 </div>
+
 <p id="authMsg" class="text-red-400 text-sm mt-4"></p>
 <p id="configWarning" class="text-yellow-400 text-xs mt-3"></p>
 <button id="localModeBtn" class="btn w-full mt-5">ENTRAR EM MODO LOCAL (TESTE)</button>
@@ -65,153 +67,24 @@ main{padding-bottom:100px}
 <!-- APLICATIVO -->
 <div id="app" class="hidden">
 <header class="sticky top-0 z-40 bg-black border-b border-zinc-800 p-4 flex justify-between items-center">
-<div>
-<h1 class="font-black text-yellow-400">PÚLPITO</h1>
-<div class="flex gap-2 items-center">
-<p id="topName" class="text-xs muted"></p>
-<span id="relogioBRT" class="bg-zinc-900 border border-zinc-700 px-2 py-1 rounded-full text-[11px] font-bold">--:-- BRT</span>
-<button id="btnTimerTop" class="bg-zinc-900 border border-zinc-700 px-2 py-1 rounded-full text-[11px] font-bold">⏱️ 00:00</button>
-</div>
-</div>
+<div><h1 class="font-black text-yellow-400">PÚLPITO</h1><p id="topName" class="text-xs muted"></p></div>
 <div class="flex gap-2">
 <button id="syncNowBtn" class="btn text-xs">☁️</button>
 <button id="profileBtn" class="btn text-xs">👤</button>
 <button id="logoutBtn" class="btn text-xs">SAIR</button>
 </div>
 </header>
-<div class="bg-zinc-900 px-4 py-2 flex justify-between text-xs items-center">
-<span id="syncStatus">Sincronizado • Nuvem</span>
-<span id="timerBar" class="hidden font-black bg-yellow-400 text-black px-3 py-1 rounded-full">00:00 PREGANDO</span>
-<span id="welcome">Bem-vindo!</span>
-</div>
-
+<div class="bg-zinc-900 px-4 py-2 flex justify-between text-xs"><span id="syncStatus">Aguardando</span><span id="welcome">Bem-vindo!</span></div>
 <main class="max-w-4xl mx-auto p-4">
-
-<section id="view-home">
-<div class="rounded-2xl p-6 bg-gradient-to-br from-yellow-400 to-yellow-700 text-black">
-<h2 class="text-3xl font-black">APP DO PÚLPITO</h2>
-<p class="font-bold mt-2">Sua preparação em um só lugar.</p>
-<button id="newFromHome" class="bg-black text-yellow-400 rounded-xl p-3 mt-5 font-bold">+ NOVA PREGAÇÃO</button>
-</div>
-<div class="grid grid-cols-2 gap-3 mt-4">
-<div class="panel"><p class="text-xs muted">PREGAÇÕES</p><strong id="countMessages" class="text-3xl text-yellow-400">0</strong></div>
-<div class="panel"><p class="text-xs muted">EVENTOS</p><strong id="countEvents" class="text-3xl text-yellow-400">0</strong></div>
-</div>
-<h3 class="font-bold text-yellow-400 mt-5 mb-3">ÚLTIMAS PREGAÇÕES - TUDO JUNTO</h3>
-<div id="recentList"></div>
-</section>
-
-<section id="view-messages" class="hidden">
-<h2 class="text-xl font-black text-yellow-400 mb-4">MINHAS PREGAÇÕES - TUDO JUNTO</h2>
-<input id="searchMessages" class="field" placeholder="Pesquisar pregação...">
-<div class="flex gap-2 flex-wrap my-3">
-<select id="folderFilter" class="field flex-1"><option value="">Todas as pastas</option></select>
-<button id="newFolderBtn" class="btn">+ PASTA</button>
-</div>
-<button id="newMessageBtn" class="btn-gold w-full mb-4">+ CRIAR PREGAÇÃO</button>
-<div id="messageList"></div>
-</section>
-
-<section id="view-editor" class="hidden">
-<h2 id="editorHeading" class="text-xl font-black text-yellow-400 mb-4">NOVA PREGAÇÃO</h2>
-<div class="panel space-y-2">
-<label class="text-xs text-yellow-400 font-bold">TÍTULO</label>
-<input id="msgTitle" class="field" placeholder="Ex: ORAÇÃO E MISSÃO">
-<label class="text-xs text-yellow-400 font-bold">DESCRIÇÃO</label>
-<textarea id="msgDescription" class="field" rows="2" placeholder="Descrição"></textarea>
-<label class="text-xs text-yellow-400 font-bold flex justify-between">TEXTO BÍBLICO BASE <span class="text-[10px]">T = letra / F = fundo</span></label>
-<div class="flex gap-2">
-<textarea id="msgBase" class="field flex-1" rows="3" placeholder="Ex: Hebreus 7:25"></textarea>
-<div class="flex flex-col gap-1">
-<div class="flex items-center gap-1 bg-black border border-zinc-700 rounded-full px-2 py-1"><span class="text-[9px] font-bold">T</span><input id="baseColorText" type="color" value="#eabf45" class="w-6 h-6 rounded"></div>
-<div class="flex items-center gap-1 bg-black border border-zinc-700 rounded-full px-2 py-1"><span class="text-[9px] font-bold">F</span><input id="baseColorBg" type="color" value="#1a1a1a" class="w-6 h-6 rounded"></div>
-</div>
-</div>
-<label class="text-xs text-yellow-400 font-bold">PASTA</label>
-<select id="msgFolder" class="field"><option value="">Sem pasta</option></select>
-<label class="text-xs text-yellow-400 font-bold">TEMPO DE PREGAÇÃO</label>
-<select id="msgDuration" class="field"><option>20 minutos</option><option>30 minutos</option><option>40 minutos</option><option>50 minutos</option><option>60 minutos</option><option>90 minutos</option></select>
-<label class="flex items-center gap-2 text-sm"><input id="msgFavorite" type="checkbox">Adicionar aos favoritos</label>
-</div>
-<h3 class="font-bold text-yellow-400 mt-5">ESBOÇO - TÓPICOS COM RISQUINHO</h3>
-<div id="topics"></div>
-<div class="grid grid-cols-2 gap-2 mt-3">
-<button id="addTopicBtn" class="btn-gold">+ TÓPICO / DIVISÃO</button>
-<button data-addblock="versiculo" class="btn">+ VERSÍCULO</button>
-<button data-addblock="observacao" class="btn">+ OBSERVAÇÃO</button>
-<button data-addblock="ilustracao" class="btn">+ ILUSTRAÇÃO</button>
-</div>
-<div class="panel mt-5">
-<h3 class="font-bold text-yellow-400">IMPORTAR DOCUMENTO</h3>
-<p class="text-xs muted my-2">Word (.docx), PDF ou TXT</p>
-<input id="importFile" type="file" accept=".docx,.pdf,.txt" class="field">
-<button id="processImport" class="btn w-full mt-2">IMPORTAR ARQUIVO</button>
-<textarea id="importResult" class="field mt-3" rows="6" placeholder="Conteúdo importado..."></textarea>
-<button id="useImport" class="btn-gold w-full">USAR NA PREGAÇÃO</button>
-</div>
-<div class="flex gap-2 mt-5">
-<button id="backMessages" class="btn flex-1">VOLTAR</button>
-<button id="previewBtn" class="btn flex-1">📖 ABRIR MINHA PREGAÇÃO</button>
-</div>
-<button id="saveMessageBtn" class="btn-gold w-full mt-3">💾 SALVAR TUDO JUNTO</button>
-</section>
-
-<section id="view-agenda" class="hidden">
-<h2 class="text-xl font-black text-yellow-400 mb-4">AGENDA</h2>
-<div class="panel space-y-2">
-<input id="eventTitle" class="field" placeholder="Nome do evento">
-<input id="eventDate" type="date" class="field">
-<input id="eventTime" type="time" class="field">
-<textarea id="eventNotes" class="field" placeholder="Observações"></textarea>
-<button id="saveEventBtn" class="btn-gold w-full">SALVAR EVENTO</button>
-<button id="addEventBtn" class="btn w-full">NOVO EVENTO</button>
-</div>
-<div id="eventList"></div>
-</section>
-
-<section id="view-bible" class="hidden">
-<h2 class="text-xl font-black text-yellow-400 mb-4">BÍBLIA ACF</h2>
-<div class="panel">
-<input id="bibleRef" class="field" placeholder="Ex: João 3:16">
-<select id="bibleTranslation" class="field"><option value="almeida">Almeida ACF</option><option value="kjv">King James</option></select>
-<button id="readBibleBtn" class="btn-gold w-full mt-2">CONSULTAR</button>
-</div>
-<div id="bibleResult" class="panel leading-8"></div>
-</section>
-
-<section id="view-audio" class="hidden">
-<h2 class="text-xl font-black text-yellow-400 mb-4">GRAVAÇÃO</h2>
-<div class="panel text-center">
-<div id="recordTimer" class="text-4xl font-black text-yellow-400">00:00</div>
-<p id="recordStatus" class="muted text-sm my-4">Pronto para gravar</p>
-<button id="recordBtn" class="btn-gold w-full">● INICIAR GRAVAÇÃO</button>
-<button id="stopRecordBtn" class="btn w-full mt-3" disabled>■ PARAR</button>
-</div>
-<h3 class="font-bold text-yellow-400">MINHAS GRAVAÇÕES</h3>
-<div id="recordingsList"></div>
-</section>
-
-<section id="view-slides" class="hidden">
-<h2 class="text-xl font-black text-yellow-400 mb-4">APRESENTAÇÃO</h2>
-<div class="panel">
-<select id="slideMessage" class="field"><option value="">Escolha uma pregação</option></select>
-<button id="makeSlidesBtn" class="btn-gold w-full mt-3">GERAR APRESENTAÇÃO</button>
-</div>
-<div id="slidesEditor" class="space-y-3"></div>
-<button id="presentSlidesBtn" class="btn-gold w-full mt-4 hidden">APRESENTAR EM TELA CHEIA</button>
-</section>
-
-<section id="view-profile" class="hidden">
-<h2 class="text-xl font-black text-yellow-400 mb-4">MEU PERFIL</h2>
-<div class="panel space-y-3">
-<label>Nome</label><input id="profileName" class="field">
-<label>E-mail</label><input id="profileEmail" class="field" disabled>
-<button id="saveProfileBtn" class="btn-gold w-full">SALVAR PERFIL</button>
-<button id="passwordResetProfile" class="btn w-full">ALTERAR SENHA POR E-MAIL</button>
-</div>
-</section>
+<section id="view-home"><div class="rounded-2xl p-6 bg-gradient-to-br from-yellow-400 to-yellow-700 text-black"><h2 class="text-3xl font-black">APP DO PÚLPITO</h2><p class="font-bold mt-2">Sua preparação em um só lugar.</p><button id="newFromHome" class="bg-black text-yellow-400 rounded-xl p-3 mt-5 font-bold">+ NOVA PREGAÇÃO</button></div><div class="grid grid-cols-2 gap-3 mt-4"><div class="panel"><p class="text-xs muted">PREGAÇÕES</p><strong id="countMessages" class="text-3xl text-yellow-400">0</strong></div><div class="panel"><p class="text-xs muted">EVENTOS</p><strong id="countEvents" class="text-3xl text-yellow-400">0</strong></div></div><h3 class="font-bold text-yellow-400 mt-5 mb-3">ÚLTIMAS PREGAÇÕES</h3><div id="recentList"></div></section>
+<section id="view-messages" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">MINHAS PREGAÇÕES</h2><input id="searchMessages" class="field" placeholder="Pesquisar..."><button id="newMessageBtn" class="btn-gold w-full mb-4">+ CRIAR PREGAÇÃO</button><div id="messageList"></div></section>
+<section id="view-editor" class="hidden"><h2 id="editorHeading" class="text-xl font-black text-yellow-400 mb-4">NOVA PREGAÇÃO</h2><div class="panel space-y-2"><label class="text-xs text-yellow-400 font-bold">TÍTULO</label><input id="msgTitle" class="field" placeholder="Título"><label class="text-xs text-yellow-400 font-bold">DESCRIÇÃO</label><textarea id="msgDescription" class="field" rows="2"></textarea><label class="text-xs text-yellow-400 font-bold">TEXTO BÍBLICO BASE</label><textarea id="msgBase" class="field" rows="3"></textarea></div><h3 class="font-bold text-yellow-400 mt-5">ESBOÇO</h3><div id="topics"></div><div class="grid grid-cols-2 gap-2 mt-3"><button id="addTopicBtn" class="btn-gold">+ TÓPICO</button><button data-addblock="versiculo" class="btn">+ VERSÍCULO</button></div><div class="flex gap-2 mt-5"><button id="backMessages" class="btn flex-1">VOLTAR</button><button id="previewBtn" class="btn flex-1">PRÉ-VISUALIZAR</button></div><button id="saveMessageBtn" class="btn-gold w-full mt-3">💾 SALVAR</button></section>
+<section id="view-agenda" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">AGENDA</h2><div id="eventList"></div></section>
+<section id="view-bible" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">BÍBLIA</h2><div id="bibleResult" class="panel"></div></section>
+<section id="view-audio" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">ÁUDIO</h2><div id="recordingsList"></div></section>
+<section id="view-slides" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">SLIDES</h2></section>
+<section id="view-profile" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">PERFIL</h2></section>
 </main>
-
 <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-zinc-800 flex justify-around z-50">
 <button class="tab active" data-view="home">🏠<small>INÍCIO</small></button>
 <button class="tab" data-view="messages">📚<small>MINHAS</small></button>
@@ -221,78 +94,45 @@ main{padding-bottom:100px}
 <button class="tab" data-view="slides">📽️<small>SLIDES</small></button>
 <button class="tab" data-view="agenda">📅<small>AGENDA</small></button>
 </nav>
-
-<!-- LEITOR MELHORADO -->
-<div id="reader" class="hidden">
-<div class="sticky top-0 bg-white border-b p-3 flex justify-between items-center">
-<div class="flex gap-2 items-center">
-<strong class="text-sm">MINHA PREGAÇÃO</strong>
-<span id="readerTime" class="text-[11px] bg-zinc-100 px-2 py-1 rounded-full">--:-- BRT</span>
-<span id="readerTimer" class="text-[11px] bg-yellow-400 px-2 py-1 rounded-full font-bold">00:00</span>
-</div>
-<div class="flex gap-2 items-center">
-<select id="readerFont" class="border rounded-full px-2 py-1 text-xs"><option value="Georgia">Georgia</option><option value="Inter">Inter</option><option value="Merriweather">Merriweather</option><option value="Arial">Arial</option></select>
-<button id="readerMinus" class="btn text-xs">A-</button>
-<button id="readerPlus" class="btn text-xs">A+</button>
-<button id="readerClose" class="btn">✕</button>
-</div>
-</div>
-<div id="readerContent"></div>
-</div>
-
+<div id="reader" class="hidden"><div class="sticky top-0 bg-white border-b p-3 flex justify-between"><strong>LEITURA</strong><button id="readerClose" class="btn">✕</button></div><div id="readerContent"></div></div>
 <div id="toast" class="hidden fixed bottom-24 left-4 right-4 bg-yellow-400 text-black p-4 rounded-xl text-center font-bold z-[200]"></div>
-
 </div>
+
+<script>
+// FIX DEFINITIVO - Destrava modo local
+(function(){
+  function showAppLocal(name){
+    document.getElementById('auth')?.classList.add('hidden');
+    document.getElementById('app')?.classList.remove('hidden');
+    const top = document.getElementById('topName'); if(top) top.textContent = name || 'Modo Local';
+  }
+  window.addEventListener('DOMContentLoaded', ()=>{
+    const modo = localStorage.getItem('pulpito_modo');
+    const userRaw = localStorage.getItem('pulpito_user');
+    if(modo==='local' && userRaw){ try{ showAppLocal(JSON.parse(userRaw).name); }catch(e){ showAppLocal('Local'); } }
+    const btnLocal = document.getElementById('localModeBtn');
+    if(btnLocal){
+      btnLocal.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const name = document.getElementById('signupName')?.value.trim() || 'Usuário Local';
+        localStorage.setItem('pulpito_modo','local');
+        localStorage.setItem('pulpito_user', JSON.stringify({name, email:'local@pulpito.com'}));
+        showAppLocal(name);
+        setTimeout(()=>location.reload(), 300);
+      });
+    }
+  });
+})();
+</script>
 
 <script type="module" src="./js/app.js"></script>
 <script>
-// ===== MELHORIAS PEDIDAS - SEM QUEBRAR SEU APP.JS =====
-// HORA BRASÍLIA
-function atualizaBRT(){
-  let t=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'});
-  let el=document.getElementById('relogioBRT'); if(el) el.textContent=t+' BRT';
-  let el2=document.getElementById('readerTime'); if(el2) el2.textContent=t+' BRT';
-}
-setInterval(atualizaBRT,1000); atualizaBRT();
-
-// CRONÔMETRO
-let totalMin=60, seg=0, interv=null, rodando=false;
-let modalHTML=`<div id="modalTimer" class="hidden fixed inset-0 z-[90] bg-black/80 flex items-center justify-center p-6"><div class="bg-zinc-900 rounded-[24px] p-6 border border-zinc-800 w-full max-w-sm"><h3 class="font-black text-yellow-400">TEMPO DE PREGAÇÃO</h3><div class="flex gap-2 mt-4"><input id="inputMin" type="number" value="60" class="flex-1 bg-black border border-zinc-700 rounded-xl p-3 font-bold text-white"><span class="py-3 font-bold">min</span></div><div class="grid grid-cols-3 gap-2 mt-3"><button onclick="document.getElementById('inputMin').value=30" class="bg-black border border-zinc-700 py-2 rounded-xl text-xs">30</button><button onclick="document.getElementById('inputMin').value=60" class="bg-yellow-400 text-black font-bold py-2 rounded-xl text-xs">60</button><button onclick="document.getElementById('inputMin').value=90" class="bg-black border border-zinc-700 py-2 rounded-xl text-xs">90</button></div><div class="flex gap-2 mt-5"><button id="iniciarTimerBtn" class="flex-1 bg-yellow-400 text-black font-black py-3 rounded-xl">INICIAR</button><button id="fecharTimerBtn" class="flex-1 bg-zinc-800 py-3 rounded-xl">CANCELAR</button></div></div></div>`;
-document.body.insertAdjacentHTML('beforeend',modalHTML);
-document.getElementById('btnTimerTop')?.addEventListener('click',()=>{ if(!rodando) document.getElementById('modalTimer').classList.remove('hidden'); else pararTimer(); });
-document.getElementById('fecharTimerBtn')?.addEventListener('click',()=>document.getElementById('modalTimer').classList.add('hidden'));
-document.getElementById('iniciarTimerBtn')?.addEventListener('click',()=>{
-  totalMin=parseInt(document.getElementById('inputMin').value)||60; seg=0; rodando=true;
-  document.getElementById('modalTimer').classList.add('hidden');
-  let bar=document.getElementById('timerBar'); bar.classList.remove('hidden');
-  if(interv) clearInterval(interv);
-  interv=setInterval(()=>{
-    seg++; let tot=totalMin*60; let rest=tot-seg;
-    let m=String(Math.floor(seg/60)).padStart(2,'0'); let s=String(seg%60).padStart(2,'0'); let mR=Math.floor(rest/60);
-    document.getElementById('btnTimerTop').textContent='⏱️ '+m+':'+s+' / '+totalMin;
-    document.getElementById('readerTimer').textContent=m+':'+s;
-    bar.textContent=m+':'+s+' / '+totalMin+'min';
-    if(rest<=300 && rest>0){bar.className='alerta-vermelho font-black px-3 py-1 rounded-full text-xs'; bar.textContent='⚠️ FALTAM '+mR+' MIN!';}
-    if(rest<=0){bar.className='alerta-vermelho font-black px-3 py-1 rounded-full text-xs'; bar.textContent='⏰ TEMPO ESGOTADO!';}
-  },1000);
-});
-function pararTimer(){clearInterval(interv); rodando=false; seg=0; document.getElementById('btnTimerTop').textContent='⏱️ 00:00'; document.getElementById('timerBar').classList.add('hidden');}
-
-// ZOOM FLUIDO NO LEITOR
-let tamanho=18;
-document.getElementById('readerPlus')?.addEventListener('click',()=>{ tamanho=Math.min(36,tamanho+2); document.getElementById('readerContent').style.fontSize=tamanho+'px'; });
-document.getElementById('readerMinus')?.addEventListener('click',()=>{ tamanho=Math.max(12,tamanho-2); document.getElementById('readerContent').style.fontSize=tamanho+'px'; });
-document.getElementById('readerFont')?.addEventListener('change',(e)=>{ document.getElementById('readerContent').style.fontFamily=e.target.value; });
-
-// COR DO TEXTO BASE - T e F
-document.getElementById('baseColorText')?.addEventListener('input',(e)=>{ document.getElementById('msgBase').style.color=e.target.value; });
-document.getElementById('baseColorBg')?.addEventListener('input',(e)=>{ document.getElementById('msgBase').style.background=e.target.value; });
-
 if ("serviceWorker" in navigator) {
  window.addEventListener("load", () => {
-  navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  navigator.serviceWorker.register("./sw.js").catch(e=>console.log('SW:',e));
  });
 }
 </script>
+
 </body>
 </html>
