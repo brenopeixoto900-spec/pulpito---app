@@ -2,138 +2,128 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Pulpito App - Final</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Pulpito App - Zoom Fluido</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#facc15">
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-body{font-family:'Inter',sans-serif}
-.biblia{font-family:'Merriweather',serif}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%;}
+body{font-family:Inter,sans-serif; touch-action:manipulation;}
+.modo-papel{font-family:Merriweather,serif; background:#fdfbf7; color:#111; line-height:1.8; word-break:break-word; overflow-wrap:anywhere;}
+[contenteditable]{outline:none; word-break:break-word; overflow-wrap:anywhere; white-space:pre-wrap; line-height:1.7; max-width:100%;}
 .tab-active{color:#facc15 !important; border-top:2px solid #facc15 !important}
-[contenteditable]{outline:none; word-break:break-word; white-space:pre-wrap; line-height:1.7}
-.modo-papel{background:#fdfbf7; color:#111}
 body.white-mode{background:#ffffff !important; color:#111 !important}
 body.white-mode header, body.white-mode nav{background:#ffffff !important; border-color:#e5e5e5 !important}
 body.white-mode .card-dark{background:#ffffff !important; border-color:#e5e5e5 !important; color:#111 !important}
-body.white-mode .bg-black{background:#f2f2f2 !important; color:#111 !important}
-@keyframes pisca{0%,100%{opacity:1} 50%{opacity:0.3}}
+body.white-mode .bg-black{background:#f5f5f5 !important; color:#111 !important; border-color:#ddd !important}
+.divisoria{border:none; border-top:2px dashed #facc15; margin:20px 0; opacity:0.6}
+@keyframes pisca{0%,100%{opacity:1}50%{opacity:0.3}}
 .alerta-vermelho{animation:pisca 0.7s infinite; background:#dc2626 !important; color:white !important}
 </style>
 </head>
 <body class="bg-[#0a0a0a] text-white min-h-screen pb-24">
 
-<!-- LOGIN -->
 <div id="telaLogin" class="fixed inset-0 z-[100] bg-black flex items-center justify-center p-4">
 <div class="w-full max-w-sm bg-zinc-900 rounded-[24px] p-6 border border-zinc-800 card-dark">
 <h1 class="font-black text-yellow-400 text-3xl tracking-widest text-center">PÚLPITO</h1>
-<p class="text-center text-xs text-zinc-500 mt-2 font-bold">SEU APP DE PREGAÇÃO COMPLETO</p>
-
+<p class="text-center text-xs text-zinc-500 mt-2 font-bold">LOGIN COM NUVEM</p>
 <div id="boxCadastro">
 <div class="space-y-3 mt-6">
-<input id="nomeUser" placeholder="Seu nome completo" class="w-full bg-black border border-zinc-700 rounded-xl p-4 text-sm">
-<input id="emailUser" placeholder="Seu e-mail (ex: joao@gmail.com)" class="w-full bg-black border border-zinc-700 rounded-xl p-4 text-sm">
-<input id="senhaUser" type="password" placeholder="Crie uma senha (6 dígitos)" class="w-full bg-black border border-zinc-700 rounded-xl p-4 text-sm">
+<input id="nomeUser" placeholder="Seu nome" class="w-full bg-black border border-zinc-700 rounded-xl p-4 text-sm">
+<input id="emailUser" placeholder="Seu e-mail" class="w-full bg-black border border-zinc-700 rounded-xl p-4 text-sm">
+<input id="senhaUser" type="password" placeholder="Senha (6 dígitos)" class="w-full bg-black border border-zinc-700 rounded-xl p-4 text-sm">
 <p id="erroCad" class="hidden text-xs text-red-400 bg-red-900/20 p-3 rounded-xl"></p>
-<button onclick="fazerCadastro()" class="w-full bg-yellow-400 text-black font-black py-4 rounded-xl text-sm">CADASTRAR E ENTRAR</button>
-<p class="text-center text-xs text-zinc-500 mt-2">Já tem conta? <button onclick="mostrarLogin()" class="text-yellow-400 font-bold">FAZER LOGIN</button></p>
+<button onclick="fazerCadastro()" class="w-full bg-yellow-400 text-black font-black py-4 rounded-xl">CADASTRAR E ENTRAR</button>
+<p class="text-center text-xs text-zinc-500 mt-2">Já tem? <button onclick="mostrarLogin()" class="text-yellow-400 font-bold">FAZER LOGIN</button></p>
 </div>
 </div>
-
 <div id="boxLogin" class="hidden">
 <div class="space-y-3 mt-6">
 <input id="emailLogin" placeholder="Seu e-mail" class="w-full bg-black border border-zinc-700 rounded-xl p-4 text-sm">
 <input id="senhaLogin" type="password" placeholder="Sua senha" class="w-full bg-black border border-zinc-700 rounded-xl p-4 text-sm">
 <p id="erroLogin" class="hidden text-xs text-red-400 bg-red-900/20 p-3 rounded-xl"></p>
-<button onclick="fazerLogin()" class="w-full bg-yellow-400 text-black font-black py-4 rounded-xl text-sm">ENTRAR</button>
+<button onclick="fazerLogin()" class="w-full bg-yellow-400 text-black font-black py-4 rounded-xl">ENTRAR</button>
 <p class="text-center text-xs text-zinc-500 mt-2">Não tem? <button onclick="mostrarCadastro()" class="text-yellow-400 font-bold">CRIAR CONTA</button></p>
 </div>
 </div>
-
 <div id="boxOk" class="hidden text-center">
-<div class="mt-6">
-<div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto text-2xl">✓</div>
-<h3 class="font-black text-lg mt-4">CADASTRO FEITO!</h3>
-<p id="emailOk" class="font-bold text-yellow-400 mt-2 text-sm"></p>
-<p class="text-xs text-zinc-400 mt-3 bg-zinc-800 p-3 rounded-xl">Tudo que você salvar fica salvo no seu e-mail. Pode fechar o app, trocar de celular, suas pregações continuam.</p>
-<button onclick="entrarApp()" class="w-full bg-yellow-400 text-black font-black py-4 rounded-xl mt-4">ENTRAR NO APP AGORA</button>
+<div class="mt-6"><div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">✓</div><h3 class="font-black mt-4">CADASTRO FEITO!</h3><p id="emailOk" class="font-bold text-yellow-400 mt-2 text-sm"></p><button onclick="entrarApp()" class="w-full bg-yellow-400 text-black font-black py-4 rounded-xl mt-4">ENTRAR NO APP</button></div>
+</div>
 </div>
 </div>
 
-</div>
-</div>
-
-<!-- MODO PAPEL BRANCO IGUAL A FOTO -->
+<!-- MODO ABRIR MINHA PREGAÇÃO - SEM TITULOS -->
 <div id="modoPapel" class="hidden fixed inset-0 z-[80] modo-papel overflow-auto">
 <div class="sticky top-0 bg-[#fdfbf7] border-b border-zinc-200 p-3 flex justify-between items-center">
 <div class="flex gap-3 text-xs font-bold"><span id="horaPapel">--:--</span><span id="timerPapel">00:00</span></div>
 <div class="flex gap-2">
-<button onclick="ajustaPapel(-1)" class="w-9 h-9 bg-white border rounded-full">A-</button>
-<button onclick="ajustaPapel(1)" class="w-9 h-9 bg-white border rounded-full">A+</button>
+<button onclick="ajustaPapel(-1)" class="w-9 h-9 bg-white border rounded-full text-xs">A-</button>
+<button onclick="ajustaPapel(1)" class="w-9 h-9 bg-white border rounded-full text-xs">A+</button>
 <button onclick="fecharPapel()" class="w-9 h-9 bg-black text-white rounded-full">✕</button>
 </div>
 </div>
-<div class="max-w-3xl mx-auto p-6 md:p-10">
-<h1 id="papelTitulo" class="text-[32px] font-black uppercase leading-tight">TITULO</h1>
-<div id="papelCorpo" class="mt-8 space-y-8"></div>
+<div class="max-w-3xl mx-auto p-5 md:p-10" id="conteudoPapel">
+<h1 id="papelTitulo" class="text-[32px] font-black uppercase leading-tight tracking-wide"></h1>
+<div id="papelVerso" class="mt-4 p-4 bg-[#fef08a] rounded-xl border-l-4 border-yellow-400 text-sm font-bold"></div>
+<div id="papelCorpo" class="mt-6 space-y-5 text-[17px] leading-8"></div>
 </div>
 </div>
 
-<!-- MODAL TIMER -->
 <div id="modalTimer" class="hidden fixed inset-0 z-[90] bg-black/80 flex items-center justify-center p-6">
 <div class="bg-zinc-900 rounded-[24px] p-6 border border-zinc-800 w-full max-w-sm card-dark">
-<h3 class="font-black text-yellow-400">DEFINIR TEMPO DE PREGAÇÃO</h3>
+<h3 class="font-black text-yellow-400">TEMPO DE CULTO</h3>
 <div class="flex gap-2 mt-4"><input id="inputMin" type="number" value="60" class="flex-1 bg-black border border-zinc-700 rounded-xl p-3 font-bold"><span class="py-3 font-bold">min</span></div>
 <div class="grid grid-cols-3 gap-2 mt-3"><button onclick="setTempo(30)" class="bg-black border border-zinc-700 py-3 rounded-xl text-xs">30 min</button><button onclick="setTempo(60)" class="bg-yellow-400 text-black font-bold py-3 rounded-xl">60 min</button><button onclick="setTempo(90)" class="bg-black border border-zinc-700 py-3 rounded-xl text-xs">90 min</button></div>
-<div class="flex gap-2 mt-5"><button onclick="iniciarTimer()" class="flex-1 bg-yellow-400 text-black font-black py-3 rounded-xl">INICIAR PREGAÇÃO</button><button onclick="fecharModalTimer()" class="flex-1 bg-zinc-800 py-3 rounded-xl">CANCELAR</button></div>
+<div class="flex gap-2 mt-5"><button onclick="iniciarTimer()" class="flex-1 bg-yellow-400 text-black font-black py-3 rounded-xl">INICIAR</button><button onclick="fecharModalTimer()" class="flex-1 bg-zinc-800 py-3 rounded-xl">CANCELAR</button></div>
 </div>
 </div>
 
 <header class="sticky top-0 z-50 bg-black border-b border-zinc-800 p-3 flex justify-between items-center">
 <div class="flex items-center gap-2">
-<h1 class="font-black text-yellow-400">PÚLPITO</h1>
+<h1 class="font-black text-yellow-400 text-sm">PÚLPITO</h1>
 <div id="relogio" class="bg-zinc-900 border border-zinc-700 px-2 py-1 rounded-full text-[11px] font-bold card-dark">--:-- BRT</div>
-<button onclick="toggleWhite()" id="btnWhite" class="bg-zinc-900 border border-zinc-700 w-8 h-8 rounded-full card-dark">☀️</button>
+<button onclick="toggleWhite()" id="btnWhite" class="bg-zinc-900 border border-zinc-700 w-8 h-8 rounded-full card-dark text-xs">☀️</button>
 </div>
 <div class="flex items-center gap-2">
 <span id="nomeTopo" class="text-[10px] text-zinc-400"></span>
-<button id="btnTimer" class="bg-zinc-900 border border-zinc-700 px-3 py-1.5 rounded-full text-xs font-bold card-dark">⏱️ 00:00</button>
+<button id="btnTimer" class="bg-zinc-900 border border-zinc-700 px-3 py-1.5 rounded-full text-xs font-bold card-dark">⏱️</button>
 <button onclick="sair()" class="bg-zinc-900 border border-zinc-700 w-8 h-8 rounded-full text-xs card-dark">↪️</button>
 </div>
 </header>
-
-<div id="timerBar" class="hidden bg-yellow-400 text-black text-center py-3 font-black">00:00 PREGANDO</div>
+<div id="timerBar" class="hidden text-center py-3 font-black">00:00</div>
 
 <main class="max-w-4xl mx-auto">
 <div id="abaInicio" class="p-4 space-y-4">
 <div class="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-[24px] p-6 text-black">
-<h2 id="boas" class="font-black text-2xl">Bem-vindo!</h2>
-<p class="text-sm font-bold mt-1">Clique em qualquer bloquinho para pregar igual a foto</p>
+<h2 id="boas" class="font-black text-2xl">Púlpito</h2>
+<p class="text-sm font-bold mt-1">Zoom fluido com 2 dedos - texto se ajusta sozinho</p>
 <div class="flex gap-2 mt-4"><button onclick="mostrarAba('biblia')" class="bg-black text-yellow-400 font-black px-5 py-3 rounded-full text-xs">📖 BÍBLIA ACF</button><button onclick="mostrarAba('notas')" class="bg-white text-black font-black px-5 py-3 rounded-full text-xs">📝 NOVA PREGAÇÃO</button></div>
 </div>
-<h3 class="font-black text-yellow-400 text-sm">📚 MINHAS PREGAÇÕES SALVAS</h3>
+<h3 class="font-black text-yellow-400 text-sm">📚 MINHAS ANOTAÇÕES</h3>
 <div id="listaInicio" class="grid grid-cols-1 gap-3"></div>
 </div>
 
 <div id="abaBiblia" class="hidden p-4 space-y-4">
 <div class="bg-zinc-900 rounded-2xl p-4 border border-zinc-800 card-dark">
-<p class="text-[11px] font-bold text-yellow-400 mb-2">BÍBLIA ACF - 66 LIVROS + CAPÍTULO + VERSÍCULO</p>
+<p class="text-[11px] font-bold text-yellow-400 mb-2">BÍBLIA ACF - LIVRO / CAP / VERS</p>
 <div class="flex gap-2">
 <select id="livro" class="flex-1 bg-black border border-zinc-700 rounded-xl p-3 text-sm font-bold"></select>
 <select id="cap" class="w-20 bg-black border border-zinc-700 rounded-xl p-3 text-sm font-bold"></select>
 <select id="ver" class="w-20 bg-black border border-zinc-700 rounded-xl p-3 text-sm font-bold"><option>v</option></select>
 </div>
-<div class="flex gap-2 mt-3"><button id="btnLer" class="flex-1 bg-yellow-400 text-black font-black py-3 rounded-xl">LER CAPÍTULO ACF</button><button id="btnIr" class="w-24 bg-zinc-800 border border-zinc-700 py-3 rounded-xl text-xs font-bold">IR VERS.</button></div>
+<div class="flex gap-2 mt-3"><button id="btnLer" class="flex-1 bg-yellow-400 text-black font-black py-3 rounded-xl">LER CAPÍTULO</button><button id="btnIr" class="w-24 bg-zinc-800 border border-zinc-700 py-3 rounded-xl text-xs font-bold">IR</button></div>
 </div>
-<div id="areaBiblia" class="bg-zinc-900 rounded-2xl p-5 border border-zinc-800 min-h-[300px] card-dark"><p class="text-center text-zinc-500 text-sm mt-10">Escolha livro e capítulo e clique em LER</p></div>
+<div id="areaBiblia" class="bg-zinc-900 rounded-2xl p-5 border border-zinc-800 min-h-[300px] card-dark"><p class="text-center text-zinc-500 text-sm mt-10">Escolha livro e capítulo</p></div>
 </div>
 
 <div id="abaNotas" class="hidden p-4 space-y-4">
-<h2 class="font-black text-yellow-400">NOVA PREGAÇÃO - MODELO DA FOTO</h2>
-<p class="text-xs text-zinc-500">Cada campo tem cor e fonte individual. O texto se ajusta na tela quando aumenta.</p>
+<h2 class="font-black text-yellow-400">NOVA PREGAÇÃO</h2>
+<p class="text-xs text-zinc-500">Cada ponto tem cor própria que se adapta ao fundo. Use o risquinho pra dividir Início/Meio/Fim</p>
 <div id="campos" class="space-y-4"></div>
-<button onclick="salvar()" class="w-full bg-yellow-400 text-black font-black py-4 rounded-xl">💾 SALVAR TUDO JUNTO</button>
+<button onclick="addPonto()" class="w-full bg-zinc-900 border border-dashed border-zinc-700 py-3 rounded-xl text-xs font-bold card-dark">+ ADICIONAR PONTO / DIVISÃO (Início - Meio - Fim)</button>
+<button onclick="salvar()" class="w-full bg-yellow-400 text-black font-black py-4 rounded-xl mt-2">💾 SALVAR MINHA PREGAÇÃO</button>
 </div>
 
 <div id="abaMinhas" class="hidden p-4 space-y-3">
@@ -152,23 +142,35 @@ body.white-mode .bg-black{background:#f2f2f2 !important; color:#111 !important}
 
 <script>
 let isWhite=false;
-function toggleWhite(){isWhite=!isWhite; document.body.classList.toggle('white-mode',isWhite); localStorage.setItem('whiteMode',isWhite?'1':'0'); document.getElementById('btnWhite').textContent=isWhite?'🌙':'☀️';}
+function toggleWhite(){
+ isWhite=!isWhite; 
+ document.body.classList.toggle('white-mode',isWhite);
+ localStorage.setItem('whiteMode',isWhite?'1':'0');
+ document.getElementById('btnWhite').textContent=isWhite?'🌙':'☀️';
+ // Adapta cores pra leitura
+ document.querySelectorAll('[contenteditable]').forEach(el=>{
+   let cor=el.style.color;
+   if(isWhite && (cor==='rgb(255, 255, 255)'||cor==='#ffffff'||cor==='white'||cor==='')){
+     el.style.color='#111111';
+   } else if(!isWhite && (cor==='rgb(17, 17, 17)'||cor==='#111111')){
+     el.style.color='#ffffff';
+   }
+ });
+}
 if(localStorage.getItem('whiteMode')==='1'){isWhite=true; document.body.classList.add('white-mode');}
 
 function mostrarLogin(){document.getElementById('boxCadastro').classList.add('hidden'); document.getElementById('boxLogin').classList.remove('hidden'); document.getElementById('boxOk').classList.add('hidden');}
 function mostrarCadastro(){document.getElementById('boxLogin').classList.add('hidden'); document.getElementById('boxCadastro').classList.remove('hidden'); document.getElementById('boxOk').classList.add('hidden');}
-
 function fazerCadastro(){
 let n=document.getElementById('nomeUser').value.trim();
 let e=document.getElementById('emailUser').value.trim().toLowerCase();
 let s=document.getElementById('senhaUser').value.trim();
-let err=document.getElementById('erroCad');
-err.classList.add('hidden');
+let err=document.getElementById('erroCad'); err.classList.add('hidden');
 if(n.length<2){err.textContent='Digite seu nome'; err.classList.remove('hidden'); return;}
-if(!e.includes('@')||!e.includes('.')){err.textContent='Digite um e-mail válido'; err.classList.remove('hidden'); return;}
+if(!e.includes('@')){err.textContent='E-mail inválido'; err.classList.remove('hidden'); return;}
 if(s.length<6){err.textContent='Senha mínimo 6 dígitos'; err.classList.remove('hidden'); return;}
 let users=JSON.parse(localStorage.getItem('pulpito_users')||'{}');
-if(users[e]){err.textContent='E-mail já cadastrado, faça login'; err.classList.remove('hidden'); return;}
+if(users[e]){err.textContent='Já cadastrado, faça login'; err.classList.remove('hidden'); return;}
 users[e]={nome:n,email:e,senha:s}; localStorage.setItem('pulpito_users',JSON.stringify(users)); localStorage.setItem('logado',e);
 document.getElementById('emailOk').textContent=e;
 document.getElementById('boxCadastro').classList.add('hidden'); document.getElementById('boxOk').classList.remove('hidden');
@@ -178,7 +180,7 @@ let e=document.getElementById('emailLogin').value.trim().toLowerCase();
 let s=document.getElementById('senhaLogin').value.trim();
 let err=document.getElementById('erroLogin'); err.classList.add('hidden');
 let users=JSON.parse(localStorage.getItem('pulpito_users')||'{}');
-if(!users[e]){err.textContent='E-mail não encontrado, crie conta'; err.classList.remove('hidden'); return;}
+if(!users[e]){err.textContent='E-mail não encontrado'; err.classList.remove('hidden'); return;}
 if(users[e].senha!==s){err.textContent='Senha errada'; err.classList.remove('hidden'); return;}
 localStorage.setItem('logado',e); entrarApp();
 }
@@ -189,12 +191,11 @@ let u=users[e]; if(!u) return;
 document.getElementById('telaLogin').classList.add('hidden');
 document.getElementById('boas').textContent='Olá, '+u.nome.split(' ')[0]+'!';
 document.getElementById('nomeTopo').textContent=u.nome.split(' ')[0];
-document.getElementById('emailMostra').textContent='Salvo na nuvem: '+e+' ✓';
+document.getElementById('emailMostra').textContent='Nuvem: '+e+' ✓';
 carregar(); mostrarAba('inicio');
 }
-function sair(){if(confirm('Sair? Fica salvo no seu e-mail')){localStorage.removeItem('logado'); location.reload();}}
+function sair(){if(confirm('Sair? Fica salvo')){localStorage.removeItem('logado'); location.reload();}}
 if(localStorage.getItem('logado')){entrarApp();}
-
 function getPref(){return 'sermao_'+(localStorage.getItem('logado')||'anonimo')+'_';}
 function atualizarRelogio(){let t=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'}); let el=document.getElementById('relogio'); if(el) el.textContent=t+' BRT'; let el2=document.getElementById('horaPapel'); if(el2) el2.textContent=t.replace(':',' ');}
 setInterval(atualizarRelogio,1000); atualizarRelogio();
@@ -204,7 +205,7 @@ let totalMin=60, seg=0, interv=null, rodando=false;
 function setTempo(m){document.getElementById('inputMin').value=m;}
 function abrirModalTimer(){document.getElementById('modalTimer').classList.remove('hidden');}
 function fecharModalTimer(){document.getElementById('modalTimer').classList.add('hidden');}
-function iniciarTimer(){totalMin=parseInt(document.getElementById('inputMin').value)||60; seg=0; rodando=true; fecharModalTimer(); let bar=document.getElementById('timerBar'); bar.classList.remove('hidden'); bar.className='bg-yellow-400 text-black text-center py-3 font-black'; if(interv) clearInterval(interv); interv=setInterval(()=>{seg++; let tot=totalMin*60; let rest=tot-seg; let m=String(Math.floor(seg/60)).padStart(2,'0'); let s=String(seg%60).padStart(2,'0'); let mR=Math.floor(rest/60); document.getElementById('btnTimer').textContent='⏱️ '+m+':'+s+' / '+totalMin; document.getElementById('timerPapel').textContent=m+':'+s; bar.textContent=m+':'+s+' / '+totalMin+'min - Faltam '+mR+'min'; if(rest<=300&&rest>0){bar.className='alerta-vermelho text-center py-3 font-black'; bar.textContent='⚠️ FALTAM '+mR+' MIN! '+m+':'+s;} if(rest<=0){bar.className='alerta-vermelho text-center py-3 font-black text-xl'; bar.textContent='⏰ TEMPO ESGOTADO!';}},1000);}
+function iniciarTimer(){totalMin=parseInt(document.getElementById('inputMin').value)||60; seg=0; rodando=true; fecharModalTimer(); let bar=document.getElementById('timerBar'); bar.classList.remove('hidden'); bar.className='bg-yellow-400 text-black text-center py-3 font-black'; if(interv) clearInterval(interv); interv=setInterval(()=>{seg++; let tot=totalMin*60; let rest=tot-seg; let m=String(Math.floor(seg/60)).padStart(2,'0'); let s=String(seg%60).padStart(2,'0'); let mR=Math.floor(rest/60); document.getElementById('btnTimer').textContent='⏱️ '+m+':'+s+' / '+totalMin; document.getElementById('timerPapel').textContent=m+':'+s; bar.textContent=m+':'+s+' / '+totalMin+'min (Faltam '+mR+'min)'; if(rest<=300&&rest>0){bar.className='alerta-vermelho text-center py-3 font-black'; bar.textContent='⚠️ FALTAM '+mR+' MIN! '+m+':'+s;} if(rest<=0){bar.className='alerta-vermelho text-center py-3 font-black text-xl'; bar.textContent='⏰ TEMPO ESGOTADO!';}},1000);}
 document.getElementById('btnTimer').onclick=()=>{if(!rodando) abrirModalTimer(); else {clearInterval(interv); rodando=false; seg=0; document.getElementById('btnTimer').textContent='⏱️ 00:00'; document.getElementById('timerBar').classList.add('hidden');}};
 
 // BIBLIA
@@ -220,7 +221,7 @@ div.innerHTML='<p class="text-center text-yellow-400 animate-pulse">Carregando '
 try{
 let res=await fetch(`https://bible-api.com/${encodeURIComponent(livro)}+${cap}?translation=almeida`);
 let data=await res.json(); versiculos=data.verses||[]; selVer.innerHTML=''; versiculos.forEach(v=>{let o=document.createElement('option'); o.value=v.verse; o.textContent='v'+v.verse; selVer.appendChild(o);}); renderBiblia();
-}catch(e){div.innerHTML='<p class="text-zinc-500">Sem internet, tente novamente</p>';}
+}catch(e){div.innerHTML='<p class="text-zinc-500">Sem internet</p>';}
 };
 function renderBiblia(dest=null){
 let div=document.getElementById('areaBiblia');
@@ -230,32 +231,45 @@ div.innerHTML=html; if(dest) document.getElementById('v'+dest)?.scrollIntoView({
 }
 document.getElementById('btnIr').onclick=()=>{let v=parseInt(selVer.value); if(v) renderBiblia(v);};
 
-// CAMPOS
-const campos=[
-{id:'titulo',label:'TÍTULO (ex: ORAÇÃO E MISSÃO)'},
-{id:'textoBase',label:'VERSÍCULO BASE (ex: Hebreus 7:25)'},
-{id:'obs',label:'INTRODUÇÃO'},
-{id:'aplic',label:'APLICAÇÃO / DESENVOLVIMENTO'},
-{id:'ilust',label:'ILUSTRAÇÃO'},
-{id:'frase',label:'IDEIA CENTRAL'},
+// CAMPOS COM DIVISÓRIA
+let camposBase=[
+{id:'titulo',label:'TÍTULO DA PREGAÇÃO',ph:'Ex: ORAÇÃO E MISSÃO'},
+{id:'textoBase',label:'TEXTO BÍBLICO (ficará destacado)',ph:'Ex: Hebreus 7:25 - Jesus vive para interceder...'},
+{id:'ponto1',label:'1º PONTO - INÍCIO',ph:'Digite o início da mensagem...'},
 ];
+let pontosExtras=0;
 const divCampos=document.getElementById('campos');
-campos.forEach(c=>{
-divCampos.innerHTML+=`
-<div class="bg-zinc-900 rounded-xl p-3 border border-zinc-800 card-dark">
-<div class="flex justify-between items-center gap-2 flex-wrap">
-<label class="text-[11px] font-bold text-yellow-400">${c.label}</label>
-<div class="flex gap-1 items-center">
-<button onclick="ajusta('${c.id}',-1)" class="bg-black border border-zinc-700 w-8 h-8 rounded text-xs">A-</button>
-<button onclick="ajusta('${c.id}',1)" class="bg-black border border-zinc-700 w-8 h-8 rounded text-xs">A+</button>
-<select onchange="mudaFonte('${c.id}',this.value)" class="bg-black border border-zinc-700 rounded text-[10px] p-1"><option value="Inter">Inter</option><option value="Merriweather">Merri</option><option value="Roboto">Roboto</option><option value="Arial">Arial</option></select>
-<input type="color" value="#ffffff" oninput="mudaCor('${c.id}',this.value)" class="w-8 h-8 rounded">
-</div>
-</div>
-<div id="${c.id}" contenteditable="true" class="w-full mt-2 bg-black border border-zinc-700 rounded-lg p-3 text-sm min-h-[70px]" style="font-size:16px;color:#fff"></div>
-</div>`;
-});
-function ajusta(id,d){let el=document.getElementById(id); let s=parseInt(el.style.fontSize)||16; s=Math.min(32,Math.max(12,s+d*2)); el.style.fontSize=s+'px';}
+function renderCampos(){
+ divCampos.innerHTML='';
+ camposBase.forEach((c,idx)=>{
+  let isTitulo = c.id==='titulo';
+  divCampos.innerHTML+=`
+  <div class="bg-zinc-900 rounded-xl p-3 border border-zinc-800 card-dark">
+  <div class="flex justify-between items-center gap-2 flex-wrap">
+  <label class="text-[11px] font-bold text-yellow-400">${c.label}</label>
+  <div class="flex gap-1 items-center">
+  <button onclick="ajusta('${c.id}',-1)" class="bg-black border border-zinc-700 w-8 h-8 rounded text-xs">A-</button>
+  <button onclick="ajusta('${c.id}',1)" class="bg-black border border-zinc-700 w-8 h-8 rounded text-xs">A+</button>
+  <select onchange="mudaFonte('${c.id}',this.value)" class="bg-black border border-zinc-700 rounded text-[10px] p-1"><option value="Inter">Inter</option><option value="Merriweather">Merri</option><option value="Roboto">Roboto</option><option value="Arial">Arial</option></select>
+  <input type="color" value="${c.id==='textoBase'?'#facc15':'#ffffff'}" oninput="mudaCor('${c.id}',this.value)" class="w-8 h-8 rounded">
+  ${idx>2?`<button onclick="removerPonto('${c.id}')" class="bg-red-900/40 w-8 h-8 rounded text-xs">✕</button>`:''}
+  </div>
+  </div>
+  <div id="${c.id}" contenteditable="true" data-ph="${c.ph}" class="w-full mt-2 bg-black border border-zinc-700 rounded-lg p-3 text-sm min-h-[80px] max-w-full" style="font-size:16px;color:${c.id==='textoBase'?'#facc15':'#ffffff'};font-family:Inter"></div>
+  ${idx < camposBase.length-1 ? '<hr class="divisoria">' : ''}
+  </div>`;
+ });
+}
+renderCampos();
+function addPonto(){
+ pontosExtras++;
+ let nomes=['2º PONTO - MEIO','3º PONTO - FIM','4º PONTO - CONCLUSÃO','5º PONTO'];
+ let label = nomes[pontosExtras-1] || (pontosExtras+1)+'º PONTO';
+ camposBase.push({id:'pontoExtra'+pontosExtras,label:label,ph:'Digite aqui '+label.toLowerCase()+'...'});
+ renderCampos();
+}
+function removerPonto(id){camposBase=camposBase.filter(c=>c.id!==id); renderCampos();}
+function ajusta(id,d){let el=document.getElementById(id); let s=parseInt(el.style.fontSize)||16; s=Math.min(40,Math.max(12,s+d*2)); el.style.fontSize=s+'px';}
 function mudaCor(id,c){document.getElementById(id).style.color=c;}
 function mudaFonte(id,f){document.getElementById(id).style.fontFamily=f;}
 
@@ -273,34 +287,62 @@ if(nome==='minhas'){document.getElementById('abaMinhas').classList.remove('hidde
 
 let editId=null;
 function salvar(){
-let dados={}; campos.forEach(c=>{let el=document.getElementById(c.id); dados[c.id]={html:el.innerHTML,text:el.innerText,style:el.getAttribute('style')||'font-size:16px;color:#fff'};});
-if(!dados.titulo.text.trim()){alert('Digite o TÍTULO!'); return;}
+let dados={}; camposBase.forEach(c=>{let el=document.getElementById(c.id); if(el) dados[c.id]={html:el.innerHTML,text:el.innerText,style:el.getAttribute('style')||'font-size:16px;color:#fff'};});
+if(!dados.titulo?.text?.trim()){alert('Digite o TÍTULO!'); return;}
 let id=editId||getPref()+Date.now();
-localStorage.setItem(id,JSON.stringify({id,...dados,data:new Date().toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'})}));
-alert('✅ Salvo com sucesso!'); campos.forEach(c=>document.getElementById(c.id).innerHTML=''); editId=null; mostrarAba('inicio');
+localStorage.setItem(id,JSON.stringify({id,...dados,data:new Date().toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'}),camposLista:camposBase.map(c=>c.id)}));
+alert('✅ Salvo!'); camposBase=[
+{id:'titulo',label:'TÍTULO DA PREGAÇÃO',ph:'Ex: ORAÇÃO E MISSÃO'},
+{id:'textoBase',label:'TEXTO BÍBLICO (ficará destacado)',ph:'Ex: Hebreus 7:25'},
+{id:'ponto1',label:'1º PONTO - INÍCIO',ph:'Digite o início...'},
+]; pontosExtras=0; renderCampos(); editId=null; mostrarAba('inicio');
 }
 
 function renderCard(k){
 let s=JSON.parse(localStorage.getItem(k)); if(!s) return '';
 return `<div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 card-dark">
-<div class="flex justify-between"><p class="font-black text-sm uppercase truncate">${s.titulo?.text||'SEM TITULO'}</p><span class="text-[10px] text-zinc-500">${s.data}</span></div>
-<p class="text-[11px] text-yellow-400 font-bold mt-1">${s.textoBase?.text||''}</p>
-<p class="text-xs text-zinc-400 mt-2 line-clamp-2">${(s.obs?.text||'').substring(0,120)}...</p>
-<div class="flex gap-2 mt-3"><button onclick="abrirPapel('${k}')" class="flex-1 bg-white text-black font-black py-3 rounded-xl text-xs">📄 VER IGUAL FOTO</button><button onclick="editar('${k}')" class="bg-zinc-800 px-4 py-3 rounded-xl text-xs">✏️</button><button onclick="apagar('${k}')" class="bg-red-900/30 text-red-400 px-4 py-3 rounded-xl text-xs">🗑️</button></div>
+<div class="flex justify-between"><p class="font-black text-sm uppercase truncate max-w-[70%]">${s.titulo?.text||'SEM TITULO'}</p><span class="text-[10px] text-zinc-500">${s.data.split(',')[0]}</span></div>
+<p class="text-[11px] text-yellow-400 font-bold mt-1 truncate">${s.textoBase?.text?.substring(0,60)||''}</p>
+<p class="text-xs text-zinc-400 mt-2 line-clamp-2">${(s.ponto1?.text||'').substring(0,100)}...</p>
+<div class="flex gap-2 mt-3">
+<button onclick="abrirPapel('${k}')" class="flex-1 bg-white text-black font-black py-3 rounded-xl text-xs">📖 ABRIR MINHA PREGAÇÃO</button>
+<button onclick="editar('${k}')" class="bg-zinc-800 px-4 py-3 rounded-xl text-xs">✏️</button>
+<button onclick="apagar('${k}')" class="bg-red-900/30 text-red-400 px-4 py-3 rounded-xl text-xs">🗑️</button>
+</div>
 </div>`;
 }
 function abrirPapel(k){
 let s=JSON.parse(localStorage.getItem(k));
 document.getElementById('papelTitulo').textContent=s.titulo?.text?.toUpperCase()||'';
 document.getElementById('papelTitulo').style.cssText=s.titulo?.style||'';
+let verso=document.getElementById('papelVerso');
+if(s.textoBase?.text?.trim()){
+ verso.innerHTML=s.textoBase.html; verso.style.cssText=s.textoBase.style+';background:#fef08a;border-radius:12px;padding:16px;border-left:4px solid #facc15'; verso.classList.remove('hidden');
+} else {verso.classList.add('hidden');}
 let corpo=document.getElementById('papelCorpo'); corpo.innerHTML='';
-let ordem=[{l:'INTRODUÇÃO',k:'obs'},{l:'TEXTO BASE',k:'textoBase',destaque:true},{l:'APLICAÇÃO',k:'aplic'},{l:'ILUSTRAÇÃO',k:'ilust'},{l:'IDEIA CENTRAL',k:'frase',amarelo:true}];
-ordem.forEach(item=>{let d=s[item.k]; if(!d||!d.text.trim()) return; let estilo=d.style||'font-size:16px;color:#111'; let bg=item.amarelo?'background:#fef3c7;padding:16px;border-radius:12px':item.destaque?'background:#f3f3f0;border-left:4px solid #facc15;padding:12px 16px;border-radius:8px':''; corpo.innerHTML+=`<div style="${bg}"><p class="text-[11px] font-black tracking-widest text-zinc-500 mb-2">${item.l}</p><div style="${estilo}" class="leading-7">${d.html}</div></div>`;});
+let lista = s.camposLista || Object.keys(s).filter(x=>!['id','data','camposLista'].includes(x));
+lista.forEach(id=>{
+ if(id==='titulo'||id==='textoBase') return;
+ let d=s[id]; if(!d||!d.text.trim()) return;
+ corpo.innerHTML+=`<div style="${d.style}" class="leading-8">${d.html}</div><hr class="divisoria">`;
+});
 document.getElementById('modoPapel').classList.remove('hidden');
 }
 function fecharPapel(){document.getElementById('modoPapel').classList.add('hidden');}
-let tamPapel=16; function ajustaPapel(d){tamPapel=Math.min(28,Math.max(12,tamPapel+d*2)); document.getElementById('papelCorpo').parentElement.style.fontSize=tamPapel+'px';}
-function editar(k){let s=JSON.parse(localStorage.getItem(k)); campos.forEach(c=>{let el=document.getElementById(c.id); el.innerHTML=s[c.id]?.html||''; if(s[c.id]?.style) el.setAttribute('style',s[c.id].style);}); editId=k; mostrarAba('notas');}
+let tamPapel=17; function ajustaPapel(d){tamPapel=Math.min(32,Math.max(12,tamPapel+d*2)); document.getElementById('conteudoPapel').style.fontSize=tamPapel+'px';}
+function editar(k){
+let s=JSON.parse(localStorage.getItem(k));
+let ids=s.camposLista||Object.keys(s).filter(x=>!['id','data'].includes(x));
+camposBase=ids.filter(id=>id!=='id'&&id!=='data'&&id!=='camposLista').map(id=>({id,label:id.toUpperCase().replace('PONTO',' PONTO - ').replace('EXTRA',''),ph:''}));
+renderCampos();
+setTimeout(()=>{
+ camposBase.forEach(c=>{
+  let el=document.getElementById(c.id);
+  if(el && s[c.id]){el.innerHTML=s[c.id].html; el.setAttribute('style',s[c.id].style);}
+ });
+},100);
+editId=k; mostrarAba('notas');
+}
 function apagar(k){if(confirm('Apagar essa pregação?')){localStorage.removeItem(k); carregar();}}
 function carregar(){
 let lista1=document.getElementById('listaInicio'); let lista2=document.getElementById('listaMinhas');
