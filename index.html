@@ -3,83 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Púlpito APP</title>
-<meta name="theme-color" content="#000000">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
-body{background:#000;color:#fff;min-height:100vh;padding:16px;display:flex;flex-direction:column}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.clock{font-size:28px;font-weight:800}
-.clock span{font-weight:400;opacity:0.7;font-size:16px}
-.timer-box{background:#111;border:1px solid #222;border-radius:16px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.timer{font-size:42px;font-weight:900}
-.controls{display:flex;gap:8px}
-.btn{background:#fff;color:#000;border:none;border-radius:999px;padding:10px 18px;font-weight:700;font-size:14px}
-.btn.sec{background:#222;color:#fff}
-.topics{flex:1;background:#0a0a0a;border-radius:16px;padding:12px;border:1px solid #1a1a1a}
-.topic{display:flex;gap:12px;padding:14px 8px;border-bottom:1px solid #1a1a1a}
-.topic input{width:20px;height:20px;accent-color:#fff}
-.topic-text{flex:1;font-size:18px;line-height:1.4}
-.topic-text.done{opacity:0.4;text-decoration:line-through}
-.toolbar{position:sticky;bottom:0;background:#000;padding:12px 0 0;display:flex;gap:8px;overflow-x:auto}
-.tbtn{background:#1a1a1a;color:#fff;border:1px solid #2a2a2a;border-radius:10px;padding:10px 14px;white-space:nowrap;font-weight:600}
-.add{margin-top:12px;background:transparent;border:1px dashed #333;color:#888;border-radius:12px;padding:12px;width:100%}
-</style>
+<title>Púlpito App - ACF Completo</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#facc15">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>.fs{font-size:10px;padding:2px 6px;border-radius:999px;background:#2a2a2a;border:1px solid #ffffff30;cursor:pointer}</style>
 </head>
-<body>
-<div class="header">
-<div class="clock"><span id="date">--</span><br><div id="hour">19:59:00</div></div>
-<div style="text-align:right;opacity:0.6;font-size:12px">PÚLPITO<br>APP</div>
-</div>
-<div class="timer-box">
-<div class="timer" id="timer">00:00</div>
-<div class="controls">
-<button class="btn sec" id="reset">RESET</button>
-<button class="btn" id="start">START</button>
-</div>
-</div>
-<div class="topics" id="topics">
-<div class="topic"><input type="checkbox"><div class="topic-text" contenteditable="true">1. Introdução - Texto base</div></div>
-<div class="topic"><input type="checkbox"><div class="topic-text" contenteditable="true">2. Primeiro ponto</div></div>
-<div class="topic"><input type="checkbox"><div class="topic-text" contenteditable="true">3. Segundo ponto - Ilustração</div></div>
-<div class="topic"><input type="checkbox"><div class="topic-text" contenteditable="true">4. Conclusão e apelo</div></div>
-</div>
-<button class="add" onclick="addTopic()">+ Adicionar tópico</button>
-<div class="toolbar">
-<button class="tbtn" onclick="changeSize(2)">A+ Maior</button>
-<button class="tbtn" onclick="changeSize(-2)">A- Menor</button>
-<button class="tbtn" onclick="toggleBold()">B Negrito</button>
-<button class="tbtn" onclick="changeColor()">Cor</button>
-<button class="tbtn" onclick="clearAll()">Limpar</button>
-</div>
+<body class="bg-[#0a0a0a] text-white">
+<header class="sticky top-0 bg-black/90 border-b border-white/10 p-3 flex justify-between"><b>Púlpito ACF</b><div class="flex gap-2"><button id="btnSalvar" class="bg-white/10 px-3 py-1 rounded-full text-xs">Salvar</button><button id="btnPregar" class="bg-yellow-400 text-black px-4 py-1 rounded-full font-bold text-xs">● Pregar</button></div></header>
+<main class="max-w-3xl mx-auto p-4">
+<div class="bg-[#1a1a1a] rounded-2xl p-4 border border-white/10">
+<div class="flex gap-2"><input id="msgTitle" class="bg-transparent text-xl font-black outline-none w-full" value="A Fé em Meio à Tempestade"><button onclick="changeFont('msgTitle',-1)" class="fs">A-</button><button onclick="changeFont('msgTitle',1)" class="fs">A+</button></div>
+<div class="flex gap-2 mt-2"><input id="msgTag" class="bg-transparent text-sm text-yellow-400 outline-none w-full" value="Confiança em Deus nas crises"><button onclick="changeFont('msgTag',-1)" class="fs">A-</button><button onclick="changeFont('msgTag',1)" class="fs">A+</button></div>
+<div class="flex gap-2 mt-3 flex-wrap"><button data-t="20" class="tempoBtn bg-white/10 px-3 py-1 rounded-full text-xs">20 min</button><button data-t="30" class="tempoBtn bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold">30 min</button><button data-t="40" class="tempoBtn bg-white/10 px-3 py-1 rounded-full text-xs">40 min</button><button data-t="60" class="tempoBtn bg-white/10 px-3 py-1 rounded-full text-xs">60 min</button></div></div>
+<div class="flex justify-between mt-6"><h3 class="font-bold text-yellow-400">Tópicos - Fonte Individual</h3><button id="addTopico" class="bg-white text-black px-3 py-1 rounded-full text-xs">+ Novo</button></div>
+<div id="topicosList" class="space-y-3 mt-3"></div>
+<div class="bg-[#1a1a1a] rounded-2xl p-4 mt-6 border border-white/10">
+<h3 class="font-bold">Bíblia ACF + Slides + QR + Holyrics</h3>
+<div class="flex gap-2 mt-3"><input id="bibliaBusca" class="flex-1 bg-[#2a2a2a] rounded-full px-4 py-2 text-xs outline-none" placeholder="Ex: Mateus 14:22"><button id="bibliaIr" class="bg-yellow-400 text-black px-4 py-2 rounded-full text-xs font-bold">Buscar ACF</button></div>
+<div id="bibliaTexto" class="mt-3 text-sm opacity-80">Busque João 3:16 etc</div>
+<div class="flex gap-2 mt-4 flex-wrap"><button id="btnGerarSlides" class="bg-yellow-400 text-black px-4 py-2 rounded-full text-xs font-bold">Gerar slides</button><button id="btnApresentar" class="bg-white text-black px-4 py-2 rounded-full text-xs font-bold">▶ Apresentar</button><button id="btnProjQR" class="bg-white/10 px-4 py-2 rounded-full text-xs">QR Projeção</button><button id="btnHolyrics" class="bg-white/10 px-4 py-2 rounded-full text-xs">Holyrics Sync</button></div>
+<div id="slidesPreview" class="grid grid-cols-2 gap-2 mt-3"></div></div></main>
+<div id="pregaMode" class="fixed inset-0 z-[100] bg-black hidden flex-col"><div class="flex justify-between p-3 bg-[#111] border-b border-white/10"><button id="closePrega" class="w-8 h-8 bg-white/10 rounded-full">←</button><div class="flex gap-2 items-center"><div id="timerBox" class="bg-white/10 px-3 py-1 rounded-full text-xs font-mono"><span id="timerEl">00:00</span></div><button onclick="changeFont('pregaTexto',1)" class="fs">A+</button><button onclick="changeFont('pregaTexto',-1)" class="fs">A-</button></div></div><div class="px-4 py-2 flex justify-between text-[10px] opacity-60"><span id="topicoCount"></span><span id="proximoTopico"></span></div><div class="flex-1 overflow-auto p-5"><h2 id="pregaTema" class="text-yellow-400 font-black text-sm"></h2><div class="flex gap-2 mt-2"><h1 id="pregaTitulo" class="text-xl font-black flex-1"></h1><button onclick="changeFont('pregaTitulo',-1)" class="fs">A-</button><button onclick="changeFont('pregaTitulo',1)" class="fs">A+</button></div><div id="pregaTexto" class="mt-4 text-[15px]"></div><div id="pregaVersiculoBtn" class="mt-6 inline-block bg-yellow-400/20 text-yellow-400 border px-3 py-1 rounded-full text-xs font-bold"></div></div><div class="p-3 flex gap-2 bg-[#111]"><button id="prevTop" class="flex-1 py-3 bg-white/10 rounded-full">Anterior</button><button id="nextTop" class="flex-1 py-3 bg-white text-black rounded-full font-bold">Próximo</button></div></div>
+<div id="qrModal" class="fixed inset-0 bg-black/90 hidden grid place-items-center p-6"><div class="bg-white text-black rounded-2xl p-6 w-full max-w-sm text-center"><h3 class="font-black">Projetar</h3><div id="qrcode" class="flex justify-center mt-4"></div><p id="qrLink" class="text-[10px] mt-2 break-all"></p><button id="closeQr" class="mt-4 w-full bg-black text-white py-2 rounded-full">Fechar</button></div></div>
+<div id="slideMode" class="fixed inset-0 bg-black hidden"><div id="slideShow" class="h-full w-full grid place-items-center p-8 text-center"></div><button id="closeSlide" class="absolute top-4 left-4 bg-white/20 px-3 py-1 rounded-full">✕</button><button id="nextSlide" class="absolute bottom-4 right-4 bg-yellow-400 text-black px-6 py-3 rounded-full font-bold">→</button></div>
 <script>
-function updateClock(){
-const now=new Date();
-document.getElementById('hour').innerText=now.toLocaleTimeString('pt-BR');
-document.getElementById('date').innerText=now.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'});
-}
-setInterval(updateClock,1000);updateClock();
-let sec=0,intv=null,running=false;
-const timerEl=document.getElementById('timer');
-const startBtn=document.getElementById('start');
-function fmt(s){const m=String(Math.floor(s/60)).padStart(2,'0');const ss=String(s%60).padStart(2,'0');return m+':'+ss}
-startBtn.onclick=()=>{
-if(!running){intv=setInterval(()=>{sec++;timerEl.innerText=fmt(sec)},1000);startBtn.innerText='PAUSE';running=true}
-else{clearInterval(intv);startBtn.innerText='START';running=false}
-}
-document.getElementById('reset').onclick=()=>{clearInterval(intv);sec=0;timerEl.innerText='00:00';startBtn.innerText='START';running=false}
-function addTopic(){
-const div=document.createElement('div');div.className='topic';
-div.innerHTML='<input type="checkbox"><div class="topic-text" contenteditable="true">Novo tópico - clique para editar</div>';
-document.getElementById('topics').appendChild(div);
-}
-let size=18;
-function changeSize(d){size+=d;document.querySelectorAll('.topic-text').forEach(e=>e.style.fontSize=size+'px')}
-function toggleBold(){document.querySelectorAll('.topic-text').forEach(e=>{e.style.fontWeight=e.style.fontWeight==='700'?'400':'700'})}
-let colors=['#fff','#FFD60A','#4ADE80','#60A5FA','#F472B6'];let ci=0;
-function changeColor(){ci=(ci+1)%colors.length;document.querySelectorAll('.topic-text').forEach(e=>e.style.color=colors[ci])}
-function clearAll(){document.querySelectorAll('.topic input').forEach(c=>c.checked=false);document.querySelectorAll('.topic-text').forEach(e=>e.classList.remove('done'))}
-document.addEventListener('change',e=>{if(e.target.type==='checkbox'){e.target.nextElementSibling.classList.toggle('done',e.target.checked)}})
+let tempoTotal=30;let topicos=[{title:"1. A TEMPESTADE CHEGA PARA TODOS",obs:"As tempestades não escolhem hora",apl:"Discípulos foram surpreendidos",ilus:"Barco no mar",frase:"Tempestades vêm para todos",vers:"Mateus 14:22-23",fs:{title:16,obs:12,apl:12,ilus:12,frase:12,vers:12}},{title:"2. O MEDO QUE SILENCIA A FÉ",obs:"O medo paralisa",apl:"Pedro olhou para o vento",ilus:"Pedro afundando",frase:"Olhe para Jesus",vers:"Mateus 14:30",fs:{title:16,obs:12,apl:12,ilus:12,frase:12,vers:12}}];
+let idxPrega=0,slides=[],slideIdx=0,timerSec=0,timerInt=null,fontMap={'msgTitle':20,'msgTag':14,'pregaTitulo':20,'pregaTexto':15};
+function changeFont(id,delta){if(id.includes('t_')){let p=id.split('_');let i=parseInt(p[1]);let f=p[2];topicos[i].fs[f]=Math.max(8,Math.min(40,topicos[i].fs[f]+delta));renderTopicos();return;}let el=document.getElementById(id);if(!el)return;let cur=fontMap[id]||parseInt(getComputedStyle(el).fontSize)||15;cur=Math.max(8,Math.min(50,cur+delta));fontMap[id]=cur;el.style.fontSize=cur+'px';}
+function renderTopicos(){const c=document.getElementById('topicosList');c.innerHTML='';topicos.forEach((t,i)=>{c.innerHTML+=`<div class="bg-[#1a1a1a] rounded-2xl p-4 border border-white/10"><div class="flex gap-2"><input style="font-size:${t.fs.title}px" value="${t.title}" onchange="topicos[${i}].title=this.value" class="bg-transparent font-bold w-full outline-none"><button onclick="changeFont('t_${i}_title',-1)" class="fs">A-</button><button onclick="changeFont('t_${i}_title',1)" class="fs">A+</button><button onclick="topicos.splice(${i},1);renderTopicos()" class="opacity-40 text-xs ml-1">🗑</button></div><div class="grid gap-2 mt-3"><div class="flex gap-2"><input style="font-size:${t.fs.obs}px" value="${t.obs}" onchange="topicos[${i}].obs=this.value" class="flex-1 bg-[#2a2a2a] rounded-xl px-3 py-2 text-xs outline-none"><button onclick="changeFont('t_${i}_obs',-1)" class="fs">A-</button><button onclick="changeFont('t_${i}_obs',1)" class="fs">A+</button></div><div class="flex gap-2"><input style="font-size:${t.fs.apl}px" value="${t.apl}" onchange="topicos[${i}].apl=this.value" class="flex-1 bg-[#2a2a2a] rounded-xl px-3 py-2 text-xs outline-none"><button onclick="changeFont('t_${i}_apl',-1)" class="fs">A-</button><button onclick="changeFont('t_${i}_apl',1)" class="fs">A+</button></div><div class="flex gap-2"><input style="font-size:${t.fs.ilus}px" value="${t.ilus}" onchange="topicos[${i}].ilus=this.value" class="flex-1 bg-[#2a2a2a] rounded-xl px-3 py-2 text-xs outline-none"><button onclick="changeFont('t_${i}_ilus',-1)" class="fs">A-</button><button onclick="changeFont('t_${i}_ilus',1)" class="fs">A+</button></div><div class="flex gap-2"><input style="font-size:${t.fs.frase}px" value="${t.frase}" onchange="topicos[${i}].frase=this.value" class="flex-1 bg-[#2a2a2a] rounded-xl px-3 py-2 text-xs outline-none"><button onclick="changeFont('t_${i}_frase',-1)" class="fs">A-</button><button onclick="changeFont('t_${i}_frase',1)" class="fs">A+</button></div><div class="flex gap-2"><input style="font-size:${t.fs.vers}px" value="${t.vers}" onchange="topicos[${i}].vers=this.value" class="flex-1 bg-yellow-400/10 border border-yellow-400/30 rounded-xl px-3 py-2 text-xs outline-none text-yellow-400"><button onclick="changeFont('t_${i}_vers',-1)" class="fs">A-</button><button onclick="changeFont('t_${i}_vers',1)" class="fs">A+</button></div></div></div>`;});}
+renderTopicos();document.getElementById('addTopico').onclick=()=>{topicos.push({title:"Novo tópico",obs:"",apl:"",ilus:"",frase:"",vers:"",fs:{title:16,obs:12,apl:12,ilus:12,frase:12,vers:12}});renderTopicos();};
+document.querySelectorAll('.tempoBtn').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tempoBtn').forEach(x=>x.className='tempoBtn bg-white/10 px-3 py-1 rounded-full text-xs');b.className='tempoBtn bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-bold';tempoTotal=parseInt(b.dataset.t);});
+function gerarSlides(){slides=[];topicos.forEach(t=>{slides.push({title:t.title,sub:t.frase,vers:t.vers,bg:`https://picsum.photos/seed/${encodeURIComponent(t.title)}/800/450`});});const c=document.getElementById('slidesPreview');c.innerHTML='';slides.forEach((s,i)=>{c.innerHTML+=`<div onclick="abrirSlide(${i})" class="rounded-xl overflow-hidden bg-[#222] border border-white/10 cursor-pointer"><img src="${s.bg}" class="h-20 w-full object-cover"><div class="p-2 text-[10px] font-bold">${s.title}</div></div>`;});}
+document.getElementById('btnGerarSlides').onclick=gerarSlides;gerarSlides();
+function abrirSlide(i){slideIdx=i;document.getElementById('slideMode').classList.remove('hidden');showSlide();}
+function showSlide(){const s=slides[slideIdx];document.getElementById('slideShow').innerHTML=`<div><img src="${s.bg}" class="mx-auto rounded-xl max-h-[60vh]"><h1 class="text-3xl font-black mt-6">${s.title}</h1><p class="mt-2 text-yellow-400">${s.sub}</p><p class="mt-2 opacity-60 text-sm">${s.vers}</p></div>`;}
+document.getElementById('btnApresentar').onclick=()=>{if(slides.length==0)gerarSlides();abrirSlide(0);};
+document.getElementById('closeSlide').onclick=()=>document.getElementById('slideMode').classList.add('hidden');
+document.getElementById('nextSlide').onclick=()=>{slideIdx=(slideIdx+1)%slides.length;showSlide();sendHolyrics(slides[slideIdx].title);};
+function openPrega(){idxPrega=0;timerSec=0;updateTimer();document.getElementById('pregaMode').classList.remove('hidden');showPrega();startTimer();}
+function showPrega(){const t=topicos[idxPrega];document.getElementById('topicoCount').innerText=`TÓPICO ${idxPrega+1} DE ${topicos.length}`;document.getElementById('proximoTopico').innerText=topicos[idxPrega+1]?`Próximo: ${topicos[idxPrega+1].title.substring(0,20)}`:'Fim';document.getElementById('pregaTema').innerText=document.getElementById('msgTag').value.toUpperCase();document.getElementById('pregaTitulo').innerText=t.title.toUpperCase();document.getElementById('pregaTexto').innerHTML=`<p><b>Obs:</b> ${t.obs}</p><p class="mt-3"><b>Aplicação:</b> ${t.apl}</p><p class="mt-3"><b>Ilustração:</b> ${t.ilus}</p><p class="mt-3 text-yellow-400 font-bold">${t.frase}</p>`;document.getElementById('pregaVersiculoBtn').innerText=t.vers;document.getElementById('pregaVersiculoBtn').onclick=()=>buscarBiblia(t.vers);sendHolyrics(t.title+"\n"+t.frase);}
+document.getElementById('btnPregar').onclick=openPrega;
+document.getElementById('closePrega').onclick=()=>{document.getElementById('pregaMode').classList.add('hidden');clearInterval(timerInt);};
+document.getElementById('nextTop').onclick=()=>{if(idxPrega<topicos.length-1){idxPrega++;showPrega();}};
+document.getElementById('prevTop').onclick=()=>{if(idxPrega>0){idxPrega--;showPrega();}};
+function updateTimer(){const m=String(Math.floor(timerSec/60)).padStart(2,'0');const s=String(timerSec%60).padStart(2,'0');document.getElementById('timerEl').innerText=`${m}:${s}`;const perc=(timerSec/60)/tempoTotal;const box=document.getElementById('timerBox');box.style.color='';box.style.background='';if(perc>=1){box.style.background='#ef4444';box.style.color='white';}else if(perc>=0.8){box.style.color='#ef4444';}else if(perc>=0.5){box.style.color='#facc15';}}
+function startTimer(){timerInt=setInterval(()=>{timerSec++;updateTimer();},1000);}
+async function buscarBiblia(q){if(!q)return;const txt=document.getElementById('bibliaTexto');txt.innerText='Buscando ACF...';try{const res=await fetch(`https://bible-api.com/${encodeURIComponent(q)}?translation=almeida`);const data=await res.json();if(data.text){txt.innerHTML=`<b>${data.reference} - ACF</b><br><br>${data.text}`;sendHolyrics(data.reference+"\n"+data.text);}else txt.innerText='Não encontrado';}catch{txt.innerText='Sem internet';}}
+document.getElementById('bibliaIr').onclick=()=>buscarBiblia(document.getElementById('bibliaBusca').value);
+document.getElementById('btnProjQR').onclick=()=>{document.getElementById('qrModal').classList.remove('hidden');const link=location.href;document.getElementById('qrLink').innerText=link;document.getElementById('qrcode').innerHTML='';new QRCode(document.getElementById('qrcode'),{text:link,width:180,height:180});};
+function sendHolyrics(texto){const ips=['localhost:7575','192.168.0.100:7575','192.168.1.100:7575'];ips.forEach(ip=>{fetch(`http://${ip}/api/slide/text`,{method:'POST',body:JSON.stringify({text:texto}),headers:{'Content-Type':'application/json'}}).catch(()=>{});});}
+document.getElementById('btnHolyrics').onclick=()=>{let ip=prompt('IP do Holyrics','192.168.0.100'); if(ip){localStorage.setItem('holyrics_ip',ip); alert('Holyrics: '+ip);}};
+document.getElementById('closeQr').onclick=()=>document.getElementById('qrModal').classList.add('hidden');
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
+document.getElementById('btnSalvar').onclick=()=>{localStorage.setItem('pulpito',JSON.stringify(topicos));alert('Salvo!');};
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
