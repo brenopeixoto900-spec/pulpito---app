@@ -2,128 +2,89 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>PÚLPITO</title>
 <link rel="manifest" href="./manifest.json">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body{background:#09090b;color:#fafafa;font-family:Inter,sans-serif}
-.panel{background:#18181b;border:1px solid #27272a;border-radius:12px;padding:14px}
-.field{background:#27272a;border:1px solid #3f3f46;border-radius:8px;padding:10px;width:100%;color:white}
+:root{--bg:#09090b;--panel:#18181b;--border:#27272a;--text:#fafafa;--field:#27272a}
+.light{--bg:#f4f4f5;--panel:#ffffff;--border:#e4e4e7;--text:#09090b;--field:#ffffff}
+body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;transition:0.3s}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px}
+.field{background:var(--field);border:1px solid var(--border);border-radius:8px;padding:10px;width:100%;color:var(--text)}
 .btn{background:#eab308;color:#000;font-weight:800;padding:10px 16px;border-radius:8px}
-.btn-ghost{background:#27272a;color:#fafafa;padding:10px 16px;border-radius:8px}
-.tab.active{background:#eab308;color:#000}
-.topic{background:#1f1f23;border:1px solid #333;padding:10px;border-radius:10px;margin-bottom:10px}
+.btn-ghost{background:var(--field);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px}
+.editable-view{line-height:1.8;word-wrap:break-word}
+.toolbar{position:sticky;top:0;background:var(--panel);z-index:10;border:1px solid var(--border);padding:8px;border-radius:10px;display:flex;flex-wrap:wrap;gap:6px}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#333}
+.avatar-lg{width:100px;height:100px;border-radius:50%;object-fit:cover;background:#333;border:3px solid #eab308}
 </style>
 </head>
 <body>
-<div id="toast" class="hidden fixed top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg z-50"></div>
+<div id="toast" class="hidden fixed top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg z-[60]"></div>
 
-<!-- AUTH -->
 <div id="auth" class="min-h-screen flex items-center justify-center p-4">
   <div class="panel w-full max-w-sm">
-    <h1 class="text-2xl font-black text-yellow-400 text-center">PÚLPITO</h1>
-    <p id="authMsg" class="text-xs text-center text-zinc-400 my-2"></p>
-    <div id="authSignup">
-      <input id="signupName" class="field mt-3" placeholder="Seu nome">
-      <button id="signupBtn" class="btn w-full mt-3">ENTRAR</button>
-      <button id="localModeBtn" class="btn-ghost w-full mt-2">USAR MODO LOCAL ✓</button>
-      <p class="text-xs text-center mt-3 text-zinc-400">Já tem conta? <button id="showLogin" class="text-yellow-400">Fazer login</button></p>
+    <h1 class="text-3xl font-black text-yellow-400 text-center">PÚLPITO</h1>
+    <p class="text-xs text-center opacity-60 mt-1">Cadastro completo</p>
+    <input id="signupName" class="field mt-3" placeholder="Nome completo">
+    <input id="signupEmail" class="field mt-2" placeholder="Seu e-mail">
+    <input id="signupPass" type="password" class="field mt-2" placeholder="Senha">
+    <div class="flex gap-2 mt-2">
+      <input id="signupAge" type="number" class="field" placeholder="Idade">
+      <select id="signupGender" class="field"><option value="">Sexo</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select>
     </div>
-    <div id="authLogin" class="hidden">
-      <input id="loginEmail" class="field mt-3" placeholder="seu@email.com">
-      <button id="loginBtn" class="btn w-full mt-3">ENTRAR LOCAL</button>
-      <p class="text-xs text-center mt-3 text-zinc-400">Novo? <button id="showSignup" class="text-yellow-400">Criar conta</button></p>
-    </div>
+    <div class="mt-2"><label class="text-xs opacity-60">Foto de perfil (opcional)</label><input id="signupPhoto" type="file" accept="image/*" class="field mt-1 text-xs"></div>
+    <img id="signupPreview" class="avatar-lg mx-auto mt-3 hidden">
+    <button id="signupBtn" class="btn w-full mt-3">CRIAR CONTA</button>
+    <button id="localModeBtn" class="btn-ghost w-full mt-2">USAR MODO LOCAL ✓</button>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app" class="hidden">
-  <header class="sticky top-0 bg-zinc-950 border-b border-zinc-800 p-3 flex justify-between items-center">
-    <div>
-      <b id="topName" class="text-yellow-400">Local</b>
-      <p id="syncStatus" class="text-[10px] text-zinc-400">Modo Local ✓</p>
-    </div>
-    <button id="logoutBtn" class="btn-ghost text-xs">Sair</button>
+  <header class="sticky top-0 z-20 p-3 flex justify-between items-center" style="background:var(--panel);border-bottom:1px solid var(--border)">
+    <div class="flex items-center gap-2"><img id="topAvatar" class="avatar"><div><b id="topName" class="text-yellow-400">Local</b><div class="flex gap-2 text-[10px] opacity-70"><span id="syncStatus">Modo Local ✓</span><span id="liveClock">00:00:00</span></div></div></div>
+    <div class="flex gap-2"><button id="themeBtn" class="btn-ghost">☀️</button><button id="logoutBtn" class="btn-ghost text-xs">Sair</button></div>
   </header>
-
-  <nav class="flex gap-2 p-2 overflow-auto bg-zinc-900">
-    <button class="tab active btn-ghost text-xs" data-view="home">Início</button>
+  <nav class="flex gap-2 p-2 overflow-auto" style="background:var(--panel)">
+    <button class="tab active btn text-xs" data-view="home">Início</button>
     <button class="tab btn-ghost text-xs" data-view="messages">Pregações</button>
     <button class="tab btn-ghost text-xs" data-view="editor">Editor</button>
     <button class="tab btn-ghost text-xs" data-view="bible">Bíblia</button>
     <button class="tab btn-ghost text-xs" data-view="agenda">Agenda</button>
+    <button class="tab btn-ghost text-xs" data-view="profile">Perfil</button>
   </nav>
 
   <main class="p-3 max-w-3xl mx-auto">
-    <section id="view-home">
-      <h2 id="welcome" class="text-xl font-bold"></h2>
-      <div class="grid grid-cols-2 gap-2 mt-3">
-        <div class="panel"><p class="text-xs text-zinc-400">Pregações</p><b id="countMessages" class="text-2xl">0</b></div>
-        <div class="panel"><p class="text-xs text-zinc-400">Tempo Alvo</p><div class="flex gap-2 mt-1"><input id="timerTarget" type="number" value="30" class="field p-1 w-16"><span class="text-xs">min</span></div></div>
-      </div>
+    <section id="view-home"><h2 id="welcome" class="text-xl font-bold"></h2><div class="grid grid-cols-2 gap-2 mt-3"><div class="panel"><p class="text-xs opacity-60">Pregações</p><b id="countMessages" class="text-2xl">0</b></div><div class="panel"><p class="text-xs opacity-60">Cronômetro Alvo</p><div class="flex gap-2 mt-1"><input id="timerTarget" type="number" value="30" class="field p-1 w-16"><span class="text-xs">min</span></div></div></div><div class="panel mt-3 text-center"><p class="text-xs opacity-60">CRONÔMETRO</p><div id="timerDisplay" class="text-4xl font-black my-2">00:00</div><div class="flex gap-2 justify-center"><button id="timerStart" class="btn text-xs">▶️ INICIAR</button><button id="timerPause" class="btn-ghost text-xs">⏸️</button><button id="timerReset" class="btn-ghost text-xs">🔄</button></div></div><div class="flex justify-between items-center mt-4"><h3 class="font-bold">Recentes</h3><button id="newFromHome" class="btn text-xs">+ NOVA</button></div><div id="recentList" class="mt-2"></div></section>
+    <section id="view-messages" class="hidden"><div class="flex justify-between"><h2 class="font-bold">Minhas Pregações</h2><button id="newMessageBtn" class="btn text-xs">+ NOVA</button></div><div id="messageList" class="mt-3 space-y-2"></div></section>
+    <section id="view-editor" class="hidden"><div class="flex justify-between items-center"><button id="backMessages" class="btn-ghost text-xs">← Voltar</button><div class="flex gap-2"><button id="previewBtn" class="btn-ghost text-xs">👁 Prévia</button><button id="saveMessageBtn" class="btn text-xs">💾 SALVAR</button></div></div><input id="msgTitle" class="field mt-3 font-bold" placeholder="Título"><input id="msgDescription" class="field mt-2" placeholder="Descrição curta"><textarea id="msgBase" class="field mt-2" rows="2" placeholder="Texto base Ex: Romanos 8:16-17"></textarea><div class="panel mt-3"><p class="text-xs font-bold">🎙️ ÁUDIO</p><div class="flex gap-2 mt-2"><button id="recordBtn" class="btn-ghost text-xs">● GRAVAR</button><button id="stopRecordBtn" class="btn-ghost text-xs hidden">■ PARAR</button></div><div id="audioList" class="mt-2 space-y-1"></div></div><div class="flex justify-between items-center mt-3"><h3 class="font-bold text-sm">Tópicos</h3><button id="addTopicBtn" class="btn-ghost text-xs">+ Tópico</button></div><div id="topics" class="mt-2"></div><div id="previewArea" class="hidden panel mt-3 whitespace-pre-wrap text-sm"></div></section>
+    <section id="view-bible" class="hidden"><h2 class="font-bold">BÍBLIA COMPLETA</h2><div class="flex gap-2 mt-2"><input id="bibleSearch" class="field" placeholder="Ex: João 3:16"><button id="bibleSearchBtn" class="btn text-xs">BUSCAR</button></div><div class="flex gap-2 mt-2 text-[11px]"><span id="biblePath" class="opacity-60">Escolha um livro</span></div><div id="bibleBooks" class="grid grid-cols-3 gap-1 mt-3 max-h-32 overflow-auto text-[11px]"></div><div id="bibleChapters" class="hidden grid grid-cols-8 gap-1 mt-2"></div><div id="bibleVerses" class="hidden grid grid-cols-10 gap-1 mt-2"></div><div id="bibleResult" class="panel mt-3 text-sm min-h-[100px]">Toque num livro, capítulo, versículo</div></section>
+    <section id="view-agenda" class="hidden"><h2 class="font-bold">Agenda</h2><div class="panel mt-2 flex gap-2"><input id="agendaDate" type="date" class="field"><input id="agendaTitle" class="field" placeholder="Evento"><button id="agendaAddBtn" class="btn text-xs">+</button></div><div id="agendaList" class="mt-3 space-y-1"></div></section>
+
+    <section id="view-profile" class="hidden">
+      <h2 class="font-bold text-yellow-400 text-xl">MEU PERFIL</h2>
       <div class="panel mt-3 text-center">
-        <p class="text-xs text-zinc-400">CRONÔMETRO</p>
-        <div id="timerDisplay" class="text-4xl font-black my-2">00:00</div>
-        <div class="flex gap-2 justify-center">
-          <button id="timerStart" class="btn text-xs">▶️ INICIAR</button>
-          <button id="timerPause" class="btn-ghost text-xs">⏸️ PAUSAR</button>
-          <button id="timerReset" class="btn-ghost text-xs">🔄 ZERAR</button>
+        <img id="profileAvatar" class="avatar-lg mx-auto">
+        <h3 id="profileName" class="font-bold mt-2 text-lg"></h3>
+        <p id="profileEmail" class="text-xs opacity-60"></p>
+        <div class="grid grid-cols-2 gap-2 mt-4 text-left">
+          <div><label class="text-[10px] opacity-60">NOME</label><input id="profileEditName" class="field mt-1"></div>
+          <div><label class="text-[10px] opacity-60">E-MAIL</label><input id="profileEditEmail" class="field mt-1"></div>
+          <div><label class="text-[10px] opacity-60">IDADE</label><input id="profileEditAge" type="number" class="field mt-1"></div>
+          <div><label class="text-[10px] opacity-60">SEXO</label><select id="profileEditGender" class="field mt-1"><option value="">Sexo</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
         </div>
+        <div class="mt-3 text-left"><label class="text-[10px] opacity-60">TROCAR FOTO DE PERFIL</label><input id="profileEditPhoto" type="file" accept="image/*" class="field mt-1 text-xs"></div>
+        <button id="profileSaveBtn" class="btn w-full mt-4">💾 SALVAR DADOS</button>
+        <p class="text-[10px] opacity-40 mt-3">Seus dados ficam salvos só no seu celular/notebook (Modo Local)</p>
       </div>
-      <div class="flex justify-between items-center mt-4"><h3 class="font-bold">Recentes</h3><button id="newFromHome" class="btn text-xs">+ NOVA PREGAÇÃO</button></div>
-      <div id="recentList" class="mt-2"></div>
-      <p id="configWarning" class="text-[10px] text-zinc-500 mt-4"></p>
-    </section>
-
-    <section id="view-messages" class="hidden">
-      <div class="flex justify-between"><h2 class="font-bold">Minhas Pregações</h2><button id="newMessageBtn" class="btn text-xs">+ NOVA</button></div>
-      <div id="messageList" class="mt-3 space-y-2"></div>
-    </section>
-
-    <section id="view-editor" class="hidden">
-      <div class="flex justify-between items-center"><button id="backMessages" class="btn-ghost text-xs">← Voltar</button><div class="flex gap-2"><button id="previewBtn" class="btn-ghost text-xs">👁 Prévia</button><button id="saveMessageBtn" class="btn text-xs">💾 SALVAR</button></div></div>
-      <h2 id="editorHeading" class="font-black text-yellow-400 mt-3">NOVA PREGAÇÃO</h2>
-      <input id="msgTitle" class="field mt-2" placeholder="Título da pregação">
-      <input id="msgDescription" class="field mt-2" placeholder="Descrição curta">
-      <textarea id="msgBase" class="field mt-2" rows="2" placeholder="Texto base (Ex: João 3:16)"></textarea>
-      
-      <div class="panel mt-3">
-        <p class="text-xs font-bold">🎙️ ÁUDIO DA PREGAÇÃO</p>
-        <div class="flex gap-2 mt-2"><button id="recordBtn" class="btn-ghost text-xs">● GRAVAR</button><button id="stopRecordBtn" class="btn-ghost text-xs hidden">■ PARAR</button></div>
-        <div id="audioList" class="mt-2 space-y-1"></div>
-      </div>
-
-      <div class="flex justify-between items-center mt-3"><h3 class="font-bold text-sm">Tópicos</h3><button id="addTopicBtn" class="btn-ghost text-xs">+ Tópico</button></div>
-      <div id="topics" class="mt-2"></div>
-
-      <div class="flex gap-2 mt-4"><button id="slidesBtn" class="btn-ghost w-full text-xs">📽️ VER SLIDES</button></div>
-      <div id="previewArea" class="hidden panel mt-3 whitespace-pre-wrap text-sm"></div>
-    </section>
-
-    <section id="view-bible" class="hidden">
-      <h2 class="font-bold">BÍBLIA 66 LIVROS</h2>
-      <div class="flex gap-2 mt-2"><input id="bibleSearch" class="field" placeholder="Buscar: João 3:16"><button id="bibleSearchBtn" class="btn text-xs">BUSCAR</button></div>
-      <p class="text-[10px] text-zinc-400 mt-1">Clique em USAR para jogar no esboço</p>
-      <div id="bibleBooks" class="grid grid-cols-3 gap-1 mt-3 max-h-40 overflow-auto text-[11px]"></div>
-      <div id="bibleResult" class="panel mt-3 text-sm min-h-[100px]">Escolha um livro ou busque um versículo</div>
-    </section>
-
-    <section id="view-agenda" class="hidden">
-      <h2 class="font-bold">Agenda</h2>
-      <div class="panel mt-2 flex gap-2"><input id="agendaDate" type="date" class="field"><input id="agendaTitle" class="field" placeholder="Evento"><button id="agendaAddBtn" class="btn text-xs">+</button></div>
-      <div id="agendaList" class="mt-3 space-y-1"></div>
     </section>
   </main>
 </div>
 
-<!-- SLIDES MODAL -->
-<div id="slidesModal" class="hidden fixed inset-0 bg-black z-50 p-6 flex flex-col justify-center items-center text-center">
-  <button id="closeSlides" class="absolute top-4 right-4 btn-ghost">✕</button>
-  <h2 id="slideTitle" class="text-3xl font-black text-yellow-400"></h2>
-  <p id="slideContent" class="text-xl mt-4 max-w-2xl"></p>
-  <div class="flex gap-4 mt-8"><button id="prevSlide" class="btn-ghost">← Anterior</button><span id="slideCounter" class="text-xs text-zinc-400"></span><button id="nextSlide" class="btn">Próximo →</button></div>
+<div id="viewModal" class="hidden fixed inset-0 z-50 overflow-auto p-2" style="background:var(--bg)">
+  <div class="toolbar"><button id="closeView" class="btn-ghost text-xs">✕ Fechar</button><button class="btn-ghost text-xs" onclick="execCmd('bold')"><b>B</b></button><button class="btn-ghost text-xs" onclick="execCmd('italic')"><i>I</i></button><button class="btn-ghost text-xs" onclick="changeFontSize(1)">A+</button><button class="btn-ghost text-xs" onclick="changeFontSize(-1)">A-</button><input type="color" id="colorPicker" class="w-8 h-8 rounded" onchange="execCmd('foreColor', this.value)"><select id="fontFamily" class="field text-xs w-24 p-1" onchange="execCmd('fontName', this.value)"><option value="Inter">Inter</option><option value="Georgia">Georgia</option><option value="Arial">Arial</option><option value="Times">Times</option></select><button class="btn text-xs" onclick="saveViewEdits()">💾 Salvar Edição Visual</button></div>
+  <div id="viewContent" class="editable-view panel mt-2 min-h-[70vh]" contenteditable="true" style="font-size:18px"></div>
 </div>
 
 <script src="./js/app.js"></script>
