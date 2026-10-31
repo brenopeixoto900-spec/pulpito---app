@@ -3,136 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#111111">
-<meta name="description" content="APP do Púlpito - Organize, prepare e ministre.">
-<title>APP do Púlpito</title>
-
+<title>PÚLPITO</title>
 <link rel="manifest" href="./manifest.json">
-<link rel="icon" type="image/png" href="./icon-512.png">
-<link rel="apple-touch-icon" href="./icon-512.png">
-
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
 <style>
-*{box-sizing:border-box}
-body{background:#090909;color:white;font-family:Inter,Arial,sans-serif}
-.hidden{display:none!important}
-.panel{background:#181818;border:1px solid #333;border-radius:16px;padding:16px;margin-bottom:12px}
-.field{width:100%;background:#090909;border:1px solid #444;border-radius:10px;padding:13px;color:white;margin:5px 0}
-.field:focus{outline:2px solid #eabf45}
-.btn{background:#292929;color:white;border:1px solid #444;padding:12px;border-radius:10px;font-weight:bold}
-.btn-gold{background:#eabf45;color:#111;padding:13px;border-radius:10px;font-weight:900}
-.muted{color:#999}
-.active{color:#facc15!important;border-top:2px solid #facc15}
-.tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:#888;padding:8px;min-width:65px}
-main{padding-bottom:100px}
-#reader{position:fixed;inset:0;background:#fdfbf7;color:#111;z-index:100;overflow:auto}
-#readerContent{font-family:Georgia,serif;line-height:1.8;padding:25px;max-width:850px;margin:auto}
-.topic{background:#202020;border:1px solid #444;border-radius:14px;padding:14px;margin:12px 0}
+body{background:#09090b;color:#fafafa;font-family:Inter,sans-serif}
+.panel{background:#18181b;border:1px solid #27272a;border-radius:12px;padding:14px}
+.field{background:#27272a;border:1px solid #3f3f46;border-radius:8px;padding:10px;width:100%;color:white}
+.btn{background:#eab308;color:#000;font-weight:800;padding:10px 16px;border-radius:8px}
+.btn-ghost{background:#27272a;color:#fafafa;padding:10px 16px;border-radius:8px}
+.tab.active{background:#eab308;color:#000}
+.topic{background:#1f1f23;border:1px solid #333;padding:10px;border-radius:10px;margin-bottom:10px}
 </style>
 </head>
+<body>
+<div id="toast" class="hidden fixed top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg z-50"></div>
 
-<body class="min-h-screen">
-
-<!-- LOGIN E CADASTRO -->
+<!-- AUTH -->
 <div id="auth" class="min-h-screen flex items-center justify-center p-4">
-<div class="panel w-full max-w-md p-6">
-<h1 class="text-center text-3xl font-black text-yellow-400">APP DO PÚLPITO</h1>
-<p class="text-center text-xs muted mt-2">ORGANIZE • PREPARE • MINISTRE</p>
-
-<div id="authSignup" class="mt-6 space-y-3">
-<input id="signupName" class="field" placeholder="Seu nome">
-<input id="signupEmail" type="email" class="field" placeholder="Seu e-mail">
-<input id="signupPass" type="password" class="field" placeholder="Senha (mínimo 6 caracteres)">
-<button id="signupBtn" class="btn-gold w-full">CRIAR CONTA</button>
-<p class="text-center text-sm muted">Já possui uma conta? <button id="showLogin" class="text-yellow-400 font-bold">Entrar</button></p>
+  <div class="panel w-full max-w-sm">
+    <h1 class="text-2xl font-black text-yellow-400 text-center">PÚLPITO</h1>
+    <p id="authMsg" class="text-xs text-center text-zinc-400 my-2"></p>
+    <div id="authSignup">
+      <input id="signupName" class="field mt-3" placeholder="Seu nome">
+      <button id="signupBtn" class="btn w-full mt-3">ENTRAR</button>
+      <button id="localModeBtn" class="btn-ghost w-full mt-2">USAR MODO LOCAL ✓</button>
+      <p class="text-xs text-center mt-3 text-zinc-400">Já tem conta? <button id="showLogin" class="text-yellow-400">Fazer login</button></p>
+    </div>
+    <div id="authLogin" class="hidden">
+      <input id="loginEmail" class="field mt-3" placeholder="seu@email.com">
+      <button id="loginBtn" class="btn w-full mt-3">ENTRAR LOCAL</button>
+      <p class="text-xs text-center mt-3 text-zinc-400">Novo? <button id="showSignup" class="text-yellow-400">Criar conta</button></p>
+    </div>
+  </div>
 </div>
 
-<div id="authLogin" class="hidden mt-6 space-y-3">
-<input id="loginEmail" type="email" class="field" placeholder="Seu e-mail">
-<input id="loginPass" type="password" class="field" placeholder="Sua senha">
-<button id="loginBtn" class="btn-gold w-full">ENTRAR</button>
-<button id="resetBtn" class="text-yellow-400 text-sm w-full">Esqueci minha senha</button>
-<p class="text-center text-sm muted">Não possui conta? <button id="showSignup" class="text-yellow-400 font-bold">Cadastrar</button></p>
-</div>
-
-<p id="authMsg" class="text-red-400 text-sm mt-4"></p>
-<p id="configWarning" class="text-yellow-400 text-xs mt-3"></p>
-<button id="localModeBtn" class="btn w-full mt-5">ENTRAR EM MODO LOCAL (TESTE)</button>
-</div>
-</div>
-
-<!-- APLICATIVO -->
+<!-- APP -->
 <div id="app" class="hidden">
-<header class="sticky top-0 z-40 bg-black border-b border-zinc-800 p-4 flex justify-between items-center">
-<div><h1 class="font-black text-yellow-400">PÚLPITO</h1><p id="topName" class="text-xs muted"></p></div>
-<div class="flex gap-2">
-<button id="syncNowBtn" class="btn text-xs">☁️</button>
-<button id="profileBtn" class="btn text-xs">👤</button>
-<button id="logoutBtn" class="btn text-xs">SAIR</button>
+  <header class="sticky top-0 bg-zinc-950 border-b border-zinc-800 p-3 flex justify-between items-center">
+    <div>
+      <b id="topName" class="text-yellow-400">Local</b>
+      <p id="syncStatus" class="text-[10px] text-zinc-400">Modo Local ✓</p>
+    </div>
+    <button id="logoutBtn" class="btn-ghost text-xs">Sair</button>
+  </header>
+
+  <nav class="flex gap-2 p-2 overflow-auto bg-zinc-900">
+    <button class="tab active btn-ghost text-xs" data-view="home">Início</button>
+    <button class="tab btn-ghost text-xs" data-view="messages">Pregações</button>
+    <button class="tab btn-ghost text-xs" data-view="editor">Editor</button>
+    <button class="tab btn-ghost text-xs" data-view="bible">Bíblia</button>
+    <button class="tab btn-ghost text-xs" data-view="agenda">Agenda</button>
+  </nav>
+
+  <main class="p-3 max-w-3xl mx-auto">
+    <section id="view-home">
+      <h2 id="welcome" class="text-xl font-bold"></h2>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <div class="panel"><p class="text-xs text-zinc-400">Pregações</p><b id="countMessages" class="text-2xl">0</b></div>
+        <div class="panel"><p class="text-xs text-zinc-400">Tempo Alvo</p><div class="flex gap-2 mt-1"><input id="timerTarget" type="number" value="30" class="field p-1 w-16"><span class="text-xs">min</span></div></div>
+      </div>
+      <div class="panel mt-3 text-center">
+        <p class="text-xs text-zinc-400">CRONÔMETRO</p>
+        <div id="timerDisplay" class="text-4xl font-black my-2">00:00</div>
+        <div class="flex gap-2 justify-center">
+          <button id="timerStart" class="btn text-xs">▶️ INICIAR</button>
+          <button id="timerPause" class="btn-ghost text-xs">⏸️ PAUSAR</button>
+          <button id="timerReset" class="btn-ghost text-xs">🔄 ZERAR</button>
+        </div>
+      </div>
+      <div class="flex justify-between items-center mt-4"><h3 class="font-bold">Recentes</h3><button id="newFromHome" class="btn text-xs">+ NOVA PREGAÇÃO</button></div>
+      <div id="recentList" class="mt-2"></div>
+      <p id="configWarning" class="text-[10px] text-zinc-500 mt-4"></p>
+    </section>
+
+    <section id="view-messages" class="hidden">
+      <div class="flex justify-between"><h2 class="font-bold">Minhas Pregações</h2><button id="newMessageBtn" class="btn text-xs">+ NOVA</button></div>
+      <div id="messageList" class="mt-3 space-y-2"></div>
+    </section>
+
+    <section id="view-editor" class="hidden">
+      <div class="flex justify-between items-center"><button id="backMessages" class="btn-ghost text-xs">← Voltar</button><div class="flex gap-2"><button id="previewBtn" class="btn-ghost text-xs">👁 Prévia</button><button id="saveMessageBtn" class="btn text-xs">💾 SALVAR</button></div></div>
+      <h2 id="editorHeading" class="font-black text-yellow-400 mt-3">NOVA PREGAÇÃO</h2>
+      <input id="msgTitle" class="field mt-2" placeholder="Título da pregação">
+      <input id="msgDescription" class="field mt-2" placeholder="Descrição curta">
+      <textarea id="msgBase" class="field mt-2" rows="2" placeholder="Texto base (Ex: João 3:16)"></textarea>
+      
+      <div class="panel mt-3">
+        <p class="text-xs font-bold">🎙️ ÁUDIO DA PREGAÇÃO</p>
+        <div class="flex gap-2 mt-2"><button id="recordBtn" class="btn-ghost text-xs">● GRAVAR</button><button id="stopRecordBtn" class="btn-ghost text-xs hidden">■ PARAR</button></div>
+        <div id="audioList" class="mt-2 space-y-1"></div>
+      </div>
+
+      <div class="flex justify-between items-center mt-3"><h3 class="font-bold text-sm">Tópicos</h3><button id="addTopicBtn" class="btn-ghost text-xs">+ Tópico</button></div>
+      <div id="topics" class="mt-2"></div>
+
+      <div class="flex gap-2 mt-4"><button id="slidesBtn" class="btn-ghost w-full text-xs">📽️ VER SLIDES</button></div>
+      <div id="previewArea" class="hidden panel mt-3 whitespace-pre-wrap text-sm"></div>
+    </section>
+
+    <section id="view-bible" class="hidden">
+      <h2 class="font-bold">BÍBLIA 66 LIVROS</h2>
+      <div class="flex gap-2 mt-2"><input id="bibleSearch" class="field" placeholder="Buscar: João 3:16"><button id="bibleSearchBtn" class="btn text-xs">BUSCAR</button></div>
+      <p class="text-[10px] text-zinc-400 mt-1">Clique em USAR para jogar no esboço</p>
+      <div id="bibleBooks" class="grid grid-cols-3 gap-1 mt-3 max-h-40 overflow-auto text-[11px]"></div>
+      <div id="bibleResult" class="panel mt-3 text-sm min-h-[100px]">Escolha um livro ou busque um versículo</div>
+    </section>
+
+    <section id="view-agenda" class="hidden">
+      <h2 class="font-bold">Agenda</h2>
+      <div class="panel mt-2 flex gap-2"><input id="agendaDate" type="date" class="field"><input id="agendaTitle" class="field" placeholder="Evento"><button id="agendaAddBtn" class="btn text-xs">+</button></div>
+      <div id="agendaList" class="mt-3 space-y-1"></div>
+    </section>
+  </main>
 </div>
-</header>
-<div class="bg-zinc-900 px-4 py-2 flex justify-between text-xs"><span id="syncStatus">Aguardando</span><span id="welcome">Bem-vindo!</span></div>
-<main class="max-w-4xl mx-auto p-4">
-<section id="view-home"><div class="rounded-2xl p-6 bg-gradient-to-br from-yellow-400 to-yellow-700 text-black"><h2 class="text-3xl font-black">APP DO PÚLPITO</h2><p class="font-bold mt-2">Sua preparação em um só lugar.</p><button id="newFromHome" class="bg-black text-yellow-400 rounded-xl p-3 mt-5 font-bold">+ NOVA PREGAÇÃO</button></div><div class="grid grid-cols-2 gap-3 mt-4"><div class="panel"><p class="text-xs muted">PREGAÇÕES</p><strong id="countMessages" class="text-3xl text-yellow-400">0</strong></div><div class="panel"><p class="text-xs muted">EVENTOS</p><strong id="countEvents" class="text-3xl text-yellow-400">0</strong></div></div><h3 class="font-bold text-yellow-400 mt-5 mb-3">ÚLTIMAS PREGAÇÕES</h3><div id="recentList"></div></section>
-<section id="view-messages" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">MINHAS PREGAÇÕES</h2><input id="searchMessages" class="field" placeholder="Pesquisar..."><button id="newMessageBtn" class="btn-gold w-full mb-4">+ CRIAR PREGAÇÃO</button><div id="messageList"></div></section>
-<section id="view-editor" class="hidden"><h2 id="editorHeading" class="text-xl font-black text-yellow-400 mb-4">NOVA PREGAÇÃO</h2><div class="panel space-y-2"><label class="text-xs text-yellow-400 font-bold">TÍTULO</label><input id="msgTitle" class="field" placeholder="Título"><label class="text-xs text-yellow-400 font-bold">DESCRIÇÃO</label><textarea id="msgDescription" class="field" rows="2"></textarea><label class="text-xs text-yellow-400 font-bold">TEXTO BÍBLICO BASE</label><textarea id="msgBase" class="field" rows="3"></textarea></div><h3 class="font-bold text-yellow-400 mt-5">ESBOÇO</h3><div id="topics"></div><div class="grid grid-cols-2 gap-2 mt-3"><button id="addTopicBtn" class="btn-gold">+ TÓPICO</button><button data-addblock="versiculo" class="btn">+ VERSÍCULO</button></div><div class="flex gap-2 mt-5"><button id="backMessages" class="btn flex-1">VOLTAR</button><button id="previewBtn" class="btn flex-1">PRÉ-VISUALIZAR</button></div><button id="saveMessageBtn" class="btn-gold w-full mt-3">💾 SALVAR</button></section>
-<section id="view-agenda" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">AGENDA</h2><div id="eventList"></div></section>
-<section id="view-bible" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">BÍBLIA</h2><div id="bibleResult" class="panel"></div></section>
-<section id="view-audio" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">ÁUDIO</h2><div id="recordingsList"></div></section>
-<section id="view-slides" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">SLIDES</h2></section>
-<section id="view-profile" class="hidden"><h2 class="text-xl font-black text-yellow-400 mb-4">PERFIL</h2></section>
-</main>
-<nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-zinc-800 flex justify-around z-50">
-<button class="tab active" data-view="home">🏠<small>INÍCIO</small></button>
-<button class="tab" data-view="messages">📚<small>MINHAS</small></button>
-<button class="tab" data-view="editor">📝<small>ESBOÇO</small></button>
-<button class="tab" data-view="bible">📖<small>BÍBLIA</small></button>
-<button class="tab" data-view="audio">🎙️<small>ÁUDIO</small></button>
-<button class="tab" data-view="slides">📽️<small>SLIDES</small></button>
-<button class="tab" data-view="agenda">📅<small>AGENDA</small></button>
-</nav>
-<div id="reader" class="hidden"><div class="sticky top-0 bg-white border-b p-3 flex justify-between"><strong>LEITURA</strong><button id="readerClose" class="btn">✕</button></div><div id="readerContent"></div></div>
-<div id="toast" class="hidden fixed bottom-24 left-4 right-4 bg-yellow-400 text-black p-4 rounded-xl text-center font-bold z-[200]"></div>
+
+<!-- SLIDES MODAL -->
+<div id="slidesModal" class="hidden fixed inset-0 bg-black z-50 p-6 flex flex-col justify-center items-center text-center">
+  <button id="closeSlides" class="absolute top-4 right-4 btn-ghost">✕</button>
+  <h2 id="slideTitle" class="text-3xl font-black text-yellow-400"></h2>
+  <p id="slideContent" class="text-xl mt-4 max-w-2xl"></p>
+  <div class="flex gap-4 mt-8"><button id="prevSlide" class="btn-ghost">← Anterior</button><span id="slideCounter" class="text-xs text-zinc-400"></span><button id="nextSlide" class="btn">Próximo →</button></div>
 </div>
 
-<script>
-// FIX DEFINITIVO - Destrava modo local
-(function(){
-  function showAppLocal(name){
-    document.getElementById('auth')?.classList.add('hidden');
-    document.getElementById('app')?.classList.remove('hidden');
-    const top = document.getElementById('topName'); if(top) top.textContent = name || 'Modo Local';
-  }
-  window.addEventListener('DOMContentLoaded', ()=>{
-    const modo = localStorage.getItem('pulpito_modo');
-    const userRaw = localStorage.getItem('pulpito_user');
-    if(modo==='local' && userRaw){ try{ showAppLocal(JSON.parse(userRaw).name); }catch(e){ showAppLocal('Local'); } }
-    const btnLocal = document.getElementById('localModeBtn');
-    if(btnLocal){
-      btnLocal.addEventListener('click', (e)=>{
-        e.preventDefault();
-        const name = document.getElementById('signupName')?.value.trim() || 'Usuário Local';
-        localStorage.setItem('pulpito_modo','local');
-        localStorage.setItem('pulpito_user', JSON.stringify({name, email:'local@pulpito.com'}));
-        showAppLocal(name);
-        setTimeout(()=>location.reload(), 300);
-      });
-    }
-  });
-})();
-</script>
-
-<script type="module" src="./js/app.js"></script>
-<script>
-if ("serviceWorker" in navigator) {
- window.addEventListener("load", () => {
-  navigator.serviceWorker.register("./sw.js").catch(e=>console.log('SW:',e));
- });
-}
-</script>
-
+<script src="./js/app.js"></script>
 </body>
 </html>
