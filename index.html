@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Púlpito APP</title>
+<meta name="theme-color" content="#000000">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+body{background:#000;color:#fff;min-height:100vh;padding:16px;display:flex;flex-direction:column}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.clock{font-size:28px;font-weight:800}
+.clock span{font-weight:400;opacity:0.7;font-size:16px}
+.timer-box{background:#111;border:1px solid #222;border-radius:16px;padding:14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.timer{font-size:42px;font-weight:900}
+.controls{display:flex;gap:8px}
+.btn{background:#fff;color:#000;border:none;border-radius:999px;padding:10px 18px;font-weight:700;font-size:14px}
+.btn.sec{background:#222;color:#fff}
+.topics{flex:1;background:#0a0a0a;border-radius:16px;padding:12px;border:1px solid #1a1a1a}
+.topic{display:flex;gap:12px;padding:14px 8px;border-bottom:1px solid #1a1a1a}
+.topic input{width:20px;height:20px;accent-color:#fff}
+.topic-text{flex:1;font-size:18px;line-height:1.4}
+.topic-text.done{opacity:0.4;text-decoration:line-through}
+.toolbar{position:sticky;bottom:0;background:#000;padding:12px 0 0;display:flex;gap:8px;overflow-x:auto}
+.tbtn{background:#1a1a1a;color:#fff;border:1px solid #2a2a2a;border-radius:10px;padding:10px 14px;white-space:nowrap;font-weight:600}
+.add{margin-top:12px;background:transparent;border:1px dashed #333;color:#888;border-radius:12px;padding:12px;width:100%}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="clock"><span id="date">--</span><br><div id="hour">19:59:00</div></div>
+<div style="text-align:right;opacity:0.6;font-size:12px">PÚLPITO<br>APP</div>
+</div>
+<div class="timer-box">
+<div class="timer" id="timer">00:00</div>
+<div class="controls">
+<button class="btn sec" id="reset">RESET</button>
+<button class="btn" id="start">START</button>
+</div>
+</div>
+<div class="topics" id="topics">
+<div class="topic"><input type="checkbox"><div class="topic-text" contenteditable="true">1. Introdução - Texto base</div></div>
+<div class="topic"><input type="checkbox"><div class="topic-text" contenteditable="true">2. Primeiro ponto</div></div>
+<div class="topic"><input type="checkbox"><div class="topic-text" contenteditable="true">3. Segundo ponto - Ilustração</div></div>
+<div class="topic"><input type="checkbox"><div class="topic-text" contenteditable="true">4. Conclusão e apelo</div></div>
+</div>
+<button class="add" onclick="addTopic()">+ Adicionar tópico</button>
+<div class="toolbar">
+<button class="tbtn" onclick="changeSize(2)">A+ Maior</button>
+<button class="tbtn" onclick="changeSize(-2)">A- Menor</button>
+<button class="tbtn" onclick="toggleBold()">B Negrito</button>
+<button class="tbtn" onclick="changeColor()">Cor</button>
+<button class="tbtn" onclick="clearAll()">Limpar</button>
+</div>
+<script>
+function updateClock(){
+const now=new Date();
+document.getElementById('hour').innerText=now.toLocaleTimeString('pt-BR');
+document.getElementById('date').innerText=now.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'});
+}
+setInterval(updateClock,1000);updateClock();
+let sec=0,intv=null,running=false;
+const timerEl=document.getElementById('timer');
+const startBtn=document.getElementById('start');
+function fmt(s){const m=String(Math.floor(s/60)).padStart(2,'0');const ss=String(s%60).padStart(2,'0');return m+':'+ss}
+startBtn.onclick=()=>{
+if(!running){intv=setInterval(()=>{sec++;timerEl.innerText=fmt(sec)},1000);startBtn.innerText='PAUSE';running=true}
+else{clearInterval(intv);startBtn.innerText='START';running=false}
+}
+document.getElementById('reset').onclick=()=>{clearInterval(intv);sec=0;timerEl.innerText='00:00';startBtn.innerText='START';running=false}
+function addTopic(){
+const div=document.createElement('div');div.className='topic';
+div.innerHTML='<input type="checkbox"><div class="topic-text" contenteditable="true">Novo tópico - clique para editar</div>';
+document.getElementById('topics').appendChild(div);
+}
+let size=18;
+function changeSize(d){size+=d;document.querySelectorAll('.topic-text').forEach(e=>e.style.fontSize=size+'px')}
+function toggleBold(){document.querySelectorAll('.topic-text').forEach(e=>{e.style.fontWeight=e.style.fontWeight==='700'?'400':'700'})}
+let colors=['#fff','#FFD60A','#4ADE80','#60A5FA','#F472B6'];let ci=0;
+function changeColor(){ci=(ci+1)%colors.length;document.querySelectorAll('.topic-text').forEach(e=>e.style.color=colors[ci])}
+function clearAll(){document.querySelectorAll('.topic input').forEach(c=>c.checked=false);document.querySelectorAll('.topic-text').forEach(e=>e.classList.remove('done'))}
+document.addEventListener('change',e=>{if(e.target.type==='checkbox'){e.target.nextElementSibling.classList.toggle('done',e.target.checked)}})
+</script>
+</body>
+</html>
