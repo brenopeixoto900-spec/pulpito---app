@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -5,41 +6,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PÚLPITO</title>
 <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
+<link rel="icon" href="icone-512.png">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>emailjs.init("HtTUEwYxZOHxtBOWu");</script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{--yellow:#fbbf24;--yellow-dark:#f59e0b;--bg:#eef2ee;--card:#ffffff;--border:#e2e8e0;--dark:#0f172a;--text:#0f172a}
-:root.dark{--bg:#0f172a;--card:#1e293b;--border:#334155;--text:#f1f5f9;--dark:#f8fafc}
+:root{--yellow:#fbbf24;--bg:#eef2ee;--card:#fff;--border:#e2e8e0;--dark:#0f172a;--text:#0f172a}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Inter,sans-serif;background:var(--bg);color:var(--text);transition:.3s}
-header{padding:14px 16px;max-width:900px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.tab{padding:8px 14px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:8px;font-size:13px;cursor:pointer;font-weight:600}
-.tab.active{background:var(--dark);color:var(--bg)}
+body{font-family:Inter,system-ui;background:var(--bg);color:var(--text)}
+header{padding:14px 16px;max-width:900px;margin:0 auto;display:flex;gap:8px;align-items:center}
+.tab{padding:8px 14px;border:1px solid var(--border);background:var(--card);border-radius:8px;font-size:13px;cursor:pointer;font-weight:600}
+.tab.active{background:var(--dark);color:#fff}
 .screen{max-width:900px;margin:0 auto;padding:0 16px 100px}
-.card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--border);margin-bottom:12px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:600px){.grid2{grid-template-columns:1fr}}
-.label{font-size:11px;color:#64748b;text-transform:uppercase;font-weight:700;margin:14px 0 4px;display:block;letter-spacing:.5px}
-.input{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font-size:14px}
-.input-mini{width:80px;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text)}
-.cronometro-box{text-align:center;padding:20px 0}
-.cronometro-time{font-size:44px;font-weight:800;letter-spacing:-1px}
+.label{font-size:11px;color:#64748b;text-transform:uppercase;font-weight:700;margin:12px 0 4px;display:block}
+.input{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text)}
+.input-mini{width:70px;padding:8px;border:1px solid var(--border);border-radius:8px}
+.btn-yellow{background:var(--yellow);border:none;padding:11px 18px;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer}
+.btn-ghost{background:var(--card);border:1px solid var(--border);padding:10px 14px;border-radius:10px;font-size:13px;cursor:pointer}
+.hidden{display:none!important}
+.cronometro-time{font-size:42px;font-weight:800;text-align:center}
 .cronometro-time.piscando{animation:pisca .8s infinite}
 @keyframes pisca{0%,100%{color:#e11d48}50%{opacity:.2}}
-.btn-yellow{background:var(--yellow);border:none;padding:11px 18px;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer;color:#000}
-.btn-yellow:hover{background:var(--yellow-dark)}
-.btn-icon{width:36px;height:36px;border:1px solid var(--border);background:var(--card);border-radius:8px;cursor:pointer}
-.btn-ghost{background:var(--card);border:1px solid var(--border);padding:10px 14px;border-radius:10px;font-size:13px;cursor:pointer;color:var(--text)}
-.recentes-header{display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px}
-.pregacao-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
-.hidden{display:none!important}
-.topico-item{background:var(--bg);border:1px dashed var(--border);border-radius:12px;padding:12px;margin-top:12px;position:relative}
-.topico-item .remove{position:absolute;top:6px;right:6px;background:#fee2e2;color:#991b1b;border:0;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer}
-.leitura-full{position:fixed;inset:0;background:var(--card);z-index:300;overflow-y:auto}
-.leitura-topbar{position:sticky;top:0;background:var(--dark);color:var(--bg);padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.badge{background:#dcfce7;color:#166534;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:700;display:inline-block}
-.foto-perfil{width:80px;height:80px;border-radius:50%;object-fit:cover;background:#e2e8e0;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800}
+.pregacao-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.topico-item{background:#f8fafc;border:1px dashed var(--border);border-radius:12px;padding:12px;margin-top:12px;position:relative}
+.topico-item .remove{position:absolute;top:6px;right:6px;background:#fee2e2;border:0;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer}
+.badge{background:#dcfce7;color:#166534;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:700}
+
+/* LEITURA ESTILO FOTO - EDITÁVEL */
+.leitura-full{position:fixed;inset:0;background:#fdfbf7;z-index:300;overflow-y:auto}
+.leitura-topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--border);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;z-index:10}
+.leitura-toolbar{position:sticky;top:53px;background:#fff;border-bottom:1px solid var(--border);padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;z-index:9}
+.leitura-toolbar select, .leitura-toolbar input{padding:6px;border:1px solid var(--border);border-radius:6px;font-size:12px}
+.leitura-toolbar button{padding:6px 10px;border:1px solid var(--border);background:#fff;border-radius:6px;font-size:12px;cursor:pointer;font-weight:700}
+.leitura-content{max-width:700px;margin:0 auto;padding:20px 20px 40px}
+.leitura-content h1{font-size:26px;letter-spacing:1px;font-weight:800;text-transform:uppercase;margin-bottom:8px;outline:none}
+.leitura-content h2{font-size:14px;font-weight:800;margin:22px 0 10px;text-transform:uppercase;outline:none}
+.leitura-content p, .leitura-content div[contenteditable]{font-size:15px;line-height:1.85;color:#222;margin-bottom:12px;text-align:justify;outline:none;min-height:20px}
+.ideia-central{border-left:4px solid var(--yellow);padding:12px 14px;border-radius:8px;font-size:13px;margin:18px 0;line-height:1.6;outline:none}
+.versiculo-base{margin-top:20px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;font-size:12px;display:flex;gap:8px;align-items:center;outline:none}
+.color-dot{width:22px;height:22px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #ddd;cursor:pointer;display:inline-block}
 </style>
 </head>
 <body>
@@ -48,184 +55,80 @@ header{padding:14px 16px;max-width:900px;margin:0 auto;display:flex;gap:8px;alig
 <button class="tab active" data-tab="agenda">Agenda</button>
 <button class="tab" data-tab="biblia">Bíblia</button>
 <button class="tab" data-tab="perfil">Perfil</button>
-<div style="margin-left:auto;display:flex;gap:8px;align-items:center">
-<span id="horarioHeader" style="font-size:12px;font-weight:700">--:--:--</span>
-<button id="toggleTema" class="btn-ghost" style="padding:6px 10px;font-size:12px">🌙 Noite</button>
-</div>
+<span id="horarioHeader" style="margin-left:auto;font-size:12px;font-weight:700">--:--:--</span>
+<button id="btnInstalar" class="btn-yellow hidden" style="padding:6px 10px;font-size:11px">📲 Baixar App</button>
 </header>
 
-<!-- AUTH COMPLETO COM FOTO, IDADE, SEXO -->
 <div id="authScreen" class="screen">
 <div class="card" style="margin-top:20px">
-<div class="badge">✅ service_hinnu5j + template_cw5rabe CONECTADO</div>
+<div class="badge">✅ service_hinnu5j + template_cw5rabe + Link Instalável</div>
 <h2 style="margin-top:10px">Bem-vindo ao PÚLPITO</h2>
-<p style="font-size:12px;color:#64748b;margin:6px 0 14px">App dos Servos - Cadastro completo</p>
-
-<label class="label">Foto de Perfil (opcional)</label>
-<input id="authFoto" type="file" accept="image/*" class="input">
-<img id="previewFoto" class="hidden" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin-top:8px">
-
+<p style="font-size:12px;color:#64748b;margin:6px 0 14px">Cadastre-se, depois faça login. Qualquer pessoa com o link pode baixar.</p>
 <div class="grid2">
-<div><label class="label">Nome</label><input id="authNome" class="input" placeholder="Breno"></div>
+<div><label class="label">Nome</label><input id="authName" class="input" placeholder="Breno"></div>
 <div><label class="label">Sobrenome</label><input id="authSobrenome" class="input" placeholder="Peixoto"></div>
 </div>
-
-<label class="label">E-mail</label><input id="authEmail" type="email" class="input" placeholder="brenopeixoto900@gmail.com">
-
-<div class="grid2">
-<div><label class="label">Idade</label><input id="authIdade" type="number" class="input" placeholder="Ex: 25"></div>
-<div><label class="label">Sexo</label><select id="authSexo" class="input"><option value="">Selecione</option><option>Homem</option><option>Mulher</option></select></div>
-</div>
-
+<label class="label">E-mail</label><input id="authEmail" class="input" type="email" placeholder="brenopeixoto900@gmail.com">
 <label class="label">Senha</label><input id="authPass" type="password" class="input" placeholder="••••••">
-
 <button class="btn-yellow" style="width:100%;margin-top:14px" id="btnCadastrar">Criar conta e Receber E-mail de Boas-vindas</button>
-<div id="authMsg" class="hidden" style="margin-top:10px;padding:10px;background:#ecfdf5;border-radius:8px;font-size:12px;color:#065f46"></div>
-
+<div id="authMsg" class="hidden" style="margin-top:10px;padding:10px;background:#ecfdf5;border-radius:8px;font-size:12px"></div>
 <div style="height:1px;background:var(--border);margin:18px 0"></div>
-<h3 style="font-size:14px;text-align:center">Já tem conta? Faça login</h3>
-<label class="label">E-mail cadastrado</label><input id="loginEmail" class="input" placeholder="Seu e-mail">
+<h3 style="font-size:14px;text-align:center">Já tem conta? Login</h3>
+<label class="label">E-mail cadastrado</label><input id="loginEmail" class="input" type="email" placeholder="Seu e-mail">
 <label class="label">Senha</label><input id="loginPass" type="password" class="input" placeholder="Sua senha">
-<button class="btn-ghost" style="width:100%;margin-top:10px;background:var(--dark);color:var(--bg)" id="btnLogin">Entrar</button>
+<button class="btn-ghost" style="width:100%;margin-top:10px;background:var(--dark);color:#fff" id="btnLogin">Entrar na minha conta</button>
+<p style="font-size:10px;color:#94a3b8;text-align:center;margin-top:10px">Ao abrir o link: clique nos 3 pontinhos do navegador > Adicionar à tela inicial > Instalar</p>
 </div>
 </div>
 
-<!-- AGENDA - IGUAL SUA FOTO + MELHORIAS -->
 <div id="tab-agenda" class="screen hidden">
-<h2 id="bemVindoNome" style="font-size:18px;margin:16px 0 12px">Bem-vindo, Breno Peixoto!</h2>
-
+<h2 id="bemVindoNome" style="font-size:18px;margin:16px 0 12px">Bem-vindo!</h2>
 <div class="grid2">
-<div class="card">
-<div class="label" style="margin-top:0">Pregações</div>
-<div style="font-size:26px;font-weight:800" id="countPregacoes">1</div>
+<div class="card"><div class="label" style="margin-top:0">Pregações</div><div style="font-size:26px;font-weight:800" id="countPregacoes">0</div></div>
+<div class="card"><div class="label" style="margin-top:0">Cronômetro Alvo</div><div style="display:flex;gap:6px;align-items:center"><input id="horasInput" class="input-mini" type="number" value="0"><span style="font-size:11px">h</span><input id="minInput" class="input-mini" type="number" value="30"><span style="font-size:11px">min</span><span id="horarioDoDia" style="margin-left:auto;font-size:11px;font-weight:700">--:--:--</span></div></div>
 </div>
-<div class="card">
-<div class="label" style="margin-top:0">Cronômetro Alvo</div>
-<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-<input id="horasInput" class="input-mini" type="number" value="0" min="0" max="10"><span style="font-size:11px">h</span>
-<input id="minInput" class="input-mini" type="number" value="30" min="0" max="59"><span style="font-size:11px">min</span>
-<div style="margin-left:auto;font-size:11px;font-weight:700" id="horarioDoDia">--:--:--</div>
-</div>
-<div style="font-size:10px;color:#94a3b8;margin-top:4px" id="dataDoDia"></div>
-</div>
-</div>
-
-<div class="card cronometro-box">
-<div class="label" style="text-align:center;margin-top:0">Cronômetro</div>
-<div class="cronometro-time" id="timerDisplay">00:00</div>
-<div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-<button class="btn-yellow" id="startTimer">▶ INICIAR</button>
-<button class="btn-icon" id="pauseTimer">⏸️</button>
-<button class="btn-icon" id="resetTimer">🔄</button>
-</div>
-<p id="timerStatus" style="font-size:11px;color:#94a3b8;margin-top:8px">Pronto para pregar.</p>
-</div>
-
-<div class="recentes-header">
-<h3 style="font-size:14px">Recentes</h3>
-<button class="btn-yellow" id="btnNova">+ NOVA</button>
-</div>
-
+<div class="card" style="text-align:center"><div class="label" style="margin-top:0">Cronômetro</div><div class="cronometro-time" id="timerDisplay">00:00</div><div style="display:flex;gap:8px;justify-content:center;margin-top:12px"><button class="btn-yellow" id="startTimer">▶ INICIAR</button><button class="btn-ghost" id="pauseTimer">⏸️</button><button class="btn-ghost" id="resetTimer">🔄</button></div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px"><h3 style="font-size:14px">Recentes</h3><button class="btn-yellow" id="btnNova">+ NOVA</button></div>
 <div id="listaRecentes"></div>
 </div>
 
-<!-- BÍBLIA COMPLETA -->
-<div id="tab-biblia" class="screen hidden">
-<div class="card">
-<h3>Bíblia Sagrada Completa</h3>
-<p style="font-size:11px;color:#64748b;margin:6px 0">Escolha livro > capítulo > versículo</p>
-<div id="bibliaLivros" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px"></div>
-<div id="bibliaCapitulos" class="hidden">
-<button class="btn-ghost" id="voltarLivros">← Livros</button>
-<h4 id="nomeLivroAtual" style="margin-top:12px"></h4>
-<div id="gridCapitulos" style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px"></div>
-</div>
-<div id="bibliaVersiculos" class="hidden">
-<button class="btn-ghost" id="voltarCapitulos">← Capítulos</button>
-<h4 id="refAtual" style="margin-top:12px"></h4>
-<div id="textoVersiculos" style="margin-top:12px"></div>
-</div>
-<div style="height:1px;background:var(--border);margin:18px 0"></div>
-<h4 style="font-size:13px">Busca rápida</h4>
-<input id="bibliaInput" class="input" placeholder="Ex: João 3:16" style="margin-top:8px">
-<button class="btn-ghost" style="width:100%;background:var(--dark);color:var(--bg);margin-top:8px" id="buscarVerso">Buscar Versículo</button>
-<div id="bibliaResult" style="margin-top:10px"></div>
-</div>
-</div>
+<div id="tab-biblia" class="screen hidden"><div class="card"><h3>Bíblia Completa</h3><div id="bibliaLivros" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px"></div><div id="bibliaCapitulos" class="hidden"><button class="btn-ghost" id="voltarLivros">← Livros</button><h4 id="nomeLivroAtual" style="margin-top:12px"></h4><div id="gridCapitulos" style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px"></div></div><div id="bibliaVersiculos" class="hidden"><button class="btn-ghost" id="voltarCapitulos">← Capítulos</button><h4 id="refAtual" style="margin-top:12px"></h4><div id="textoVersiculos" style="margin-top:12px"></div></div></div></div>
 
-<!-- PERFIL COM FOTO -->
-<div id="tab-perfil" class="screen hidden">
-<div class="card">
-<h3>Minha Conta</h3>
-<div style="text-align:center;padding:12px 0">
-<img id="perfilFotoImg" class="foto-perfil hidden" style="margin:0 auto">
-<div id="perfilLetra" class="foto-perfil" style="margin:0 auto;background:var(--dark);color:var(--bg)">B</div>
-<h3 id="perfilNome" style="margin-top:10px">Breno Peixoto</h3>
-<p id="perfilEmail" style="font-size:12px;color:#64748b">email</p>
-<p id="perfilIdadeSexo" style="font-size:11px;color:#94a3b8"></p>
-</div>
+<div id="tab-perfil" class="screen hidden"><div class="card"><h3>Minha Conta</h3><h3 id="perfilNome" style="margin-top:10px">Breno</h3><p id="perfilEmail" style="font-size:12px;color:#64748b">email</p><p style="font-size:12px;margin-top:12px">Total pregações: <b id="totalPregacoes">0</b></p><p style="font-size:11px;color:#64748b;margin-top:8px">Link do app: copie a URL do seu GitHub Pages e envie. Quem clicar pode instalar e se cadastrar.</p><button class="btn-ghost" style="width:100%;margin-top:16px;color:#e11d48" id="btnSair">Sair</button></div></div>
 
-<label class="label">Alterar Foto</label><input id="editFoto" type="file" accept="image/*" class="input">
+<!-- MODAL NOVA COM CORES -->
+<div id="modalNova" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:flex-end;justify-content:center"><div style="background:var(--card);width:100%;max-width:700px;border-radius:20px 20px 0 0;padding:18px;max-height:92vh;overflow-y:auto"><h3 id="modalTitulo">Nova Pregação - Estilo da Foto</h3><label class="label">Título (ex: ORAÇÃO E MISSÃO)</label><input id="esbocoTitulo" class="input" placeholder="ORAÇÃO E MISSÃO"><label class="label">Cor do Título</label><div style="display:flex;gap:8px"><input id="corTitulo" type="color" value="#0f172a" style="width:40px;height:40px"><select id="fonteTitulo" class="input" style="flex:1"><option value="Inter">Inter (padrão)</option><option value="Playfair Display">Playfair (elegante)</option><option value="Arial Black">Arial Black (forte)</option><option value="Georgia">Georgia</option></select></div><label class="label">Texto Base (ex: João 17)</label><input id="esbocoTexto" class="input" placeholder="João 17"><label class="label">Versículo Base (ex: Hebreus 7:25) + Cor de Fundo Destacada</label><div style="display:flex;gap:8px"><input id="esbocoVersiculo" class="input" placeholder="Hebreus 7:25" style="flex:1"><input id="corVersiculo" type="color" value="#ffffff" title="Fundo do versículo" style="width:40px"><input id="corVersiculoTexto" type="color" value="#0f172a" title="Cor do texto do versículo" style="width:40px"></div><label class="label">Introdução / Esboço</label><textarea id="esbocoConteudo" rows="4" class="input" placeholder="Na véspera da cruz, Jesus não organiza estratégias - ele ora..."></textarea><div id="areaTopicos"></div><button class="btn-ghost" style="width:100%;margin-top:10px;border-style:dashed" id="btnAddTopico">+ Acrescentar mais tópico</button><label class="label">Ideia Central (fundo destacado)</label><textarea id="ideiaCentralInput" rows="2" class="input" placeholder="Ideia central: A oração de Jesus revela que..."></textarea><div style="display:flex;gap:8px;margin-top:8px"><span style="font-size:11px">Cor fundo Ideia:</span><input id="corIdeia" type="color" value="#fef9c3"><span style="font-size:11px">Cor texto Ideia:</span><input id="corIdeiaTexto" type="color" value="#000000"></div><div style="display:flex;gap:8px;margin-top:18px"><button class="btn-ghost" style="flex:1" id="btnCancelarNova">Cancelar</button><button class="btn-yellow" style="flex:1" id="salvarEsboco">💾 Salvar como na Foto</button></div></div></div>
 
-<div class="grid2">
-<div><label class="label">Nome</label><input id="editNome" class="input"></div>
-<div><label class="label">Sobrenome</label><input id="editSobrenome" class="input"></div>
-</div>
-<div class="grid2">
-<div><label class="label">Idade</label><input id="editIdade" type="number" class="input"></div>
-<div><label class="label">Sexo</label><select id="editSexo" class="input"><option>Homem</option><option>Mulher</option></select></div>
-</div>
-
-<button class="btn-ghost" style="width:100%;background:var(--dark);color:var(--bg);margin-top:12px" id="btnSalvarPerfil">Salvar Alterações</button>
-
-<div style="margin-top:16px;font-size:12px;color:#64748b;line-height:1.8">
-<p>Total pregações: <b id="totalPregacoes">0</b></p>
-<p>E-mail: <b id="infoEmail">-</b></p>
-<p>Service: <b>service_hinnu5j</b> • Template: <b>template_cw5rabe</b> • <span style="color:green">● Conectado</span></p>
-</div>
-
-<button class="btn-ghost" style="width:100%;margin-top:16px;color:#e11d48" id="btnSair">Sair da Conta</button>
-</div>
-</div>
-
-<!-- MODAL NOVA PREGAÇÃO - COM + TÓPICOS E VERSÍCULOS -->
-<div id="modalNova" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:flex-end;justify-content:center">
-<div style="background:var(--card);width:100%;max-width:700px;border-radius:20px 20px 0 0;padding:18px;max-height:92vh;overflow-y:auto;border:1px solid var(--border)">
-<h3 id="modalTitulo" style="font-size:18px">Nova Pregação</h3>
-
-<label class="label">Título da Pregação</label><input id="esbocoTitulo" class="input" placeholder="Você é herdeiro?">
-<label class="label">Texto Base</label><input id="esbocoTexto" class="input" placeholder="Ex: Romanos 8:17">
-<label class="label">Versículo Principal</label><input id="esbocoVersiculo" class="input" placeholder="Ex: Gálatas 4:7 - E, porque sois filhos...">
-<label class="label">Esboço / Introdução</label><textarea id="esbocoConteudo" rows="4" class="input" placeholder="Introdução da mensagem..."></textarea>
-
-<div id="areaTopicos" style="margin-top:16px"></div>
-<button class="btn-ghost" style="width:100%;margin-top:10px;border-style:dashed" id="btnAddTopico">+ Acrescentar mais tópico com versículo</button>
-
-<div style="display:flex;gap:8px;margin-top:18px">
-<button class="btn-ghost" style="flex:1" id="btnCancelarNova">Cancelar</button>
-<button class="btn-yellow" style="flex:1" id="salvarEsboco">💾 Salvar Pregação</button>
-</div>
-</div>
-</div>
-
-<!-- VER PREGAÇÃO COMPLETA -->
+<!-- LEITURA FINAL EDITÁVEL IGUAL FOTO -->
 <div id="leituraMode" class="leitura-full hidden">
 <div class="leitura-topbar">
-<button id="fecharLeitura" style="background:#1e293b;color:#fff;border:0;padding:8px 12px;border-radius:8px">← Voltar</button>
-<div style="display:flex;gap:8px;align-items:center">
-<span id="leituraHorario" style="font-size:12px">--:--</span>
-<span id="leituraTimer" style="background:var(--yellow);color:#000;padding:4px 10px;border-radius:6px;font-weight:800">00:00</span>
+<span id="leituraHorario">16:05</span>
+<span id="leituraTimer" style="background:var(--yellow);padding:4px 10px;border-radius:6px;font-weight:800">01:19</span>
+<div style="display:flex;gap:6px"><button id="btnSalvarEdicao" class="btn-yellow" style="padding:6px 10px;font-size:11px">💾 Salvar Edição</button><button id="fecharLeitura" style="background:var(--dark);color:#fff;border:0;padding:6px 12px;border-radius:8px">✕ Fechar</button></div>
 </div>
+
+<!-- BARRA DE EDIÇÃO DE TEXTO INDIVIDUAL - O QUE VOCÊ PEDIU -->
+<div class="leitura-toolbar">
+<button onclick="document.execCommand('bold')"><b>B</b></button>
+<button onclick="document.execCommand('italic')"><i>I</i></button>
+<button onclick="document.execCommand('underline')"><u>U</u></button>
+<select id="selFonte" onchange="document.execCommand('fontName',false,this.value)"><option value="">Fonte</option><option value="Inter">Inter</option><option value="Georgia">Georgia</option><option value="Arial">Arial</option><option value="Times New Roman">Times</option></select>
+<input id="selCorTexto" type="color" value="#000000" title="Cor da letra" onchange="document.execCommand('foreColor',false,this.value)">
+<input id="selCorFundo" type="color" value="#ffff00" title="Marca texto" onchange="document.execCommand('hiliteColor',false,this.value)">
+<button onclick="document.execCommand('removeFormat')">Limpar</button>
+<span style="font-size:10px;color:#94a3b8;margin-left:auto">Selecione o texto e mude cor/fonte individual</span>
 </div>
-<div style="padding:20px;max-width:800px;margin:0 auto">
-<h2 id="leituraTitulo" style="font-size:26px"></h2>
-<p id="leituraTexto" style="color:#e11d48;font-weight:700;margin-top:6px"></p>
-<p id="leituraVersiculo" style="background:#f8fafc;padding:12px;border-left:4px solid var(--yellow);border-radius:8px;margin-top:12px;font-size:14px"></p>
-<pre id="leituraConteudo" style="white-space:pre-wrap;font-family:Inter;font-size:16px;line-height:1.8;margin-top:16px"></pre>
+
+<div class="leitura-content">
+<h1 id="leituraTitulo" contenteditable="true">ORAÇÃO E MISSÃO</h1>
+<h2 contenteditable="true">INTRODUÇÃO</h2>
+<div id="leituraConteudo" contenteditable="true"></div>
 <div id="leituraTopicosExtra"></div>
+<div class="ideia-central" id="leituraIdeiaBox" contenteditable="true">Ideia central: A oração de Jesus revela que santidade e missão são inseparáveis: é da intimidade com o Pai que nasce o envio ao mundo.</div>
+<div class="versiculo-base" id="leituraVersiculoBox" contenteditable="true">📖 VERSÍCULO BASE <b id="leituraVersiculo" style="margin-left:6px">Hebreus 7:25</b></div>
 </div>
 </div>
 
 <script src="js/app.js"></script>
 </body>
-</html>
+</html>>
