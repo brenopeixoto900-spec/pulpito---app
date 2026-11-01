@@ -6,18 +6,20 @@
 <title>PÚLPITO - App dos Servos</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icone-512.png">
-<!-- EMAILJS - SEUS DADOS REAIS JÁ CONFIGURADOS -->
+<!-- EmailJS - SEUS DADOS: service_hinnu5j + template_cw5rabe + HtTUEwYxZOHxtBOWu -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>emailjs.init("HtTUEwYxZOHxtBOWu");</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{--red:#e11d48;--dark:#0f172a;--border:#e2e8f0}
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;background:#f8fafc;color:var(--dark)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,sans-serif;background:#f8fafc;color:var(--dark);-webkit-tap-highlight-color:transparent}
 header{background:var(--dark);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
-header h1{font-family:Playfair Display,serif;letter-spacing:3px}
+header h1{font-family:Playfair Display,serif;letter-spacing:3px;font-size:22px}
 .screen{max-width:520px;margin:0 auto;padding:18px 14px 90px}
 .card{background:#fff;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.06);padding:20px;margin-bottom:14px;border:1px solid var(--border)}
 input,textarea,select{width:100%;padding:14px;border:2px solid var(--border);border-radius:12px;font-size:16px;margin-top:8px;outline:none}
+input:focus,textarea:focus{border-color:var(--dark)}
 .btn{width:100%;padding:15px;background:var(--red);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:16px;cursor:pointer;margin-top:12px}
 .btn-dark{background:var(--dark)}.btn-ghost{background:#fff;color:var(--dark);border:2px solid var(--border)}
 .label{font-size:12px;font-weight:700;text-transform:uppercase;color:#64748b;margin-top:14px;display:block}
@@ -25,35 +27,159 @@ input,textarea,select{width:100%;padding:14px;border:2px solid var(--border);bor
 .tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 0 22px;z-index:30;max-width:520px;margin:0 auto}
 .tabbar button{border:0;background:none;font-size:11px;font-weight:700;color:#94a3b8;display:flex;flex-direction:column;align-items:center;gap:4px}
 .tabbar button.active{color:var(--red)}.tabbar span{font-size:20px}
-.timer-display{font-size:72px;font-weight:800;text-align:center;margin:10px 0}.timer-display.piscando{animation:pisca .8s infinite}
+/* CRONÔMETRO DIMINUÍDO COMO VOCÊ PEDIU */
+.timer-display{font-size:48px;font-weight:800;text-align:center;margin:8px 0;letter-spacing:-1px}
+.timer-display.piscando{animation:pisca .8s infinite}
 @keyframes pisca{0%,100%{opacity:1;color:var(--red)}50%{opacity:.2}}
 .badge{background:#dcfce7;color:#166534;padding:6px 12px;border-radius:999px;font-size:11px;font-weight:700;display:inline-block}
+.divider{height:1px;background:var(--border);margin:20px 0}
 .pulpito-full{position:fixed;inset:0;background:#000;color:#fff;z-index:100;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center}
-.pulpito-full .time{font-size:110px;font-weight:800;margin:20px 0}
+.pulpito-full .time{font-size:80px;font-weight:800;margin:20px 0}
+.leitura-full{position:fixed;inset:0;background:#fff;z-index:200;overflow-y:auto;padding:0;display:flex;flex-direction:column}
+.leitura-topbar{position:sticky;top:0;background:var(--dark);color:#fff;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.leitura-topbar .mini-timer{font-weight:800;font-size:16px;background:var(--red);padding:6px 12px;border-radius:8px}
+.leitura-topbar .horario{font-size:14px}
+.leitura-content{padding:22px 18px;max-width:700px;margin:0 auto;width:100%}
+.leitura-content h2{font-family:Playfair Display;font-size:28px}
+.leitura-content pre{white-space:pre-wrap;font-family:Inter;font-size:18px;line-height:1.7;margin-top:16px}
 </style>
 </head>
 <body>
-<header><h1>PÚLPITO</h1><div><button id="logoutBtn" class="hidden" style="background:#1e293b;color:#fff;border:0;padding:8px 12px;border-radius:8px">Sair</button> <span id="userNameHead" style="font-size:12px"></span></div></header>
+<header>
+<h1>PÚLPITO</h1>
+<div>
+<button id="logoutBtn" class="hidden" style="background:#1e293b;color:#fff;border:0;padding:8px 12px;border-radius:8px">Sair</button>
+<span id="userNameHead" style="font-size:12px;opacity:.8"></span>
+</div>
+</header>
+
+<!-- TELA DE LOGIN E CADASTRO - INTERFACE ORIGINAL COM CADASTRO EM CIMA E LOGIN EMBAIXO -->
 <div id="authScreen" class="screen">
 <div class="card">
 <div class="badge">✅ service_hinnu5j + template_cw5rabe CONECTADO</div>
-<h2 style="font-family:Playfair Display;font-size:28px;margin-top:10px">Bem-vindo ao App dos Servos</h2>
-<p style="color:#64748b;font-size:13px;margin:8px 0">Ao se cadastrar você recebe e-mail automático "Bem-vindo ao PÚLPITO!"</p>
-<label class="label">Seu Nome</label><input id="authName" placeholder="Breno Peixoto" />
-<label class="label">Seu E-mail</label><input id="authEmail" type="email" placeholder="brenopeixoto900@gmail.com" />
-<label class="label">Senha</label><input id="authPass" type="password" placeholder="••••••" />
-<button class="btn" id="btnCadastrar">Criar conta e Receber E-mail</button>
-<button class="btn btn-ghost" id="btnLogin">Já tenho conta - Entrar</button>
+<h2 style="font-family:Playfair Display;font-size:26px;margin-top:10px">Bem-vindo ao App dos Servos</h2>
+<p style="color:#64748b;font-size:13px;margin:8px 0 16px">Crie sua conta e receba e-mail automático de boas-vindas.</p>
+
+<!-- CADASTRO -->
+<label class="label">Seu Nome</label>
+<input id="authName" placeholder="Ex: Breno Peixoto" />
+
+<label class="label">Seu E-mail</label>
+<input id="authEmail" type="email" placeholder="Ex: brenopeixoto900@gmail.com" />
+
+<label class="label">Crie uma Senha</label>
+<input id="authPass" type="password" placeholder="••••••" />
+
+<button class="btn" id="btnCadastrar">Criar conta e Receber E-mail de Boas-vindas</button>
+
 <div id="authMsg" class="hidden" style="margin-top:12px;padding:12px;border-radius:10px;background:#ecfdf5;color:#065f46;font-size:13px"></div>
-</div></div>
-<div id="appScreen" class="screen hidden">
-<div id="tab-timer" class="tabContent"><div class="card"><h2 style="font-family:Playfair Display">Cronômetro da Pregação</h2><label class="label">Tempo (minutos)</label><input id="minInput" type="number" value="30"><div class="timer-display" id="timerDisplay">30:00</div><div style="display:flex;gap:8px"><button class="btn btn-dark" id="startTimer" style="flex:1">Iniciar</button><button class="btn btn-ghost" id="pauseTimer" style="flex:1">Pausar</button><button class="btn btn-ghost" id="resetTimer" style="flex:1">Reset</button></div><button class="btn" id="abrirPulpitoBtn">ABRA [PÚLPITO] - TELA CHEIA</button></div><div class="card"><p id="timerStatus" style="font-size:13px;color:#64748b">Pronto para pregar.</p></div></div>
-<div id="tab-biblia" class="tabContent hidden"><div class="card"><h2>Bíblia Rápida</h2><input id="bibliaInput" placeholder="Ex: João 3:16"><button class="btn btn-dark" id="buscarVerso">Buscar</button><div id="bibliaResult"></div></div></div>
-<div id="tab-esbocos" class="tabContent hidden"><div class="card"><h2>Meus Esboços</h2><input id="esbocoTitulo" placeholder="Título"><input id="esbocoTexto" placeholder="Texto Base"><textarea id="esbocoConteudo" rows="8" placeholder="Esboço..."></textarea><button class="btn" id="salvarEsboco">Salvar Esboço</button></div><div id="listaEsbocos"></div></div>
-<div id="tab-servos" class="tabContent hidden"><div class="card"><h2>App dos Servos</h2><input id="servoNome" placeholder="Nome do servo"><select id="servoFunc"><option>Pregação</option><option>Louvor</option><option>Recepção</option><option>Mídia</option></select><button class="btn" id="addServo">Adicionar na escala</button></div><div id="listaServos"></div></div>
+
+<div class="divider"></div>
+
+<!-- LOGIN EMBAIXO COMO VOCÊ PEDIU -->
+<h3 style="font-size:16px;text-align:center">Já tem conta?</h3>
+<p style="font-size:12px;color:#94a3b8;text-align:center;margin:6px 0 10px">Faça login abaixo com seu e-mail e senha criados</p>
+<label class="label">E-mail já cadastrado</label>
+<input id="loginEmail" type="email" placeholder="Seu e-mail cadastrado" />
+<label class="label">Sua Senha</label>
+<input id="loginPass" type="password" placeholder="Sua senha" />
+<button class="btn btn-dark" id="btnLogin">Entrar - Já tenho conta</button>
+
+<p style="font-size:11px;color:#94a3b8;margin-top:14px;text-align:center">Ao criar conta enviamos e-mail "Bem-vindo ao PÚLPITO!" para {{email}} via EmailJS</p>
 </div>
-<div class="tabbar hidden" id="tabbar"><button data-tab="timer" class="active"><span>⏱️</span>Timer</button><button data-tab="biblia"><span>📖</span>Bíblia</button><button data-tab="esbocos"><span>📝</span>Esboços</button><button data-tab="servos"><span>🙌</span>Servos</button></div>
-<div id="pulpitoFull" class="pulpito-full hidden"><h2 style="font-family:Playfair Display;letter-spacing:4px">PÚLPITO</h2><div class="time" id="pulpitoTime">30:00</div><p id="pulpitoNome"></p><button class="btn btn-ghost" style="max-width:200px;color:#fff;border-color:#fff" id="fecharPulpito">Fechar [PÚLPITO]</button></div>
+</div>
+
+<!-- APP PRINCIPAL -->
+<div id="appScreen" class="screen hidden">
+
+<!-- TIMER COM HORÁRIO DO DIA -->
+<div id="tab-timer" class="tabContent">
+<div class="card">
+<h2 style="font-family:Playfair Display">Cronômetro da Pregação</h2>
+<!-- HORÁRIO DO DIA ROLANDO - O QUE VOCÊ PEDIU -->
+<p id="horarioDoDia" style="text-align:center;font-weight:700;font-size:16px;margin:8px 0;color:var(--dark)">--:--:--</p>
+<p id="dataDoDia" style="text-align:center;font-size:12px;color:#94a3b8;margin-bottom:8px"></p>
+
+<label class="label">Tempo da Pregação (minutos)</label>
+<input id="minInput" type="number" value="30" min="1" max="180" />
+
+<!-- CRONÔMETRO MENOR - 48px COMO VOCÊ PEDIU -->
+<div class="timer-display" id="timerDisplay">30:00</div>
+
+<div style="display:flex;gap:8px">
+<button class="btn btn-dark" id="startTimer" style="flex:1">Iniciar</button>
+<button class="btn btn-ghost" id="pauseTimer" style="flex:1">Pausar</button>
+<button class="btn btn-ghost" id="resetTimer" style="flex:1">Reset</button>
+</div>
+
+<button class="btn" id="abrirPulpitoBtn" style="margin-top:12px">ABRA [PÚLPITO] - TELA CHEIA</button>
+</div>
+<div class="card"><p id="timerStatus" style="font-size:13px;color:#64748b">Pronto para pregar.</p></div>
+</div>
+
+<!-- BÍBLIA -->
+<div id="tab-biblia" class="tabContent hidden">
+<div class="card"><h2 style="font-family:Playfair Display">Bíblia Rápida</h2><input id="bibliaInput" placeholder="Ex: João 3:16" /><button class="btn btn-dark" id="buscarVerso">Buscar Versículo</button><div id="bibliaResult"></div></div>
+</div>
+
+<!-- ESBOÇOS / PREGAÇÕES EMBAIXO COM EDITAR -->
+<div id="tab-esbocos" class="tabContent hidden">
+<div class="card">
+<h2 style="font-family:Playfair Display">Minhas Pregações</h2>
+<label class="label">Título da Pregação</label><input id="esbocoTitulo" placeholder="Ex: A Fé que Move Montanhas" />
+<label class="label">Texto Base</label><input id="esbocoTexto" placeholder="Ex: Mateus 17:20" />
+<label class="label">Esboço Completo</label><textarea id="esbocoConteudo" rows="8" placeholder="1. Introdução...&#10;2. Desenvolvimento...&#10;3. Conclusão..."></textarea>
+<button class="btn" id="salvarEsboco">Salvar Pregação</button>
+<button class="btn btn-ghost hidden" id="cancelarEdicao">Cancelar Edição</button>
+</div>
+<!-- LISTA DE PREGAÇÕES EMBAIXO COM EDITAR - INTERFACE ORIGINAL -->
+<div id="listaEsbocos"></div>
+</div>
+
+<!-- SERVOS -->
+<div id="tab-servos" class="tabContent hidden">
+<div class="card"><h2 style="font-family:Playfair Display">Escala dos Servos</h2><input id="servoNome" placeholder="Nome do servo" /><select id="servoFunc"><option>Pregação</option><option>Louvor</option><option>Recepção</option><option>Mídia</option><option>Oração</option></select><button class="btn" id="addServo">Adicionar na escala</button></div>
+<div id="listaServos"></div>
+</div>
+
+</div>
+
+<div class="tabbar hidden" id="tabbar">
+<button data-tab="timer" class="active"><span>⏱️</span>Timer</button>
+<button data-tab="biblia"><span>📖</span>Bíblia</button>
+<button data-tab="esbocos"><span>📝</span>Pregações</button>
+<button data-tab="servos"><span>🙌</span>Servos</button>
+</div>
+
+<!-- MODO PÚLPITO TELA CHEIA COM HORÁRIO -->
+<div id="pulpitoFull" class="pulpito-full hidden">
+<h2 style="font-family:Playfair Display;letter-spacing:4px">PÚLPITO</h2>
+<div class="time" id="pulpitoTime">30:00</div>
+<p id="pulpitoHorario" style="font-size:22px;margin-bottom:8px"></p>
+<p id="pulpitoNome" style="opacity:.7"></p>
+<button class="btn btn-ghost" style="max-width:200px;color:#fff;border-color:#fff;margin-top:16px" id="fecharPulpito">Fechar [PÚLPITO]</button>
+</div>
+
+<!-- MODO LEITURA DA PREGAÇÃO COM CRONÔMETRO DO LADO + HORÁRIO - SEM ATRAPALHAR LEITURA -->
+<div id="leituraMode" class="leitura-full hidden">
+<div class="leitura-topbar">
+<button id="fecharLeitura" style="background:#1e293b;color:#fff;border:0;padding:8px 12px;border-radius:8px">← Voltar</button>
+<div style="display:flex;gap:8px;align-items:center">
+<div class="horario" id="leituraHorario">--:--</div>
+<div class="mini-timer" id="leituraTimer">30:00</div>
+</div>
+<div style="display:flex;gap:6px">
+<button id="leituraPlay" style="background:var(--red);color:#fff;border:0;padding:8px 10px;border-radius:8px">▶️</button>
+<button id="leituraPause" style="background:#1e293b;color:#fff;border:0;padding:8px 10px;border-radius:8px">⏸️</button>
+</div>
+</div>
+<div class="leitura-content">
+<h2 id="leituraTitulo"></h2>
+<small id="leituraTexto" style="color:var(--red);font-weight:700;font-size:14px"></small>
+<pre id="leituraConteudo"></pre>
+</div>
+</div>
+
 <script src="js/app.js"></script>
 </body>
 </html>
