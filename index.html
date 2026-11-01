@@ -2,91 +2,58 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>PÚLPITO</title>
-<link rel="manifest" href="./manifest.json">
-<script src="https://cdn.tailwindcss.com"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PÚLPITO - App dos Servos</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icone-512.png">
+<!-- EMAILJS - SEUS DADOS REAIS JÁ CONFIGURADOS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init("HtTUEwYxZOHxtBOWu");</script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#09090b;--panel:#18181b;--border:#27272a;--text:#fafafa;--field:#27272a}
-.light{--bg:#f4f4f5;--panel:#ffffff;--border:#e4e4e7;--text:#09090b;--field:#ffffff}
-body{background:var(--bg);color:var(--text);font-family:Inter,sans-serif;transition:0.3s}
-.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px}
-.field{background:var(--field);border:1px solid var(--border);border-radius:8px;padding:10px;width:100%;color:var(--text)}
-.btn{background:#eab308;color:#000;font-weight:800;padding:10px 16px;border-radius:8px}
-.btn-ghost{background:var(--field);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px}
-.editable-view{line-height:1.8;word-wrap:break-word}
-.toolbar{position:sticky;top:0;background:var(--panel);z-index:10;border:1px solid var(--border);padding:8px;border-radius:10px;display:flex;flex-wrap:wrap;gap:6px}
-.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;background:#333}
-.avatar-lg{width:100px;height:100px;border-radius:50%;object-fit:cover;background:#333;border:3px solid #eab308}
+:root{--red:#e11d48;--dark:#0f172a;--border:#e2e8f0}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;background:#f8fafc;color:var(--dark)}
+header{background:var(--dark);color:#fff;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
+header h1{font-family:Playfair Display,serif;letter-spacing:3px}
+.screen{max-width:520px;margin:0 auto;padding:18px 14px 90px}
+.card{background:#fff;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.06);padding:20px;margin-bottom:14px;border:1px solid var(--border)}
+input,textarea,select{width:100%;padding:14px;border:2px solid var(--border);border-radius:12px;font-size:16px;margin-top:8px;outline:none}
+.btn{width:100%;padding:15px;background:var(--red);color:#fff;border:none;border-radius:12px;font-weight:800;font-size:16px;cursor:pointer;margin-top:12px}
+.btn-dark{background:var(--dark)}.btn-ghost{background:#fff;color:var(--dark);border:2px solid var(--border)}
+.label{font-size:12px;font-weight:700;text-transform:uppercase;color:#64748b;margin-top:14px;display:block}
+.hidden{display:none!important}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 0 22px;z-index:30;max-width:520px;margin:0 auto}
+.tabbar button{border:0;background:none;font-size:11px;font-weight:700;color:#94a3b8;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tabbar button.active{color:var(--red)}.tabbar span{font-size:20px}
+.timer-display{font-size:72px;font-weight:800;text-align:center;margin:10px 0}.timer-display.piscando{animation:pisca .8s infinite}
+@keyframes pisca{0%,100%{opacity:1;color:var(--red)}50%{opacity:.2}}
+.badge{background:#dcfce7;color:#166534;padding:6px 12px;border-radius:999px;font-size:11px;font-weight:700;display:inline-block}
+.pulpito-full{position:fixed;inset:0;background:#000;color:#fff;z-index:100;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center}
+.pulpito-full .time{font-size:110px;font-weight:800;margin:20px 0}
 </style>
 </head>
 <body>
-<div id="toast" class="hidden fixed top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg z-[60]"></div>
-
-<div id="auth" class="min-h-screen flex items-center justify-center p-4">
-  <div class="panel w-full max-w-sm">
-    <h1 class="text-3xl font-black text-yellow-400 text-center">PÚLPITO</h1>
-    <p class="text-xs text-center opacity-60 mt-1">Cadastro completo</p>
-    <input id="signupName" class="field mt-3" placeholder="Nome completo">
-    <input id="signupEmail" class="field mt-2" placeholder="Seu e-mail">
-    <input id="signupPass" type="password" class="field mt-2" placeholder="Senha">
-    <div class="flex gap-2 mt-2">
-      <input id="signupAge" type="number" class="field" placeholder="Idade">
-      <select id="signupGender" class="field"><option value="">Sexo</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select>
-    </div>
-    <div class="mt-2"><label class="text-xs opacity-60">Foto de perfil (opcional)</label><input id="signupPhoto" type="file" accept="image/*" class="field mt-1 text-xs"></div>
-    <img id="signupPreview" class="avatar-lg mx-auto mt-3 hidden">
-    <button id="signupBtn" class="btn w-full mt-3">CRIAR CONTA</button>
-    <button id="localModeBtn" class="btn-ghost w-full mt-2">USAR MODO LOCAL ✓</button>
-  </div>
+<header><h1>PÚLPITO</h1><div><button id="logoutBtn" class="hidden" style="background:#1e293b;color:#fff;border:0;padding:8px 12px;border-radius:8px">Sair</button> <span id="userNameHead" style="font-size:12px"></span></div></header>
+<div id="authScreen" class="screen">
+<div class="card">
+<div class="badge">✅ service_hinnu5j + template_cw5rabe CONECTADO</div>
+<h2 style="font-family:Playfair Display;font-size:28px;margin-top:10px">Bem-vindo ao App dos Servos</h2>
+<p style="color:#64748b;font-size:13px;margin:8px 0">Ao se cadastrar você recebe e-mail automático "Bem-vindo ao PÚLPITO!"</p>
+<label class="label">Seu Nome</label><input id="authName" placeholder="Breno Peixoto" />
+<label class="label">Seu E-mail</label><input id="authEmail" type="email" placeholder="brenopeixoto900@gmail.com" />
+<label class="label">Senha</label><input id="authPass" type="password" placeholder="••••••" />
+<button class="btn" id="btnCadastrar">Criar conta e Receber E-mail</button>
+<button class="btn btn-ghost" id="btnLogin">Já tenho conta - Entrar</button>
+<div id="authMsg" class="hidden" style="margin-top:12px;padding:12px;border-radius:10px;background:#ecfdf5;color:#065f46;font-size:13px"></div>
+</div></div>
+<div id="appScreen" class="screen hidden">
+<div id="tab-timer" class="tabContent"><div class="card"><h2 style="font-family:Playfair Display">Cronômetro da Pregação</h2><label class="label">Tempo (minutos)</label><input id="minInput" type="number" value="30"><div class="timer-display" id="timerDisplay">30:00</div><div style="display:flex;gap:8px"><button class="btn btn-dark" id="startTimer" style="flex:1">Iniciar</button><button class="btn btn-ghost" id="pauseTimer" style="flex:1">Pausar</button><button class="btn btn-ghost" id="resetTimer" style="flex:1">Reset</button></div><button class="btn" id="abrirPulpitoBtn">ABRA [PÚLPITO] - TELA CHEIA</button></div><div class="card"><p id="timerStatus" style="font-size:13px;color:#64748b">Pronto para pregar.</p></div></div>
+<div id="tab-biblia" class="tabContent hidden"><div class="card"><h2>Bíblia Rápida</h2><input id="bibliaInput" placeholder="Ex: João 3:16"><button class="btn btn-dark" id="buscarVerso">Buscar</button><div id="bibliaResult"></div></div></div>
+<div id="tab-esbocos" class="tabContent hidden"><div class="card"><h2>Meus Esboços</h2><input id="esbocoTitulo" placeholder="Título"><input id="esbocoTexto" placeholder="Texto Base"><textarea id="esbocoConteudo" rows="8" placeholder="Esboço..."></textarea><button class="btn" id="salvarEsboco">Salvar Esboço</button></div><div id="listaEsbocos"></div></div>
+<div id="tab-servos" class="tabContent hidden"><div class="card"><h2>App dos Servos</h2><input id="servoNome" placeholder="Nome do servo"><select id="servoFunc"><option>Pregação</option><option>Louvor</option><option>Recepção</option><option>Mídia</option></select><button class="btn" id="addServo">Adicionar na escala</button></div><div id="listaServos"></div></div>
 </div>
-
-<div id="app" class="hidden">
-  <header class="sticky top-0 z-20 p-3 flex justify-between items-center" style="background:var(--panel);border-bottom:1px solid var(--border)">
-    <div class="flex items-center gap-2"><img id="topAvatar" class="avatar"><div><b id="topName" class="text-yellow-400">Local</b><div class="flex gap-2 text-[10px] opacity-70"><span id="syncStatus">Modo Local ✓</span><span id="liveClock">00:00:00</span></div></div></div>
-    <div class="flex gap-2"><button id="themeBtn" class="btn-ghost">☀️</button><button id="logoutBtn" class="btn-ghost text-xs">Sair</button></div>
-  </header>
-  <nav class="flex gap-2 p-2 overflow-auto" style="background:var(--panel)">
-    <button class="tab active btn text-xs" data-view="home">Início</button>
-    <button class="tab btn-ghost text-xs" data-view="messages">Pregações</button>
-    <button class="tab btn-ghost text-xs" data-view="editor">Editor</button>
-    <button class="tab btn-ghost text-xs" data-view="bible">Bíblia</button>
-    <button class="tab btn-ghost text-xs" data-view="agenda">Agenda</button>
-    <button class="tab btn-ghost text-xs" data-view="profile">Perfil</button>
-  </nav>
-
-  <main class="p-3 max-w-3xl mx-auto">
-    <section id="view-home"><h2 id="welcome" class="text-xl font-bold"></h2><div class="grid grid-cols-2 gap-2 mt-3"><div class="panel"><p class="text-xs opacity-60">Pregações</p><b id="countMessages" class="text-2xl">0</b></div><div class="panel"><p class="text-xs opacity-60">Cronômetro Alvo</p><div class="flex gap-2 mt-1"><input id="timerTarget" type="number" value="30" class="field p-1 w-16"><span class="text-xs">min</span></div></div></div><div class="panel mt-3 text-center"><p class="text-xs opacity-60">CRONÔMETRO</p><div id="timerDisplay" class="text-4xl font-black my-2">00:00</div><div class="flex gap-2 justify-center"><button id="timerStart" class="btn text-xs">▶️ INICIAR</button><button id="timerPause" class="btn-ghost text-xs">⏸️</button><button id="timerReset" class="btn-ghost text-xs">🔄</button></div></div><div class="flex justify-between items-center mt-4"><h3 class="font-bold">Recentes</h3><button id="newFromHome" class="btn text-xs">+ NOVA</button></div><div id="recentList" class="mt-2"></div></section>
-    <section id="view-messages" class="hidden"><div class="flex justify-between"><h2 class="font-bold">Minhas Pregações</h2><button id="newMessageBtn" class="btn text-xs">+ NOVA</button></div><div id="messageList" class="mt-3 space-y-2"></div></section>
-    <section id="view-editor" class="hidden"><div class="flex justify-between items-center"><button id="backMessages" class="btn-ghost text-xs">← Voltar</button><div class="flex gap-2"><button id="previewBtn" class="btn-ghost text-xs">👁 Prévia</button><button id="saveMessageBtn" class="btn text-xs">💾 SALVAR</button></div></div><input id="msgTitle" class="field mt-3 font-bold" placeholder="Título"><input id="msgDescription" class="field mt-2" placeholder="Descrição curta"><textarea id="msgBase" class="field mt-2" rows="2" placeholder="Texto base Ex: Romanos 8:16-17"></textarea><div class="panel mt-3"><p class="text-xs font-bold">🎙️ ÁUDIO</p><div class="flex gap-2 mt-2"><button id="recordBtn" class="btn-ghost text-xs">● GRAVAR</button><button id="stopRecordBtn" class="btn-ghost text-xs hidden">■ PARAR</button></div><div id="audioList" class="mt-2 space-y-1"></div></div><div class="flex justify-between items-center mt-3"><h3 class="font-bold text-sm">Tópicos</h3><button id="addTopicBtn" class="btn-ghost text-xs">+ Tópico</button></div><div id="topics" class="mt-2"></div><div id="previewArea" class="hidden panel mt-3 whitespace-pre-wrap text-sm"></div></section>
-    <section id="view-bible" class="hidden"><h2 class="font-bold">BÍBLIA COMPLETA</h2><div class="flex gap-2 mt-2"><input id="bibleSearch" class="field" placeholder="Ex: João 3:16"><button id="bibleSearchBtn" class="btn text-xs">BUSCAR</button></div><div class="flex gap-2 mt-2 text-[11px]"><span id="biblePath" class="opacity-60">Escolha um livro</span></div><div id="bibleBooks" class="grid grid-cols-3 gap-1 mt-3 max-h-32 overflow-auto text-[11px]"></div><div id="bibleChapters" class="hidden grid grid-cols-8 gap-1 mt-2"></div><div id="bibleVerses" class="hidden grid grid-cols-10 gap-1 mt-2"></div><div id="bibleResult" class="panel mt-3 text-sm min-h-[100px]">Toque num livro, capítulo, versículo</div></section>
-    <section id="view-agenda" class="hidden"><h2 class="font-bold">Agenda</h2><div class="panel mt-2 flex gap-2"><input id="agendaDate" type="date" class="field"><input id="agendaTitle" class="field" placeholder="Evento"><button id="agendaAddBtn" class="btn text-xs">+</button></div><div id="agendaList" class="mt-3 space-y-1"></div></section>
-
-    <section id="view-profile" class="hidden">
-      <h2 class="font-bold text-yellow-400 text-xl">MEU PERFIL</h2>
-      <div class="panel mt-3 text-center">
-        <img id="profileAvatar" class="avatar-lg mx-auto">
-        <h3 id="profileName" class="font-bold mt-2 text-lg"></h3>
-        <p id="profileEmail" class="text-xs opacity-60"></p>
-        <div class="grid grid-cols-2 gap-2 mt-4 text-left">
-          <div><label class="text-[10px] opacity-60">NOME</label><input id="profileEditName" class="field mt-1"></div>
-          <div><label class="text-[10px] opacity-60">E-MAIL</label><input id="profileEditEmail" class="field mt-1"></div>
-          <div><label class="text-[10px] opacity-60">IDADE</label><input id="profileEditAge" type="number" class="field mt-1"></div>
-          <div><label class="text-[10px] opacity-60">SEXO</label><select id="profileEditGender" class="field mt-1"><option value="">Sexo</option><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option></select></div>
-        </div>
-        <div class="mt-3 text-left"><label class="text-[10px] opacity-60">TROCAR FOTO DE PERFIL</label><input id="profileEditPhoto" type="file" accept="image/*" class="field mt-1 text-xs"></div>
-        <button id="profileSaveBtn" class="btn w-full mt-4">💾 SALVAR DADOS</button>
-        <p class="text-[10px] opacity-40 mt-3">Seus dados ficam salvos só no seu celular/notebook (Modo Local)</p>
-      </div>
-    </section>
-  </main>
-</div>
-
-<div id="viewModal" class="hidden fixed inset-0 z-50 overflow-auto p-2" style="background:var(--bg)">
-  <div class="toolbar"><button id="closeView" class="btn-ghost text-xs">✕ Fechar</button><button class="btn-ghost text-xs" onclick="execCmd('bold')"><b>B</b></button><button class="btn-ghost text-xs" onclick="execCmd('italic')"><i>I</i></button><button class="btn-ghost text-xs" onclick="changeFontSize(1)">A+</button><button class="btn-ghost text-xs" onclick="changeFontSize(-1)">A-</button><input type="color" id="colorPicker" class="w-8 h-8 rounded" onchange="execCmd('foreColor', this.value)"><select id="fontFamily" class="field text-xs w-24 p-1" onchange="execCmd('fontName', this.value)"><option value="Inter">Inter</option><option value="Georgia">Georgia</option><option value="Arial">Arial</option><option value="Times">Times</option></select><button class="btn text-xs" onclick="saveViewEdits()">💾 Salvar Edição Visual</button></div>
-  <div id="viewContent" class="editable-view panel mt-2 min-h-[70vh]" contenteditable="true" style="font-size:18px"></div>
-</div>
-
-<script src="./js/app.js"></script>
+<div class="tabbar hidden" id="tabbar"><button data-tab="timer" class="active"><span>⏱️</span>Timer</button><button data-tab="biblia"><span>📖</span>Bíblia</button><button data-tab="esbocos"><span>📝</span>Esboços</button><button data-tab="servos"><span>🙌</span>Servos</button></div>
+<div id="pulpitoFull" class="pulpito-full hidden"><h2 style="font-family:Playfair Display;letter-spacing:4px">PÚLPITO</h2><div class="time" id="pulpitoTime">30:00</div><p id="pulpitoNome"></p><button class="btn btn-ghost" style="max-width:200px;color:#fff;border-color:#fff" id="fecharPulpito">Fechar [PÚLPITO]</button></div>
+<script src="js/app.js"></script>
 </body>
 </html>
