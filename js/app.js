@@ -1,8 +1,8 @@
-// PÚLPITO - COMPLETO FINAL - FOTO + BÍBLIA 66 + LOGIN + TUDO
+// PÚLPITO - FINAL EDITÁVEL - TODAS FONTES + CORES + VERSÍCULO EM QUADRO
 const SERVICE_ID="service_hinnu5j", TEMPLATE_ID="template_cw5rabe";
 let timerInterval=null, totalSeconds=1800, remaining=0, isRunning=false, horarioInterval=null, editIndex=-1, topicosExtras=[];
 let mediaRecorder=null, audioChunks=[], audioBlob=null, audioBase64="", audioTimer=null, audioSeconds=0;
-let livroAtual=null, fotoAuthBase64="", fotoPerfilBase64="";
+let livroAtual=null, fotoAuthBase64="", fotoPerfilBase64="", pregacaoAtualIndex=-1;
 
 const LIVROS=[
 {name:"Gênesis",cap:50},{name:"Êxodo",cap:40},{name:"Levítico",cap:27},{name:"Números",cap:36},{name:"Deuteronômio",cap:34},
@@ -17,7 +17,6 @@ const authScreen=document.getElementById('authScreen');
 function checkAuth(){ const u=localStorage.getItem('pulpito_user'); if(u) iniciarApp(JSON.parse(u)); }
 checkAuth();
 
-// FOTO AUTH
 document.getElementById('authFoto').onchange=(e)=>{
   const file=e.target.files[0]; if(!file) return;
   const reader=new FileReader(); reader.onload=(ev)=>{
@@ -42,18 +41,17 @@ async function enviarEmailBoasVindas(nome,email){ try{ await emailjs.send(SERVIC
 document.getElementById('btnCadastrar').onclick=async()=>{
   const nome=document.getElementById('authName').value.trim(), email=document.getElementById('authEmail').value.trim(), pass=document.getElementById('authPass').value.trim();
   if(!nome||!email||!pass) return alert('Preencha nome, e-mail e senha');
-  document.getElementById('authMsg').classList.remove('hidden'); document.getElementById('authMsg').textContent='Criando conta e enviando e-mail...';
+  document.getElementById('authMsg').classList.remove('hidden'); document.getElementById('authMsg').textContent='Criando conta...';
   const envio=await enviarEmailBoasVindas(nome,email);
   const user={nome, email, pass, nomeCompleto:nome, foto:fotoAuthBase64||""};
   localStorage.setItem('pulpito_user', JSON.stringify(user));
   let users=JSON.parse(localStorage.getItem('pulpito_users')||'[]'); users.push(user); localStorage.setItem('pulpito_users', JSON.stringify(users));
-  document.getElementById('authMsg').innerHTML= envio.ok ? '✅ Conta criada! E-mail enviado para '+email+'! Faça login abaixo.' : '✅ Conta criada! Agora faça login abaixo.';
-  document.getElementById('loginEmail').value=email;
-  document.getElementById('loginPass').value=pass;
+  document.getElementById('authMsg').textContent= envio.ok ? '✅ E-mail enviado!' : 'Conta criada!';
+  document.getElementById('loginEmail').value=email; document.getElementById('loginPass').value=pass;
 };
 document.getElementById('btnLogin').onclick=()=>{
   const email=document.getElementById('loginEmail').value.trim()||document.getElementById('authEmail').value.trim(), pass=document.getElementById('loginPass').value.trim()||document.getElementById('authPass').value.trim();
-  const users=JSON.parse(localStorage.getItem('pulpito_users')||'[]'); const f=users.find(u=>u.email===email&&u.pass===pass); if(!f) return alert('E-mail ou senha incorretos. Crie conta primeiro.'); iniciarApp(f);
+  const users=JSON.parse(localStorage.getItem('pulpito_users')||'[]'); const f=users.find(u=>u.email===email&&u.pass===pass); if(!f) return alert('Dados incorretos'); iniciarApp(f);
 };
 
 function iniciarApp(user){
@@ -64,21 +62,16 @@ function iniciarApp(user){
   renderRecentes(); renderPerfil(user); renderBibliaLivros(); iniciarHorario();
   fotoPerfilBase64=user.foto||"";
 }
-
 function renderPerfil(user){
   document.getElementById('perfilNome').textContent=user.nomeCompleto||user.nome;
   document.getElementById('perfilEmail').textContent=user.email;
   document.getElementById('editNome').value=user.nomeCompleto||user.nome||'';
-  document.getElementById('editEmail').value=user.email||'';
   document.getElementById('totalPregacoes').textContent=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]').length;
   document.getElementById('countPregacoes').textContent=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]').length;
-  
-  const img=document.getElementById('perfilFotoImg');
-  const letra=document.getElementById('perfilLetra');
+  const img=document.getElementById('perfilFotoImg'); const letra=document.getElementById('perfilLetra');
   if(user.foto){ img.src=user.foto; img.classList.remove('hidden'); letra.classList.add('hidden'); }
-  else{ img.classList.add('hidden'); letra.classList.remove('hidden'); letra.textContent=(user.nomeCompleto||user.nome||'B').charAt(0).toUpperCase(); }
+  else{ img.classList.add('hidden'); letra.classList.remove('hidden'); letra.textContent=(user.nomeCompleto||'B').charAt(0).toUpperCase(); }
 }
-
 document.getElementById('btnSalvarPerfil').onclick=()=>{
   const nome=document.getElementById('editNome').value.trim(); if(!nome) return alert('Digite nome');
   let user=JSON.parse(localStorage.getItem('pulpito_user'));
@@ -86,12 +79,8 @@ document.getElementById('btnSalvarPerfil').onclick=()=>{
   if(fotoPerfilBase64) user.foto=fotoPerfilBase64;
   localStorage.setItem('pulpito_user', JSON.stringify(user));
   let users=JSON.parse(localStorage.getItem('pulpito_users')||'[]'); let idx=users.findIndex(u=>u.email===user.email); if(idx>=0){ users[idx].nomeCompleto=nome; users[idx].nome=nome; if(fotoPerfilBase64) users[idx].foto=fotoPerfilBase64; localStorage.setItem('pulpito_users', JSON.stringify(users)); }
-  renderPerfil(user);
-  document.getElementById('bemVindoNome').textContent='Bem-vindo, '+nome+'!';
-  alert('✅ Perfil com foto salvo!');
-  fotoPerfilBase64="";
+  renderPerfil(user); document.getElementById('bemVindoNome').textContent='Bem-vindo, '+nome+'!'; alert('✅ Perfil salvo!'); fotoPerfilBase64="";
 };
-
 document.getElementById('btnSair').onclick=()=>{ localStorage.removeItem('pulpito_user'); location.reload(); };
 
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{
@@ -118,7 +107,7 @@ document.getElementById('btnNova').onclick=()=>{
   document.getElementById('tituloPregacao').value='';
   document.getElementById('introPregacao').value='';
   document.getElementById('textoBiblico').value='';
-  topicosExtras=[]; audioBlob=null; audioBase64=""; document.getElementById('playerAudio').classList.add('hidden'); document.getElementById('statusAudio').textContent='Nenhum áudio gravado'; document.getElementById('tempoAudio').textContent='00:00';
+  topicosExtras=[]; audioBlob=null; audioBase64=""; document.getElementById('playerAudio').classList.add('hidden'); document.getElementById('statusAudio').textContent='Nenhum áudio'; document.getElementById('tempoAudio').textContent='00:00';
   renderTopicosInputs();
   document.getElementById('tab-agenda').classList.add('hidden');
   document.getElementById('tab-biblia').classList.add('hidden');
@@ -189,7 +178,7 @@ window.removerVersiculo=(i,vi)=>{ topicosExtras[i].versiculos.splice(vi,1); rend
 function salvarPregacao(){
   const titulo=document.getElementById('tituloPregacao').value.trim(); if(!titulo) return alert('Digite o título');
   topicosExtras.forEach((t,i)=>{ const ti=document.getElementById('topTit'+i); const tc=document.getElementById('topCont'+i); if(ti) t.titulo=ti.value; if(tc) t.conteudo=tc.value; });
-  const dados={titulo, intro:document.getElementById('introPregacao').value.trim(), texto:document.getElementById('textoBiblico').value.trim(), topicos:[...topicosExtras], audio:audioBase64||"", audioDuracao:document.getElementById('tempoAudio').textContent, data:new Date().toLocaleString('pt-BR')};
+  const dados={titulo, intro:document.getElementById('introPregacao').value.trim(), texto:document.getElementById('textoBiblico').value.trim(), topicos:[...topicosExtras], audio:audioBase64||"", audioDuracao:document.getElementById('tempoAudio').textContent, versiculoDestaque:"", coresVersiculo:{fundo:"#fef9c3",borda:"#fbbf24",texto:"#000000"}, htmlEditavel:"", data:new Date().toLocaleString('pt-BR')};
   let lista=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]');
   if(editIndex>=0){ lista[editIndex]=dados; editIndex=-1; }else{ lista.push(dados); }
   localStorage.setItem('pulpito_esbocos', JSON.stringify(lista));
@@ -198,7 +187,7 @@ function salvarPregacao(){
   document.getElementById('headerNova').classList.add('hidden');
   document.querySelector('[data-tab="agenda"]').classList.add('active');
   renderRecentes(); renderPerfil(JSON.parse(localStorage.getItem('pulpito_user')));
-  alert('✅ Pregação salva!');
+  alert('✅ Pregação salva! Clique em VER para editar tudo com fontes e cores');
 }
 document.getElementById('btnSalvarTopo').onclick=salvarPregacao;
 
@@ -207,55 +196,84 @@ function renderRecentes(){
   if(lista.length===0){ div.innerHTML='<div class="card-claro" style="text-align:center;color:#94a3b8">Nenhuma ainda - Clique + NOVA</div>'; return; }
   lista.slice().reverse().forEach((e, revIdx)=>{
     const idx=lista.length-1-revIdx;
-    div.innerHTML+=`<div class="card-claro" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">${e.titulo}</b><br><small style="color:#64748b">${e.topicos? e.topicos.length+' tópicos' : ''} ${e.audio? '• 🎙' : ''}</small></div><div style="display:flex;gap:4px"><button onclick="abrirPrevia(${idx})" style="border:0;background:#f1f5f9;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700">VER</button><button onclick="editarEsboco(${idx})" style="border:0;background:#fff;border:1px solid #e2e8e0;padding:6px 10px;border-radius:6px;font-size:11px">EDITAR</button><button onclick="deletarEsboco(${idx})" style="border:0;background:#fee2e2;padding:6px 8px;border-radius:6px;font-size:11px">🗑️</button></div></div>`;
+    div.innerHTML+=`<div class="card-claro" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">${e.titulo}</b><br><small style="color:#64748b">${e.topicos? e.topicos.length+' tópicos' : ''} ${e.audio? '• 🎙' : ''}</small></div><div style="display:flex;gap:4px"><button onclick="abrirPrevia(${idx})" style="border:0;background:#f1f5f9;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700">VER / EDITAR</button><button onclick="deletarEsboco(${idx})" style="border:0;background:#fee2e2;padding:6px 8px;border-radius:6px">🗑️</button></div></div>`;
   });
   document.getElementById('countPregacoes').textContent=lista.length;
 }
 
+// ABRIR PRÉVIA 100% EDITÁVEL
 window.abrirPrevia=(i)=>{
-  const lista=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]'); const e=lista[i];
-  document.getElementById('previaTitulo').textContent=e.titulo;
-  document.getElementById('previaIntro').textContent=e.intro||'';
-  document.getElementById('previaTexto').textContent=e.texto||'';
+  const lista=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]'); const e=lista[i]; pregacaoAtualIndex=i;
+  document.getElementById('previaTitulo').innerHTML=e.titulo;
+  document.getElementById('previaIntro').innerHTML=e.intro||'';
+  document.getElementById('previaTexto').innerHTML=e.texto||'';
+  
   const div=document.getElementById('previaTopicos'); div.innerHTML='';
-  if(e.topicos){ e.topicos.forEach((t)=>{ div.innerHTML+=`<h2 style="font-size:14px;font-weight:800;margin:20px 0 10px;color:#0f172a">${t.titulo||''}</h2><p style="font-size:15px;line-height:1.8;color:#333">${t.conteudo||''}</p>${t.versiculos? '<div style="margin-top:8px">'+t.versiculos.map(v=>'<span style="background:#fef9c3;padding:4px 10px;border-radius:20px;font-size:11px;margin:2px;display:inline-block">📖 '+v+'</span>').join('')+'</div>' : ''}`; }); }
+  if(e.htmlEditavel && e.htmlEditavel!==""){
+    div.innerHTML=e.htmlEditavel;
+  } else if(e.topicos){
+    e.topicos.forEach((t)=>{
+      div.innerHTML+=`<h2 contenteditable="true" class="editable" style="font-size:14px;font-weight:800;margin:20px 0 10px;color:#0f172a;outline:none">${t.titulo||''}</h2><div contenteditable="true" class="editable" style="font-size:15px;line-height:1.8;color:#333;outline:none;min-height:20px">${t.conteudo||''}</div>${t.versiculos? '<div style="margin-top:8px">'+t.versiculos.map(v=>'<span style="background:#fef9c3;padding:4px 10px;border-radius:20px;font-size:11px;margin:2px;display:inline-block">📖 '+v+'</span>').join('')+'</div>' : ''}`;
+    });
+  }
+
+  // VERSÍCULO EM DESTAQUE
+  const quadro=document.getElementById('quadroVersiculoBox');
+  document.getElementById('previaVersiculoDestaque').innerHTML=e.versiculoDestaque||e.texto||"Romanos 8:16-17";
+  quadro.style.background=e.coresVersiculo? e.coresVersiculo.fundo : "#fef9c3";
+  quadro.style.borderColor=e.coresVersiculo? e.coresVersiculo.borda : "#fbbf24";
+  document.getElementById('previaVersiculoDestaque').style.color=e.coresVersiculo? e.coresVersiculo.texto : "#000";
+  document.getElementById('corFundoVersiculo').value=e.coresVersiculo? e.coresVersiculo.fundo : "#fef9c3";
+  document.getElementById('corBordaVersiculo').value=e.coresVersiculo? e.coresVersiculo.borda : "#fbbf24";
+  document.getElementById('corTextoVersiculo').value=e.coresVersiculo? e.coresVersiculo.texto : "#000000";
+
   if(e.audio){ document.getElementById('previaAudioBox').classList.remove('hidden'); document.getElementById('previaAudioPlayer').src=e.audio; } else { document.getElementById('previaAudioBox').classList.add('hidden'); }
   document.getElementById('previaMode').classList.remove('hidden');
 };
 
+// CORES DO QUADRO VERSÍCULO
+document.getElementById('corFundoVersiculo').oninput=(e)=>{ document.getElementById('quadroVersiculoBox').style.background=e.target.value; };
+document.getElementById('corBordaVersiculo').oninput=(e)=>{ document.getElementById('quadroVersiculoBox').style.borderColor=e.target.value; };
+document.getElementById('corTextoVersiculo').oninput=(e)=>{ document.getElementById('previaVersiculoDestaque').style.color=e.target.value; };
+
+// SALVAR EDIÇÃO COMPLETA COM FONTES E CORES
+document.getElementById('btnSalvarEdicao').onclick=()=>{
+  if(pregacaoAtualIndex<0) return;
+  let lista=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]');
+  let e=lista[pregacaoAtualIndex];
+  e.titulo=document.getElementById('previaTitulo').innerHTML;
+  e.intro=document.getElementById('previaIntro').innerHTML;
+  e.texto=document.getElementById('previaTexto').innerHTML;
+  e.htmlEditavel=document.getElementById('previaTopicos').innerHTML;
+  e.versiculoDestaque=document.getElementById('previaVersiculoDestaque').innerHTML;
+  e.coresVersiculo={
+    fundo: document.getElementById('corFundoVersiculo').value,
+    borda: document.getElementById('corBordaVersiculo').value,
+    texto: document.getElementById('corTextoVersiculo').value
+  };
+  localStorage.setItem('pulpito_esbocos', JSON.stringify(lista));
+  alert('✅ TUDO salvo! Título, introdução, texto, tópicos, fontes, cores e versículo em destaque com cores salvos!');
+  renderRecentes();
+};
+
 document.getElementById('fecharPrevia').onclick=()=>document.getElementById('previaMode').classList.add('hidden');
 document.getElementById('btnPrevia').onclick=()=>{
-  document.getElementById('previaTitulo').textContent=document.getElementById('tituloPregacao').value||'';
-  document.getElementById('previaIntro').textContent=document.getElementById('introPregacao').value||'';
-  document.getElementById('previaTexto').textContent=document.getElementById('textoBiblico').value||'';
+  pregacaoAtualIndex=-1;
+  document.getElementById('previaTitulo').innerHTML=document.getElementById('tituloPregacao').value||'Título';
+  document.getElementById('previaIntro').innerHTML=document.getElementById('introPregacao').value||'';
+  document.getElementById('previaTexto').innerHTML=document.getElementById('textoBiblico').value||'';
   const div=document.getElementById('previaTopicos'); div.innerHTML='';
   topicosExtras.forEach((t,idx)=>{
     const ti=document.getElementById('topTit'+idx); const tc=document.getElementById('topCont'+idx);
-    div.innerHTML+=`<h2 style="font-size:14px;font-weight:800;margin:20px 0 10px;color:#0f172a">${ti? ti.value : t.titulo}</h2><p style="font-size:15px;line-height:1.8;color:#333">${tc? tc.value : t.conteudo}</p>`;
+    div.innerHTML+=`<h2 contenteditable="true" class="editable" style="font-size:14px;font-weight:800;margin:20px 0 10px;color:#0f172a">${ti? ti.value : t.titulo}</h2><div contenteditable="true" class="editable" style="font-size:15px;line-height:1.8;color:#333">${tc? tc.value : t.conteudo}</div>`;
   });
+  document.getElementById('previaVersiculoDestaque').innerHTML=document.getElementById('textoBiblico').value||'Versículo';
   if(audioBase64){ document.getElementById('previaAudioBox').classList.remove('hidden'); document.getElementById('previaAudioPlayer').src=audioBase64; } else { document.getElementById('previaAudioBox').classList.add('hidden'); }
   document.getElementById('previaMode').classList.remove('hidden');
 };
 
-window.editarEsboco=(i)=>{
-  const lista=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]'); const e=lista[i];
-  document.getElementById('tituloPregacao').value=e.titulo;
-  document.getElementById('introPregacao').value=e.intro||'';
-  document.getElementById('textoBiblico').value=e.texto||'';
-  topicosExtras=e.topicos ? JSON.parse(JSON.stringify(e.topicos)) : [];
-  audioBase64=e.audio||"";
-  if(audioBase64){ const player=document.getElementById('playerAudio'); player.src=audioBase64; player.classList.remove('hidden'); document.getElementById('statusAudio').textContent='Áudio: '+(e.audioDuracao||''); document.getElementById('tempoAudio').textContent=e.audioDuracao||'00:00'; }
-  renderTopicosInputs();
-  editIndex=i;
-  document.getElementById('tab-agenda').classList.add('hidden');
-  document.getElementById('tab-biblia').classList.add('hidden');
-  document.getElementById('tab-perfil').classList.add('hidden');
-  document.getElementById('tab-nova').classList.remove('hidden');
-  document.getElementById('headerNova').classList.remove('hidden');
-};
 window.deletarEsboco=(i)=>{ if(!confirm('Excluir?')) return; let l=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]'); l.splice(i,1); localStorage.setItem('pulpito_esbocos', JSON.stringify(l)); renderRecentes(); renderPerfil(JSON.parse(localStorage.getItem('pulpito_user'))); };
 
-// BÍBLIA COMPLETA
 function renderBibliaLivros(){
   const div=document.getElementById('bibliaLivros'); if(!div) return; div.innerHTML='';
   LIVROS.forEach((livro, idx)=>{
@@ -287,3 +305,20 @@ document.getElementById('voltarCapitulos').onclick=()=>{ document.getElementById
 
 renderTopicosInputs();
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+function renderTopicosInputs(){
+  const area=document.getElementById('areaTopicos'); if(!area) return; area.innerHTML='';
+  topicosExtras.forEach((t,i)=>{
+    area.innerHTML+=`
+    <div class="topico-card">
+      <button class="remove" onclick="removerTopico(${i})">✕</button>
+      <span class="label-topico">TÓPICO</span>
+      <div class="card-input" style="margin-bottom:8px"><input id="topTit${i}" value="${t.titulo||''}" placeholder="Título do tópico"></div>
+      <div class="card-input"><textarea id="topCont${i}" rows="3" placeholder="Conteúdo do tópico">${t.conteudo||''}</textarea></div>
+      <div class="versiculos-area">
+        <span style="font-size:11px;color:#9ca3af">Versículos deste tópico:</span>
+        <div style="margin-top:6px">${(t.versiculos||[]).map((v,vi)=>`<span class="versiculo-tag">${v} <span onclick="removerVersiculo(${i},${vi})" style="cursor:pointer">✕</span></span>`).join('')}</div>
+        <div style="display:flex;gap:6px;margin-top:6px"><input id="inputVers${i}" class="input-versiculo" placeholder="Adicionar versículo"><button onclick="addVersiculo(${i})" style="background:#fbbf24;border:0;padding:8px 12px;border-radius:8px;font-weight:700">+</button></div>
+      </div>
+    </div>`;
+  });
+}
