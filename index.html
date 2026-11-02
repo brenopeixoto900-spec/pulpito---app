@@ -20,7 +20,7 @@ h1.modelo{color:#fbbf24;font-size:18px;letter-spacing:1px;margin:14px 0 14px;fon
 .card-input input, .card-input textarea{width:100%;background:transparent;border:none;color:#e2e8f0;padding:14px 14px;font-size:14px;outline:none;resize:none}
 .card-input input::placeholder, .card-input textarea::placeholder{color:#6b7280}
 .card-audio{background:#1e202e;border:1px solid #2a2d3a;border-radius:12px;padding:14px;margin-bottom:16px}
-.label-audio{font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.label-audio{font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;margin-bottom:10px;display:block}
 .btn-gravar{background:#2a2d3a;border:1px solid #3a3d4a;color:#fff;padding:8px 14px;border-radius:20px;font-size:12px;cursor:pointer}
 .btn-gravar.gravando{background:#ef4444;animation:pisca 1s infinite}
 @keyframes pisca{0%,100%{opacity:1}50%{opacity:.6}}
@@ -41,6 +41,8 @@ h1.modelo{color:#fbbf24;font-size:18px;letter-spacing:1px;margin:14px 0 14px;fon
 .tab.active{background:#fbbf24;color:#000;border-color:#fbbf24}
 .badge{background:#dcfce7;color:#166534;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:700}
 .input-light{width:100%;padding:12px;border:1px solid #e2e8e0;border-radius:10px}
+.foto-perfil{width:90px;height:90px;border-radius:50%;object-fit:cover;background:#e2e8e0;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;border:3px solid #fbbf24}
+.input-foto{font-size:12px;color:#64748b}
 </style>
 </head>
 <body>
@@ -53,22 +55,34 @@ h1.modelo{color:#fbbf24;font-size:18px;letter-spacing:1px;margin:14px 0 14px;fon
 </div>
 </header>
 
-<!-- AUTH -->
+<!-- AUTH COMPLETO COM FOTO -->
 <div id="authScreen" class="screen">
 <div class="card-claro" style="margin-top:20px">
-<div class="badge">✅ service_hinnu5j + template_cw5rabe + 66 LIVROS</div>
+<div class="badge">✅ service_hinnu5j + template_cw5rabe + FOTO + BÍBLIA 66</div>
 <h2 style="margin-top:10px;color:#0f172a">Bem-vindo ao PÚLPITO</h2>
-<p style="font-size:12px;color:#64748b;margin-top:4px">App dos Servos - Bíblia completa</p>
-<label style="font-size:11px;color:#64748b;margin-top:12px;display:block">Nome</label><input id="authName" class="input-light" placeholder="Breno Peixoto">
-<label style="font-size:11px;color:#64748b;margin-top:10px;display:block">E-mail</label><input id="authEmail" class="input-light" placeholder="brenopeixoto900@gmail.com">
-<label style="font-size:11px;color:#64748b;margin-top:10px;display:block">Senha</label><input id="authPass" type="password" class="input-light" placeholder="••••••">
-<button class="btn-salvar" style="width:100%;margin-top:14px;padding:12px" id="btnCadastrar">Criar conta e Receber E-mail</button>
+<p style="font-size:12px;color:#64748b;margin-top:4px">Crie sua conta com foto, depois faça login</p>
+
+<div style="text-align:center;margin:16px 0">
+<img id="previewAuthFoto" class="foto-perfil hidden" style="margin:0 auto">
+<div id="placeholderAuthFoto" class="foto-perfil" style="margin:0 auto;background:#0f172a;color:#fff">B</div>
+<input id="authFoto" type="file" accept="image/*" class="input-foto" style="margin-top:8px">
+<p style="font-size:10px;color:#94a3b8;margin-top:4px">Toque para escolher foto de perfil</p>
+</div>
+
+<label style="font-size:11px;color:#64748b;margin-top:10px;display:block">Nome completo</label><input id="authName" class="input-light" placeholder="Breno Peixoto">
+
+<label style="font-size:11px;color:#64748b;margin-top:10px;display:block">E-mail</label><input id="authEmail" type="email" class="input-light" placeholder="brenopeixoto900@gmail.com">
+
+<label style="font-size:11px;color:#64748b;margin-top:10px;display:block">Senha</label><input id="authPass" type="password" class="input-light" placeholder="Crie uma senha">
+
+<button class="btn-salvar" style="width:100%;margin-top:14px;padding:12px" id="btnCadastrar">Criar conta e Receber E-mail de Boas-vindas</button>
 <div id="authMsg" class="hidden" style="margin-top:10px;padding:10px;background:#ecfdf5;border-radius:8px;font-size:12px;color:#065f46"></div>
+
 <div style="height:1px;background:#e2e8e0;margin:18px 0"></div>
-<h3 style="font-size:14px;text-align:center;color:#0f172a">Já tem conta?</h3>
-<label style="font-size:11px;color:#64748b;margin-top:10px;display:block">E-mail</label><input id="loginEmail" class="input-light" placeholder="Seu e-mail">
+<h3 style="font-size:14px;text-align:center;color:#0f172a">Já tem conta? Faça login</h3>
+<label style="font-size:11px;color:#64748b;margin-top:10px;display:block">E-mail cadastrado</label><input id="loginEmail" type="email" class="input-light" placeholder="Seu e-mail">
 <label style="font-size:11px;color:#64748b;margin-top:10px;display:block">Senha</label><input id="loginPass" type="password" class="input-light" placeholder="Sua senha">
-<button style="width:100%;margin-top:10px;padding:12px;background:#0f172a;color:#fff;border-radius:10px;border:0;font-weight:700" id="btnLogin">Entrar</button>
+<button style="width:100%;margin-top:10px;padding:12px;background:#0f172a;color:#fff;border-radius:10px;border:0;font-weight:700" id="btnLogin">Entrar na minha conta</button>
 </div>
 </div>
 
@@ -99,7 +113,7 @@ h1.modelo{color:#fbbf24;font-size:18px;letter-spacing:1px;margin:14px 0 14px;fon
 </div>
 <div class="card-claro">
 <h3 style="color:#0f172a">Bíblia Sagrada Completa - 66 Livros</h3>
-<p style="font-size:11px;color:#64748b;margin-top:4px">Toque no livro > escolha capítulo > leia versículos</p>
+<p style="font-size:11px;color:#64748b;margin-top:4px">Toque no livro > capítulo > versículos</p>
 <div id="bibliaLivros" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px"></div>
 <div id="bibliaCapitulos" class="hidden">
 <button id="voltarLivros" style="background:#fff;border:1px solid #e2e8e0;padding:8px 12px;border-radius:8px;font-size:12px">← Livros</button>
@@ -109,38 +123,51 @@ h1.modelo{color:#fbbf24;font-size:18px;letter-spacing:1px;margin:14px 0 14px;fon
 <div id="bibliaVersiculos" class="hidden">
 <button id="voltarCapitulos" style="background:#fff;border:1px solid #e2e8e0;padding:8px 12px;border-radius:8px;font-size:12px">← Capítulos</button>
 <h4 id="refAtual" style="margin-top:12px;color:#0f172a"></h4>
-<div id="textoVersiculos" style="margin-top:12px;color:#0f172a;line-height:1.7"></div>
+<div id="textoVersiculos" style="margin-top:12px;color:#0f172a;line-height:1.8"></div>
 </div>
 </div>
 </div>
 
+<!-- PERFIL COM FOTO -->
 <div id="tab-perfil" class="screen hidden">
 <div style="display:flex;gap:8px;padding:14px 0">
 <button class="tab" data-tab="agenda">Agenda</button>
 <button class="tab" data-tab="biblia">Bíblia</button>
 <button class="tab active" data-tab="perfil">Perfil</button>
 </div>
-<div class="card-claro"><h3 style="color:#0f172a">Perfil</h3><h3 id="perfilNome" style="margin-top:10px;color:#0f172a"></h3><p id="perfilEmail" style="font-size:12px;color:#64748b"></p><p style="font-size:12px;margin-top:12px;color:#0f172a">Total pregações: <b id="totalPregacoes">0</b></p><p style="font-size:11px;color:#64748b;margin-top:6px">Service: service_hinnu5j • Template: template_cw5rabe</p><button style="width:100%;margin-top:16px;padding:10px;color:#e11d48;background:#fff;border:1px solid #fecdd3;border-radius:10px" id="btnSair">Sair da conta</button></div>
+<div class="card-claro">
+<h3 style="color:#0f172a">Minha Conta</h3>
+<div style="text-align:center;padding:16px 0">
+<img id="perfilFotoImg" class="foto-perfil hidden" style="margin:0 auto">
+<div id="perfilLetra" class="foto-perfil" style="margin:0 auto;background:#0f172a;color:#fff">B</div>
+<h3 id="perfilNome" style="margin-top:12px;color:#0f172a"></h3>
+<p id="perfilEmail" style="font-size:12px;color:#64748b"></p>
+<input id="editFoto" type="file" accept="image/*" class="input-foto" style="margin-top:12px">
+<p style="font-size:10px;color:#94a3b8;margin-top:4px">Trocar foto de perfil</p>
 </div>
 
-<!-- NOVA PREGAÇÃO - MODELO LIMPO IGUAL FOTO -->
+<label style="font-size:11px;color:#64748b;margin-top:10px;display:block">Nome completo</label><input id="editNome" class="input-light" placeholder="Seu nome">
+
+<label style="font-size:11px;color:#64748b;margin-top:10px;display:block">E-mail</label><input id="editEmail" class="input-light" disabled>
+
+<button style="width:100%;margin-top:14px;padding:12px;background:#0f172a;color:#fff;border-radius:10px;border:0;font-weight:700" id="btnSalvarPerfil">Salvar alterações</button>
+
+<p style="font-size:12px;margin-top:16px;color:#0f172a">Total pregações: <b id="totalPregacoes">0</b></p>
+<p style="font-size:11px;color:#64748b;margin-top:4px">Service: service_hinnu5j • Template: template_cw5rabe • <span style="color:green">● Conectado</span></p>
+<button style="width:100%;margin-top:16px;padding:10px;color:#e11d48;background:#fff;border:1px solid #fecdd3;border-radius:10px" id="btnSair">Sair da conta</button>
+</div>
+</div>
+
+<!-- NOVA PREGAÇÃO -->
 <div id="tab-nova" class="screen hidden">
 <h1 class="modelo">NOVA PREGAÇÃO</h1>
 
-<div class="card-input">
-<input id="tituloPregacao" placeholder="Título da pregação">
-</div>
-
-<div class="card-input">
-<textarea id="introPregacao" rows="2" placeholder="Introdução"></textarea>
-</div>
-
-<div class="card-input">
-<textarea id="textoBiblico" rows="4" placeholder="Texto bíblico principal"></textarea>
-</div>
+<div class="card-input"><input id="tituloPregacao" placeholder="Título da pregação"></div>
+<div class="card-input"><textarea id="introPregacao" rows="2" placeholder="Introdução"></textarea></div>
+<div class="card-input"><textarea id="textoBiblico" rows="4" placeholder="Texto bíblico principal"></textarea></div>
 
 <div class="card-audio">
-<div class="label-audio">🎙 ÁUDIO DA PREGAÇÃO</div>
+<span class="label-audio">🎙 ÁUDIO DA PREGAÇÃO</span>
 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
 <button class="btn-gravar" id="btnGravar">● GRAVAR</button>
 <button class="btn-gravar hidden" id="btnParar">■ PARAR</button>
@@ -154,9 +181,7 @@ h1.modelo{color:#fbbf24;font-size:18px;letter-spacing:1px;margin:14px 0 14px;fon
 <h3 style="font-size:14px;color:#e2e8f0">Tópicos</h3>
 <button class="btn-topico" id="btnAddTopico">+ Tópico</button>
 </div>
-
 <div id="areaTopicos"></div>
-
 </div>
 
 <!-- PRÉVIA -->
