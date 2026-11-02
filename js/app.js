@@ -1,8 +1,8 @@
-// PÚLPITO - COMPLETO - MODELO DA FOTO + BÍBLIA 66 LIVROS + ÁUDIO
+// PÚLPITO - COMPLETO FINAL - FOTO + BÍBLIA 66 + LOGIN + TUDO
 const SERVICE_ID="service_hinnu5j", TEMPLATE_ID="template_cw5rabe";
 let timerInterval=null, totalSeconds=1800, remaining=0, isRunning=false, horarioInterval=null, editIndex=-1, topicosExtras=[];
 let mediaRecorder=null, audioChunks=[], audioBlob=null, audioBase64="", audioTimer=null, audioSeconds=0;
-let livroAtual=null;
+let livroAtual=null, fotoAuthBase64="", fotoPerfilBase64="";
 
 const LIVROS=[
 {name:"Gênesis",cap:50},{name:"Êxodo",cap:40},{name:"Levítico",cap:27},{name:"Números",cap:36},{name:"Deuteronômio",cap:34},
@@ -17,21 +17,43 @@ const authScreen=document.getElementById('authScreen');
 function checkAuth(){ const u=localStorage.getItem('pulpito_user'); if(u) iniciarApp(JSON.parse(u)); }
 checkAuth();
 
+// FOTO AUTH
+document.getElementById('authFoto').onchange=(e)=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader(); reader.onload=(ev)=>{
+    fotoAuthBase64=ev.target.result;
+    document.getElementById('previewAuthFoto').src=fotoAuthBase64;
+    document.getElementById('previewAuthFoto').classList.remove('hidden');
+    document.getElementById('placeholderAuthFoto').classList.add('hidden');
+  }; reader.readAsDataURL(file);
+};
+document.getElementById('editFoto').onchange=(e)=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader(); reader.onload=(ev)=>{
+    fotoPerfilBase64=ev.target.result;
+    document.getElementById('perfilFotoImg').src=fotoPerfilBase64;
+    document.getElementById('perfilFotoImg').classList.remove('hidden');
+    document.getElementById('perfilLetra').classList.add('hidden');
+  }; reader.readAsDataURL(file);
+};
+
 async function enviarEmailBoasVindas(nome,email){ try{ await emailjs.send(SERVICE_ID, TEMPLATE_ID, {email:email, name:nome, to_name:nome, to_email:email}); return {ok:true}; }catch(err){ return {ok:false}; } }
 
 document.getElementById('btnCadastrar').onclick=async()=>{
   const nome=document.getElementById('authName').value.trim(), email=document.getElementById('authEmail').value.trim(), pass=document.getElementById('authPass').value.trim();
   if(!nome||!email||!pass) return alert('Preencha nome, e-mail e senha');
-  document.getElementById('authMsg').classList.remove('hidden'); document.getElementById('authMsg').textContent='Enviando e-mail...';
+  document.getElementById('authMsg').classList.remove('hidden'); document.getElementById('authMsg').textContent='Criando conta e enviando e-mail...';
   const envio=await enviarEmailBoasVindas(nome,email);
-  const user={nome,email,pass,nomeCompleto:nome}; localStorage.setItem('pulpito_user', JSON.stringify(user));
+  const user={nome, email, pass, nomeCompleto:nome, foto:fotoAuthBase64||""};
+  localStorage.setItem('pulpito_user', JSON.stringify(user));
   let users=JSON.parse(localStorage.getItem('pulpito_users')||'[]'); users.push(user); localStorage.setItem('pulpito_users', JSON.stringify(users));
-  document.getElementById('authMsg').textContent= envio.ok ? '✅ E-mail enviado!' : 'Conta criada!';
-  setTimeout(()=>iniciarApp(user),800);
+  document.getElementById('authMsg').innerHTML= envio.ok ? '✅ Conta criada! E-mail enviado para '+email+'! Faça login abaixo.' : '✅ Conta criada! Agora faça login abaixo.';
+  document.getElementById('loginEmail').value=email;
+  document.getElementById('loginPass').value=pass;
 };
 document.getElementById('btnLogin').onclick=()=>{
   const email=document.getElementById('loginEmail').value.trim()||document.getElementById('authEmail').value.trim(), pass=document.getElementById('loginPass').value.trim()||document.getElementById('authPass').value.trim();
-  const users=JSON.parse(localStorage.getItem('pulpito_users')||'[]'); const f=users.find(u=>u.email===email&&u.pass===pass); if(!f) return alert('Dados incorretos'); iniciarApp(f);
+  const users=JSON.parse(localStorage.getItem('pulpito_users')||'[]'); const f=users.find(u=>u.email===email&&u.pass===pass); if(!f) return alert('E-mail ou senha incorretos. Crie conta primeiro.'); iniciarApp(f);
 };
 
 function iniciarApp(user){
@@ -40,8 +62,36 @@ function iniciarApp(user){
   document.getElementById('headerNova').classList.add('hidden');
   document.getElementById('bemVindoNome').textContent='Bem-vindo, '+user.nomeCompleto+'!';
   renderRecentes(); renderPerfil(user); renderBibliaLivros(); iniciarHorario();
+  fotoPerfilBase64=user.foto||"";
 }
-function renderPerfil(user){ document.getElementById('perfilNome').textContent=user.nomeCompleto; document.getElementById('perfilEmail').textContent=user.email; document.getElementById('totalPregacoes').textContent=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]').length; document.getElementById('countPregacoes').textContent=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]').length; }
+
+function renderPerfil(user){
+  document.getElementById('perfilNome').textContent=user.nomeCompleto||user.nome;
+  document.getElementById('perfilEmail').textContent=user.email;
+  document.getElementById('editNome').value=user.nomeCompleto||user.nome||'';
+  document.getElementById('editEmail').value=user.email||'';
+  document.getElementById('totalPregacoes').textContent=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]').length;
+  document.getElementById('countPregacoes').textContent=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]').length;
+  
+  const img=document.getElementById('perfilFotoImg');
+  const letra=document.getElementById('perfilLetra');
+  if(user.foto){ img.src=user.foto; img.classList.remove('hidden'); letra.classList.add('hidden'); }
+  else{ img.classList.add('hidden'); letra.classList.remove('hidden'); letra.textContent=(user.nomeCompleto||user.nome||'B').charAt(0).toUpperCase(); }
+}
+
+document.getElementById('btnSalvarPerfil').onclick=()=>{
+  const nome=document.getElementById('editNome').value.trim(); if(!nome) return alert('Digite nome');
+  let user=JSON.parse(localStorage.getItem('pulpito_user'));
+  user.nomeCompleto=nome; user.nome=nome;
+  if(fotoPerfilBase64) user.foto=fotoPerfilBase64;
+  localStorage.setItem('pulpito_user', JSON.stringify(user));
+  let users=JSON.parse(localStorage.getItem('pulpito_users')||'[]'); let idx=users.findIndex(u=>u.email===user.email); if(idx>=0){ users[idx].nomeCompleto=nome; users[idx].nome=nome; if(fotoPerfilBase64) users[idx].foto=fotoPerfilBase64; localStorage.setItem('pulpito_users', JSON.stringify(users)); }
+  renderPerfil(user);
+  document.getElementById('bemVindoNome').textContent='Bem-vindo, '+nome+'!';
+  alert('✅ Perfil com foto salvo!');
+  fotoPerfilBase64="";
+};
+
 document.getElementById('btnSair').onclick=()=>{ localStorage.removeItem('pulpito_user'); location.reload(); };
 
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{
@@ -78,7 +128,6 @@ document.getElementById('btnNova').onclick=()=>{
 };
 document.getElementById('btnVoltar').onclick=()=>{
   document.getElementById('tab-nova').classList.add('hidden');
-  document.getElementById('tab-biblia').classList.add('hidden');
   document.getElementById('tab-agenda').classList.remove('hidden');
   document.getElementById('headerNova').classList.add('hidden');
   document.querySelector('[data-tab="agenda"]').classList.add('active');
@@ -231,8 +280,8 @@ window.abrirCapitulo=async(cap)=>{
     const r=await fetch('https://bible-api.com/'+encodeURIComponent(livroAtual.name+' '+cap)+'?translation=almeida');
     const data=await r.json();
     if(data.verses){ div.innerHTML=data.verses.map(v=>`<div style="padding:10px 0;border-bottom:1px solid #2a2d3a"><b style="color:#fbbf24">${v.verse}</b> ${v.text}</div>`).join(''); }
-    else{ div.innerHTML='<div style="padding:12px;background:#1e202e;border-radius:8px">'+(data.text||'Não encontrado')+'</div>'; }
-  }catch(e){ div.innerHTML='Sem internet - verifique conexão'; }
+    else{ div.innerHTML='<div style="padding:12px;background:#1e202e;border-radius:8px;color:#fff">'+(data.text||'Não encontrado')+'</div>'; }
+  }catch(e){ div.innerHTML='Sem internet'; }
 };
 document.getElementById('voltarCapitulos').onclick=()=>{ document.getElementById('bibliaVersiculos').classList.add('hidden'); document.getElementById('bibliaCapitulos').classList.remove('hidden'); };
 
