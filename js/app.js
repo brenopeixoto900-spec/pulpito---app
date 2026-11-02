@@ -1,4 +1,4 @@
-// PÚLPITO - FINAL EDITÁVEL - TODAS FONTES + CORES + VERSÍCULO EM QUADRO
+// PÚLPITO - FIX CELULAR - VERSÍCULO NA SEQUÊNCIA
 const SERVICE_ID="service_hinnu5j", TEMPLATE_ID="template_cw5rabe";
 let timerInterval=null, totalSeconds=1800, remaining=0, isRunning=false, horarioInterval=null, editIndex=-1, topicosExtras=[];
 let mediaRecorder=null, audioChunks=[], audioBlob=null, audioBase64="", audioTimer=null, audioSeconds=0;
@@ -150,18 +150,18 @@ document.getElementById('btnParar').onclick=()=>{
 };
 
 function renderTopicosInputs(){
-  const area=document.getElementById('areaTopicos'); area.innerHTML='';
+  const area=document.getElementById('areaTopicos'); if(!area) return; area.innerHTML='';
   topicosExtras.forEach((t,i)=>{
     area.innerHTML+=`
     <div class="topico-card">
       <button class="remove" onclick="removerTopico(${i})">✕</button>
-      <span class="label-topico">TÓPICO</span>
+      <span class="label-topico">TÓPICO ${i+1}</span>
       <div class="card-input" style="margin-bottom:8px"><input id="topTit${i}" value="${t.titulo||''}" placeholder="Título do tópico"></div>
       <div class="card-input"><textarea id="topCont${i}" rows="3" placeholder="Conteúdo do tópico">${t.conteudo||''}</textarea></div>
       <div class="versiculos-area">
-        <span style="font-size:11px;color:#9ca3af">Versículos deste tópico:</span>
+        <span style="font-size:11px;color:#9ca3af">Versículos deste tópico (ficam na sequência do tópico):</span>
         <div style="margin-top:6px">${(t.versiculos||[]).map((v,vi)=>`<span class="versiculo-tag">${v} <span onclick="removerVersiculo(${i},${vi})" style="cursor:pointer">✕</span></span>`).join('')}</div>
-        <div style="display:flex;gap:6px;margin-top:6px"><input id="inputVers${i}" class="input-versiculo" placeholder="Adicionar versículo"><button onclick="addVersiculo(${i})" style="background:#fbbf24;border:0;padding:8px 12px;border-radius:8px;font-weight:700">+</button></div>
+        <div style="display:flex;gap:6px;margin-top:6px"><input id="inputVers${i}" class="input-versiculo" placeholder="Ex: Romanos 8:17"><button onclick="addVersiculo(${i})" style="background:#fbbf24;border:0;padding:8px 12px;border-radius:8px;font-weight:700">+</button></div>
       </div>
     </div>`;
   });
@@ -187,39 +187,30 @@ function salvarPregacao(){
   document.getElementById('headerNova').classList.add('hidden');
   document.querySelector('[data-tab="agenda"]').classList.add('active');
   renderRecentes(); renderPerfil(JSON.parse(localStorage.getItem('pulpito_user')));
-  alert('✅ Pregação salva! Clique em VER para editar tudo com fontes e cores');
+  alert('✅ Pregação salva!');
 }
 document.getElementById('btnSalvarTopo').onclick=salvarPregacao;
 
 function renderRecentes(){
   const lista=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]'); const div=document.getElementById('listaRecentes'); div.innerHTML='';
-  if(lista.length===0){ div.innerHTML='<div class="card-claro" style="text-align:center;color:#94a3b8">Nenhuma ainda - Clique + NOVA</div>'; return; }
+  if(lista.length===0){ div.innerHTML='<div class="card-claro" style="text-align:center;color:#94a3b8">Nenhuma ainda</div>'; return; }
   lista.slice().reverse().forEach((e, revIdx)=>{
     const idx=lista.length-1-revIdx;
-    div.innerHTML+=`<div class="card-claro" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">${e.titulo}</b><br><small style="color:#64748b">${e.topicos? e.topicos.length+' tópicos' : ''} ${e.audio? '• 🎙' : ''}</small></div><div style="display:flex;gap:4px"><button onclick="abrirPrevia(${idx})" style="border:0;background:#f1f5f9;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700">VER / EDITAR</button><button onclick="deletarEsboco(${idx})" style="border:0;background:#fee2e2;padding:6px 8px;border-radius:6px">🗑️</button></div></div>`;
+    div.innerHTML+=`<div class="card-claro" style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:13px">${e.titulo}</b><br><small style="color:#64748b">${e.topicos? e.topicos.length+' tópicos na sequência' : ''} ${e.audio? '• 🎙' : ''}</small></div><div style="display:flex;gap:4px"><button onclick="abrirPrevia(${idx})" style="border:0;background:#f1f5f9;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700">VER / EDITAR</button><button onclick="deletarEsboco(${idx})" style="border:0;background:#fee2e2;padding:6px 8px;border-radius:6px">🗑️</button></div></div>`;
   });
   document.getElementById('countPregacoes').textContent=lista.length;
 }
 
-// ABRIR PRÉVIA 100% EDITÁVEL
+// ABRIR PRÉVIA - VERSÍCULO NA SEQUÊNCIA CORRETA
 window.abrirPrevia=(i)=>{
   const lista=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]'); const e=lista[i]; pregacaoAtualIndex=i;
   document.getElementById('previaTitulo').innerHTML=e.titulo;
   document.getElementById('previaIntro').innerHTML=e.intro||'';
   document.getElementById('previaTexto').innerHTML=e.texto||'';
   
-  const div=document.getElementById('previaTopicos'); div.innerHTML='';
-  if(e.htmlEditavel && e.htmlEditavel!==""){
-    div.innerHTML=e.htmlEditavel;
-  } else if(e.topicos){
-    e.topicos.forEach((t)=>{
-      div.innerHTML+=`<h2 contenteditable="true" class="editable" style="font-size:14px;font-weight:800;margin:20px 0 10px;color:#0f172a;outline:none">${t.titulo||''}</h2><div contenteditable="true" class="editable" style="font-size:15px;line-height:1.8;color:#333;outline:none;min-height:20px">${t.conteudo||''}</div>${t.versiculos? '<div style="margin-top:8px">'+t.versiculos.map(v=>'<span style="background:#fef9c3;padding:4px 10px;border-radius:20px;font-size:11px;margin:2px;display:inline-block">📖 '+v+'</span>').join('')+'</div>' : ''}`;
-    });
-  }
-
-  // VERSÍCULO EM DESTAQUE
+  // VERSÍCULO PRINCIPAL JÁ NA SEQUÊNCIA (depois do texto)
   const quadro=document.getElementById('quadroVersiculoBox');
-  document.getElementById('previaVersiculoDestaque').innerHTML=e.versiculoDestaque||e.texto||"Romanos 8:16-17";
+  document.getElementById('previaVersiculoDestaque').innerHTML=e.versiculoDestaque||e.texto||"Digite o versículo aqui";
   quadro.style.background=e.coresVersiculo? e.coresVersiculo.fundo : "#fef9c3";
   quadro.style.borderColor=e.coresVersiculo? e.coresVersiculo.borda : "#fbbf24";
   document.getElementById('previaVersiculoDestaque').style.color=e.coresVersiculo? e.coresVersiculo.texto : "#000";
@@ -227,18 +218,43 @@ window.abrirPrevia=(i)=>{
   document.getElementById('corBordaVersiculo').value=e.coresVersiculo? e.coresVersiculo.borda : "#fbbf24";
   document.getElementById('corTextoVersiculo').value=e.coresVersiculo? e.coresVersiculo.texto : "#000000";
 
+  // TÓPICOS NA SEQUÊNCIA - CADA UM COM SEU VERSÍCULO
+  const div=document.getElementById('previaTopicos'); div.innerHTML='';
+  if(e.htmlEditavel && e.htmlEditavel!==""){
+    div.innerHTML=e.htmlEditavel;
+  } else if(e.topicos && e.topicos.length){
+    e.topicos.forEach((t, idx)=>{
+      let versiculosHtml="";
+      if(t.versiculos && t.versiculos.length){
+        versiculosHtml=`<div class="topico-versiculo-box"><div style="font-size:10px;font-weight:800;color:#854d0e;margin-bottom:6px">📖 VERSÍCULOS DESTE TÓPICO</div><div>${t.versiculos.map(v=>`<span style="display:inline-block;background:#fff;padding:4px 10px;border-radius:20px;font-size:12px;margin:2px;border:1px solid #fbbf24">📖 ${v}</span>`).join('')}</div></div>`;
+      }
+      div.innerHTML+=`
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2e8e0">
+          <h2 contenteditable="true" class="editable" style="font-size:14px;font-weight:800;color:#0f172a;outline:none">TÓPICO ${idx+1}: ${t.titulo||''}</h2>
+          <div contenteditable="true" class="editable" style="font-size:15px;line-height:1.75;color:#333;outline:none;margin-top:8px;min-height:20px">${t.conteudo||''}</div>
+          ${versiculosHtml}
+        </div>`;
+    });
+  }
+
   if(e.audio){ document.getElementById('previaAudioBox').classList.remove('hidden'); document.getElementById('previaAudioPlayer').src=e.audio; } else { document.getElementById('previaAudioBox').classList.add('hidden'); }
   document.getElementById('previaMode').classList.remove('hidden');
 };
 
-// CORES DO QUADRO VERSÍCULO
 document.getElementById('corFundoVersiculo').oninput=(e)=>{ document.getElementById('quadroVersiculoBox').style.background=e.target.value; };
 document.getElementById('corBordaVersiculo').oninput=(e)=>{ document.getElementById('quadroVersiculoBox').style.borderColor=e.target.value; };
 document.getElementById('corTextoVersiculo').oninput=(e)=>{ document.getElementById('previaVersiculoDestaque').style.color=e.target.value; };
 
-// SALVAR EDIÇÃO COMPLETA COM FONTES E CORES
+// COR DO TEXTO - FIX
+document.getElementById('selCorTexto').onchange=(e)=>{ document.execCommand('foreColor',false,e.target.value); };
+document.getElementById('selCorFundo').onchange=(e)=>{ document.execCommand('hiliteColor',false,e.target.value); };
+
 document.getElementById('btnSalvarEdicao').onclick=()=>{
-  if(pregacaoAtualIndex<0) return;
+  if(pregacaoAtualIndex<0){
+    // Prévia de nova pregação ainda não salva
+    alert('Salve a pregação primeiro em NOVA, depois edite em VER');
+    return;
+  }
   let lista=JSON.parse(localStorage.getItem('pulpito_esbocos')||'[]');
   let e=lista[pregacaoAtualIndex];
   e.titulo=document.getElementById('previaTitulo').innerHTML;
@@ -252,7 +268,7 @@ document.getElementById('btnSalvarEdicao').onclick=()=>{
     texto: document.getElementById('corTextoVersiculo').value
   };
   localStorage.setItem('pulpito_esbocos', JSON.stringify(lista));
-  alert('✅ TUDO salvo! Título, introdução, texto, tópicos, fontes, cores e versículo em destaque com cores salvos!');
+  alert('✅ Tudo salvo na sequência! Versículos, fontes, cores.');
   renderRecentes();
 };
 
@@ -260,14 +276,15 @@ document.getElementById('fecharPrevia').onclick=()=>document.getElementById('pre
 document.getElementById('btnPrevia').onclick=()=>{
   pregacaoAtualIndex=-1;
   document.getElementById('previaTitulo').innerHTML=document.getElementById('tituloPregacao').value||'Título';
-  document.getElementById('previaIntro').innerHTML=document.getElementById('introPregacao').value||'';
-  document.getElementById('previaTexto').innerHTML=document.getElementById('textoBiblico').value||'';
+  document.getElementById('previaIntro').innerHTML=document.getElementById('introPregacao').value||'Introdução';
+  document.getElementById('previaTexto').innerHTML=document.getElementById('textoBiblico').value||'Texto bíblico';
+  document.getElementById('previaVersiculoDestaque').innerHTML=document.getElementById('textoBiblico').value||'Versículo em destaque';
   const div=document.getElementById('previaTopicos'); div.innerHTML='';
   topicosExtras.forEach((t,idx)=>{
     const ti=document.getElementById('topTit'+idx); const tc=document.getElementById('topCont'+idx);
-    div.innerHTML+=`<h2 contenteditable="true" class="editable" style="font-size:14px;font-weight:800;margin:20px 0 10px;color:#0f172a">${ti? ti.value : t.titulo}</h2><div contenteditable="true" class="editable" style="font-size:15px;line-height:1.8;color:#333">${tc? tc.value : t.conteudo}</div>`;
+    const tit=ti? ti.value : t.titulo; const cont=tc? tc.value : t.conteudo;
+    div.innerHTML+=`<div style="margin-top:20px;padding-top:12px;border-top:1px solid #e2e8e0"><h2 contenteditable="true" class="editable" style="font-size:14px;font-weight:800;color:#0f172a">${tit||'Tópico '+(idx+1)}</h2><div contenteditable="true" class="editable" style="font-size:15px;line-height:1.7;color:#333;margin-top:6px">${cont||''}</div></div>`;
   });
-  document.getElementById('previaVersiculoDestaque').innerHTML=document.getElementById('textoBiblico').value||'Versículo';
   if(audioBase64){ document.getElementById('previaAudioBox').classList.remove('hidden'); document.getElementById('previaAudioPlayer').src=audioBase64; } else { document.getElementById('previaAudioBox').classList.add('hidden'); }
   document.getElementById('previaMode').classList.remove('hidden');
 };
@@ -277,7 +294,7 @@ window.deletarEsboco=(i)=>{ if(!confirm('Excluir?')) return; let l=JSON.parse(lo
 function renderBibliaLivros(){
   const div=document.getElementById('bibliaLivros'); if(!div) return; div.innerHTML='';
   LIVROS.forEach((livro, idx)=>{
-    div.innerHTML+=`<button onclick="abrirLivro(${idx})" style="padding:12px;border:1px solid #2a2d3a;background:#1e202e;color:#fff;border-radius:10px;text-align:left;font-size:13px;font-weight:600">${livro.name}<br><small style="color:#9ca3af">${livro.cap} capítulos</small></button>`;
+    div.innerHTML+=`<button onclick="abrirLivro(${idx})" style="padding:12px;border:1px solid #2a2d3a;background:#1e202e;color:#fff;border-radius:10px;text-align:left;font-size:13px;font-weight:600">${livro.name}<br><small style="color:#9ca3af">${livro.cap} cap.</small></button>`;
   });
 }
 window.abrirLivro=(idx)=>{
@@ -311,13 +328,13 @@ function renderTopicosInputs(){
     area.innerHTML+=`
     <div class="topico-card">
       <button class="remove" onclick="removerTopico(${i})">✕</button>
-      <span class="label-topico">TÓPICO</span>
+      <span class="label-topico">TÓPICO ${i+1}</span>
       <div class="card-input" style="margin-bottom:8px"><input id="topTit${i}" value="${t.titulo||''}" placeholder="Título do tópico"></div>
       <div class="card-input"><textarea id="topCont${i}" rows="3" placeholder="Conteúdo do tópico">${t.conteudo||''}</textarea></div>
       <div class="versiculos-area">
-        <span style="font-size:11px;color:#9ca3af">Versículos deste tópico:</span>
+        <span style="font-size:11px;color:#9ca3af">Versículos deste tópico (aparecem logo após este tópico na leitura):</span>
         <div style="margin-top:6px">${(t.versiculos||[]).map((v,vi)=>`<span class="versiculo-tag">${v} <span onclick="removerVersiculo(${i},${vi})" style="cursor:pointer">✕</span></span>`).join('')}</div>
-        <div style="display:flex;gap:6px;margin-top:6px"><input id="inputVers${i}" class="input-versiculo" placeholder="Adicionar versículo"><button onclick="addVersiculo(${i})" style="background:#fbbf24;border:0;padding:8px 12px;border-radius:8px;font-weight:700">+</button></div>
+        <div style="display:flex;gap:6px;margin-top:6px"><input id="inputVers${i}" class="input-versiculo" placeholder="Ex: Romanos 8:17"><button onclick="addVersiculo(${i})" style="background:#fbbf24;border:0;padding:8px 12px;border-radius:8px;font-weight:700">+</button></div>
       </div>
     </div>`;
   });
